@@ -12,6 +12,7 @@ type ActionType =
   | {
       navigate?: string;
       message?: string;
+      onFinish?: Function;
     };
 
 interface IUseFetchStatusProps {

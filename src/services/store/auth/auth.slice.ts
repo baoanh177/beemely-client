@@ -1,8 +1,8 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { EFetchStatus } from "@/shared/enums/fetchStatus";
 import { IInitialState, IResponse } from "@/shared/utils/shared-interfaces";
-import { getProfile, login, logout } from "./auth.thunk";
-import { ILoginResponseData, IUserProfile } from "./auth.model";
+import { forgotPassword, getProfile, login, logout, register, resetPassword, verifyEmail } from "./auth.thunk";
+import { IForgotPasswordResponseData, ILoginResponseData, IRegisterResponseData, IUserProfile, IVerifyEmailResponseData } from "./auth.model";
 
 export interface IAuthInitialState extends Partial<IInitialState> {
   isLogin: boolean;
@@ -42,6 +42,57 @@ const authSlice = createSlice({
       .addCase(getProfile.rejected, (state) => {
         state.status = EFetchStatus.REJECTED;
       });
+    // ? register
+    builder
+      .addCase(register.pending, (state) => {
+        state.status = EFetchStatus.PENDING;
+      })
+      .addCase(register.fulfilled, (state) => {
+        state.status = EFetchStatus.FULFILLED;
+      })
+      .addCase(register.rejected, (state, action) => {
+        const payload = action.payload as IResponse<IRegisterResponseData>;
+        state.message = typeof payload.errors === "string" ? payload.errors : "Register failed! Please try again!";
+        state.status = EFetchStatus.REJECTED;
+      });
+    // ? verify email
+    builder
+      .addCase(verifyEmail.pending, (state) => {
+        state.status = EFetchStatus.PENDING;
+      })
+      .addCase(verifyEmail.fulfilled, (state) => {
+        state.status = EFetchStatus.FULFILLED;
+      })
+      .addCase(verifyEmail.rejected, (state, action) => {
+        const payload = action.payload as IResponse<IVerifyEmailResponseData>;
+        state.message = typeof payload.errors === "string" ? payload.errors : "Your verification token is invalid or exprised";
+        state.status = EFetchStatus.REJECTED;
+      });
+    // ? forgot password
+    builder
+      .addCase(forgotPassword.pending, (state) => {
+        state.status = EFetchStatus.PENDING;
+      })
+      .addCase(forgotPassword.fulfilled, (state) => {
+        state.status = EFetchStatus.FULFILLED;
+      })
+      .addCase(forgotPassword.rejected, (state, action) => {
+        const payload = action.payload as IResponse<IForgotPasswordResponseData>;
+        state.message = typeof payload.errors === "string" ? payload.errors : "Some thing went wrong!";
+        state.status = EFetchStatus.REJECTED;
+      });
+    // ? reset password
+    builder
+      .addCase(resetPassword.pending, (state) => {
+        state.status = EFetchStatus.PENDING;
+      })
+      .addCase(resetPassword.fulfilled, (state) => {
+        state.status = EFetchStatus.FULFILLED;
+      })
+      .addCase(resetPassword.rejected, (state) => {
+        state.message = "Your verification token is invalid or exprised";
+        state.status = EFetchStatus.REJECTED;
+      });
     // ? Login
     builder
       .addCase(login.pending, (state) => {
@@ -53,8 +104,9 @@ const authSlice = createSlice({
         state.loginTime = new Date().getTime() / 1000;
         state.status = EFetchStatus.FULFILLED;
       })
-      .addCase(login.rejected, (state, { payload }: PayloadAction<any>) => {
-        state.message = payload?.message;
+      .addCase(login.rejected, (state, action) => {
+        const payload = action.payload as IResponse<ILoginResponseData>;
+        state.message = typeof payload.errors === "string" ? payload.errors : "Login failed! Please try again!";
         state.status = EFetchStatus.REJECTED;
       });
     // ? Logout
@@ -68,8 +120,8 @@ const authSlice = createSlice({
         state.isLogin = false;
         state.status = EFetchStatus.FULFILLED;
       })
-      .addCase(logout.rejected, (state, { payload }: PayloadAction<any>) => {
-        state.message = payload?.message;
+      .addCase(logout.rejected, (state) => {
+        state.message = "Logout failed! Please try again!";
         state.status = EFetchStatus.REJECTED;
       });
   },

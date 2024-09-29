@@ -1,25 +1,41 @@
-import Button from "@/components/common/Button";
 import { Container } from "@/styles/common-styles";
 import tw from "twin.macro";
-import secretSound from "@/assets/sounds/secret.mp3";
-import { useRef } from "react";
+import Button from "@/components/common/Button";
+import { useArchive } from "@/hooks/useArchive";
+import { IAuthInitialState, resetStatus } from "@/services/store/auth/auth.slice";
+import { logout } from "@/services/store/auth/auth.thunk";
+import useFetchStatus from "@/hooks/useFetchStatus";
 
 const Title = tw.h1`text-3xl font-semibold text-center`;
 
 const Home = () => {
-  const audioRef = useRef<HTMLAudioElement>(null);
+  const { state, dispatch } = useArchive<IAuthInitialState>("auth");
+  useFetchStatus({
+    module: "auth",
+    reset: resetStatus,
+    actions: {
+      success: {
+        message: "Bạn đã đăng xuất!",
+        navigate: "/auth/login",
+      },
+      error: {
+        message: state.message,
+      },
+    },
+  });
   return (
     <Container tw="pt-[200px]">
       <Title>React + Typescript + Twin.macro + Antd</Title>
-      <audio src={secretSound} ref={audioRef} />
-      <Button
-        className="mx-auto mt-9"
-        onClick={() => {
-          audioRef.current?.play();
-        }}
-      >
-        Make me laugh!
-      </Button>
+      {state.isLogin && (
+        <Button
+          type="button"
+          text="Logout"
+          className="mx-auto mt-9"
+          onClick={() => {
+            dispatch(logout());
+          }}
+        />
+      )}
     </Container>
   );
 };
