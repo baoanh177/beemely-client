@@ -6,20 +6,20 @@ export const Components = () => {
     <div className="flex flex-col gap-4 pl-10">
       <div className="flex flex-col items-start gap-4">
         <div className="text-3xl font-bold text-tertiary-500">Button</div>
-        <Button shape="rectangle" text="Đây là button primary" type="primary" />
-        <Button shape="rectangle" text="Đây là button secondary" type="secondary" />
-        <Button shape="rectangle" text="Đây là button ghost" type="ghost" />
-        <Button shape="rectangle" text="Đây là button default" type="default" />
-        <Button shape="rectangle" text="Đây là button primary loading" isLoading type="primary" />
-        <Button shape="rectangle" text="Đây là button secondary loading" isLoading type="secondary" />
-        <Button shape="rectangle" text="Đây là button ghost loading" isLoading type="ghost" />
-        <Button shape="rectangle" text="Đây là button default loading" isLoading type="default" />
-        <Button shape="rectangle" text="Đây là button primary diable" isDisabled type="primary" />
-        <Button shape="rectangle" text="Đây là button secondary diable" isDisabled type="secondary" />
-        <Button shape="rectangle" text="Đây là button ghost diable" isDisabled type="ghost" />
-        <Button shape="rectangle" text="Đây là button default diable" isDisabled type="default" />
-        <Button shape="rectangle" text="Đây là button ghost có icon" icon={<IoSaveOutline />} type="ghost" />
-        <Button icon={<IoSaveOutline />} shape="rounded" type="ghost" />
+        <Button shape="rectangle" text="Đây là button primary" variant="primary" />
+        <Button shape="rectangle" text="Đây là button secondary" variant="secondary" />
+        <Button shape="rectangle" text="Đây là button ghost" variant="ghost" />
+        <Button shape="rectangle" text="Đây là button default" variant="default" />
+        <Button shape="rectangle" text="Đây là button primary loading" isLoading variant="primary" />
+        <Button shape="rectangle" text="Đây là button secondary loading" isLoading variant="secondary" />
+        <Button shape="rectangle" text="Đây là button ghost loading" isLoading variant="ghost" />
+        <Button shape="rectangle" text="Đây là button default loading" isLoading variant="default" />
+        <Button shape="rectangle" text="Đây là button primary diable" isDisabled variant="primary" />
+        <Button shape="rectangle" text="Đây là button secondary diable" isDisabled variant="secondary" />
+        <Button shape="rectangle" text="Đây là button ghost diable" isDisabled variant="ghost" />
+        <Button shape="rectangle" text="Đây là button default diable" isDisabled variant="default" />
+        <Button shape="rectangle" text="Đây là button ghost có icon" icon={<IoSaveOutline />} variant="ghost" />
+        <Button icon={<IoSaveOutline />} shape="rounded" variant="ghost" />
       </div>
     </div>
   );
