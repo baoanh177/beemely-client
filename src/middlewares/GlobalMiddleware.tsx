@@ -16,9 +16,12 @@ export interface IGlobalMiddlewareContext {
 const GlobalMiddleware = () => {
   const { state, dispatch } = useArchive<IAuthInitialState>("auth");
 
-  const { getProfileLoading } = useAsyncEffect((async) => {
-    async(dispatch(getProfile()), "getProfileLoading");
-  }, [state.loginTime]);
+  const { getProfileLoading } = useAsyncEffect(
+    (async) => {
+      async(dispatch(getProfile()), "getProfileLoading");
+    },
+    [state.loginTime],
+  );
 
   useEffect(() => {
     if (state.status !== EFetchStatus.IDLE && state.status !== EFetchStatus.PENDING) {
