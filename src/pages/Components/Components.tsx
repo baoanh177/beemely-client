@@ -1,4 +1,5 @@
 import Button from "@/components/common/Button";
+import Title from "@/components/common/Title";
 import { IoSaveOutline } from "react-icons/io5";
 
 export const Components = () => {
@@ -20,6 +21,10 @@ export const Components = () => {
         <Button shape="rectangle" text="Đây là button default diable" isDisabled variant="default" />
         <Button shape="rectangle" text="Đây là button ghost có icon" icon={<IoSaveOutline />} variant="ghost" />
         <Button icon={<IoSaveOutline />} shape="rounded" variant="ghost" />
+      </div>
+      <div className="flex flex-col items-start gap-4">
+        <div className="text-3xl font-bold text-tertiary-500">Title</div>
+        <Title text="Shop by Categories" />
       </div>
     </div>
   );

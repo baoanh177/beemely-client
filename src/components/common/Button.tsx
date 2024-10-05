@@ -14,7 +14,18 @@ export interface IButtonProps {
   className?: string;
 }
 
-const Button = ({ variant = "primary", type = "button", text, isDisabled = false, shape = "rectangle", isLoading = false, icon, size, className, onClick }: IButtonProps) => {
+const Button = ({
+  variant = "primary",
+  type = "button",
+  text,
+  isDisabled = false,
+  shape = "rectangle",
+  isLoading = false,
+  icon,
+  size,
+  className,
+  onClick,
+}: IButtonProps) => {
   const typeClass = {
     primary: "bg-primary-500 text-white-500",
     secondary: "text-primary-500 bg-gray-10%",
