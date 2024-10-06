@@ -3,7 +3,7 @@ import clsx from "clsx";
 
 export interface IButtonProps {
   type?: "button" | "submit" | "reset";
-  variant?: "primary" | "ghost" | "secondary" | "default";
+  variant?: "primary" | "ghost" | "secondary" | "default" | "danger";
   text?: string;
   isDisabled?: boolean;
   isLoading?: boolean;
@@ -31,6 +31,7 @@ const Button = ({
     secondary: "text-primary-500 bg-gray-10%",
     ghost: "border border-primary-500 text-primary-500",
     default: "text-primary-500 bg-white-500",
+    danger: "bg-white-500 text-red-500",
   };
 
   const typeLoading = {
@@ -38,6 +39,7 @@ const Button = ({
     ghost: "border-primary-500 border-t-white-500",
     secondary: "border-gray-400 border-t-white-500",
     default: "border-primary-500 border-t-white-500",
+    danger: "border-red-500 border-t-white-500",
   };
 
   return (
@@ -47,11 +49,11 @@ const Button = ({
         if (onClick && !isDisabled && !isLoading) onClick();
       }}
       className={clsx(
-        "text-m-semibold flex shrink-0 items-center justify-center gap-1 rounded-[8px] transition-opacity",
+        "text-m-semibold flex shrink-0 items-center justify-center gap-1 rounded-[8px] transition-opacity hover:opacity-80",
         typeClass[variant],
         className,
         {
-          "h-[40px] w-[40px] shrink-0 rounded-full p-2": shape === "rounded",
+          "h-[36px] w-[36px] shrink-0 rounded-full p-2": shape === "rounded",
           "px-[12px] py-[8px]": shape === "rectangle",
         },
         {
