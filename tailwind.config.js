@@ -1,11 +1,11 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
-  darkMode: 'class',
+  darkMode: "class",
   theme: {
     colors: {
-      transparent: 'transparent',
-      current: 'currentColor',
+      transparent: "transparent",
+      current: "currentColor",
       primary: {
         100: "#A29FA9",
         200: "#8D8A94",
@@ -161,7 +161,20 @@ export default {
         800: "#0D1440",
         900: "#05081A",
       },
-    }
+    },
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "checkbox-checked": "#000000",
+        },
+      },
+    },
+    variants: {
+      extend: {
+        backgroundColor: ["checked"],
+      },
+    },
+    plugins: [],
   },
-  plugins: [],
 };
