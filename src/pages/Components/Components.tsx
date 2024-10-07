@@ -2,6 +2,7 @@ import Button from "@/components/common/Button";
 import CategoryCard from "@/components/common/CategoryCard";
 import ProductCard from "@/components/common/ProductCard";
 import Title from "@/components/common/Title";
+import ProductFilter from "@/components/filter/ProductFilter";
 import { IoSaveOutline } from "react-icons/io5";
 
 export const Components = () => {
@@ -71,6 +72,12 @@ export const Components = () => {
             regularPrice={100}
             name="Cristiano Ronaldo"
           />
+        </div>
+      </div>
+      <div className="flex flex-col gap-4">
+        <div className="text-3xl font-bold text-tertiary-500">Product Filter</div>
+        <div className="flex w-full max-w-[1272px] flex-wrap gap-[16px] px-4 md:gap-[12px]">
+          <ProductFilter />
         </div>
       </div>
     </div>
