@@ -1,5 +1,9 @@
 import Button from "@/components/common/Button";
 import CategoryCard from "@/components/common/CategoryCard";
+import FormApply from "@/components/common/Input/FormApply";
+import FormCheck from "@/components/common/Input/FormCheck";
+import FormInput from "@/components/common/Input/FormInput";
+import Label from "@/components/common/Label";
 import ProductCard from "@/components/common/ProductCard";
 import Title from "@/components/common/Title";
 import ProductFilter from "@/components/filter/ProductFilter";
@@ -78,6 +82,36 @@ export const Components = () => {
         <div className="text-3xl font-bold text-tertiary-500">Product Filter</div>
         <div className="flex w-full max-w-[1272px] flex-wrap gap-[16px] px-4 md:gap-[12px]">
           <ProductFilter />
+        </div>
+      </div>
+      <div className="flex flex-col gap-4">
+        <div className="text-3xl font-bold text-tertiary-500">Label</div>
+        <div className="flex w-full max-w-[1272px] flex-wrap gap-[16px] px-4 md:gap-[12px]">
+          <Label isRequired text="Đây là Label có required" />
+        </div>
+      </div>
+      <div className="flex flex-col gap-4">
+        <div className="text-3xl font-bold text-tertiary-500">Input number, text</div>
+        <div className="flex w-full max-w-[1272px] flex-wrap gap-[16px] px-4 md:gap-[12px]">
+          <FormInput placeholder="Đây là input number bị disabled" isDisabled value={"Long"} />
+          <FormInput placeholder="Đây là input text" type="text" />
+          <FormInput error="error!!!" placeholder="Đây là input text bị lỗi" type="text" />
+          <FormInput placeholder="Đây là input text bị readonly" isReadonly type="text" />
+          <FormInput placeholder="Đây là input password" type="password" />
+        </div>
+      </div>
+      <div className="flex flex-col gap-4">
+        <div className="text-3xl font-bold text-tertiary-500">Input checkbox</div>
+        <div className="flex w-full max-w-[1272px] flex-wrap gap-[16px] px-4 md:gap-[12px]">
+          <FormCheck label="Đây là check box thường" />
+          <FormCheck isDefaultChecked label="Đây là check box có isDefaultChecked" />
+          <FormCheck isDisable label="Đây là check box có isDiable" />
+        </div>
+      </div>
+      <div className="flex flex-col gap-4">
+        <div className="text-3xl font-bold text-tertiary-500">Input Apply</div>
+        <div className="flex w-full max-w-[1272px] flex-wrap gap-[16px] px-4 md:gap-[12px]">
+          <FormApply />
         </div>
       </div>
     </div>
