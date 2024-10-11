@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { Formik, Form, Field } from "formik";
+import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { useArchive } from "@/hooks/useArchive";
 import { IAuthInitialState, resetStatus } from "@/services/store/auth/auth.slice";
@@ -8,7 +8,7 @@ import useFetchStatus from "@/hooks/useFetchStatus";
 import { EFetchStatus } from "@/shared/enums/fetchStatus";
 import clsx from "clsx";
 import Button from "@/components/common/Button";
-import { useConfirmModal } from "@/hooks/useConfirmModal";
+import { Link } from "react-router-dom";
 
 interface IVerifyEmailFormFormData {
   code: string[];
@@ -17,7 +17,6 @@ interface IVerifyEmailFormFormData {
 const VerifyEmailForm: React.FC = () => {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const { state, dispatch } = useArchive<IAuthInitialState>("auth");
-  const { onClose } = useConfirmModal();
 
   const handleVerify = (data: IVerifyEmailFormFormData) => {
     dispatch(verifyEmail({ body: { code: data.code.join("") } }));
@@ -28,9 +27,8 @@ const VerifyEmailForm: React.FC = () => {
     reset: resetStatus,
     actions: {
       success: {
-        message: "Email đã được xác thực thành công, tiến hành đăng nhập",
+        message: "Email đã được xác thực thành công",
         navigate: "/auth/login",
-        onFinish: onClose,
       },
       error: {
         message: state.message,
@@ -58,34 +56,18 @@ const VerifyEmailForm: React.FC = () => {
   const handleKeyDown = (index: number, event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Backspace" && index > 0 && !event.currentTarget.value) {
       inputRefs.current[index - 1]?.focus();
-    } else if (event.key === "ArrowLeft" && index > 0) {
-      inputRefs.current[index - 1]?.focus();
-    } else if (event.key === "ArrowRight" && index < 5) {
-      inputRefs.current[index + 1]?.focus();
     }
   };
 
-  const handlePaste = (event: React.ClipboardEvent<HTMLInputElement>, setFieldValue: (field: string, value: any) => void) => {
-    event.preventDefault();
-    const pastedData = event.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
-    const pastedArray = pastedData.split("");
-
-    pastedArray.forEach((digit, index) => {
-      setFieldValue(`code[${index}]`, digit);
-    });
-
-    const nextEmptyIndex = pastedArray.length < 6 ? pastedArray.length : 5;
-    inputRefs.current[nextEmptyIndex]?.focus();
-  };
-
   return (
-    <div className="w-full max-w-2xl">
+    <div className="w-full space-y-6 px-4 md:max-w-xl">
       <div className="flex flex-col space-y-2">
-        <h1 className="flex items-center text-4xl font-bold text-gray-900">Nhập mã xác thực</h1>
-        <p className="text-gray-500">Mã xác thực 6 số đã được gửi đến email của bạn, vui lòng kiểm tra cả trong thư mục rác.</p>
+        <h1 className="text-gray-900 flex items-center text-2xl font-bold md:text-4xl">Nhập mã xác thực</h1>
+        <p className="text-sm text-gray-500 md:text-base">
+          Mã xác thực 6 số đã được gửi đến email của bạn, vui lòng kiểm tra cả trong thư mục rác.
+        </p>
       </div>
-      <div className="mt-8 flex flex-col gap-4">
-        <p className="text-gray-500">{state?.profile?.email}</p>
+      <div className="space-y-3">
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -99,33 +81,38 @@ const VerifyEmailForm: React.FC = () => {
             <Form className="flex flex-col gap-5">
               <div className="flex justify-between">
                 {values.code.map((digit, index) => (
-                  <Field
+                  <input
                     key={index}
                     name={`code[${index}]`}
                     type="text"
                     maxLength={1}
-                    innerRef={(el: HTMLInputElement) => (inputRefs.current[index] = el)}
+                    ref={(el: HTMLInputElement) => (inputRefs.current[index] = el)}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(index, e.target.value, setFieldValue)}
                     onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => handleKeyDown(index, e)}
-                    onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => handlePaste(e, setFieldValue)}
                     className={clsx(
-                      "h-12 w-12 rounded-lg border-2 border-gray-300 text-center text-2xl font-semibold focus:border-green-500 focus:outline-none",
-                      !!digit && "border-gray-900",
+                      "h-12 w-12 rounded-md border-2 border-gray-80% text-center text-xl font-semibold focus:border-green-600 focus:outline-none md:h-16 md:w-16 md:text-2xl",
+                      !!digit && "border-primary-90%",
                     )}
                   />
                 ))}
               </div>
               {errors.code && <span className="text-sm text-red-500">{errors.code}</span>}
               <Button
-                className="mt-6 py-4"
+                className="py-[10px]"
                 variant="primary"
                 type="submit"
+                isLoading={state.status === EFetchStatus.PENDING}
                 isDisabled={state.status === EFetchStatus.PENDING}
                 text=" Xác thực"
               />
             </Form>
           )}
         </Formik>
+        <div className="flex justify-center">
+          <Link className="inline-block text-center text-sm hover:underline" to={"/auth/login"}>
+            Không phải bây giờ!
+          </Link>
+        </div>
       </div>
     </div>
   );

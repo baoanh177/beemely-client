@@ -3,39 +3,59 @@ import clsx from "clsx";
 
 export interface IButtonProps {
   type?: "button" | "submit" | "reset";
-  variant?: "primary" | "ghost" | "secondary";
-  text: string;
+  variant?: "primary" | "ghost" | "secondary" | "default" | "danger";
+  text?: string;
   isDisabled?: boolean;
   isLoading?: boolean;
   icon?: ReactNode;
+  shape?: "rounded" | "rectangle";
   size?: "full";
   onClick?: () => void;
   className?: string;
 }
 
-const Button = ({ variant = "primary", text, type, isDisabled = false, isLoading = false, icon, size, className, onClick }: IButtonProps) => {
-  const variantClass = {
-    primary: "bg-slate-800 text-white",
-    ghost: "text-slate-800 bg-slate-50",
-    secondary: "text-gray-400 border border-gray-400",
+const Button = ({
+  variant = "primary",
+  type = "button",
+  text,
+  isDisabled = false,
+  shape = "rectangle",
+  isLoading = false,
+  icon,
+  size,
+  className,
+  onClick,
+}: IButtonProps) => {
+  const typeClass = {
+    primary: "bg-primary-500 text-white-500",
+    secondary: "text-primary-500 bg-gray-10%",
+    ghost: "border border-primary-500 text-primary-500",
+    default: "text-primary-500 bg-white-500",
+    danger: "bg-white-500 text-red-500",
   };
 
-  const variantLoading = {
-    primary: "border-white border-t-slate-800",
-    ghost: "border-slate-800 border-t-slate-50",
-    secondary: "border-gray-400 border-t-white",
+  const typeLoading = {
+    primary: "border-white-500 border-t-primary-500",
+    ghost: "border-primary-500 border-t-white-500",
+    secondary: "border-gray-400 border-t-white-500",
+    default: "border-primary-500 border-t-white-500",
+    danger: "border-red-500 border-t-white-500",
   };
 
   return (
     <button
+      type={type}
       onClick={() => {
         if (onClick && !isDisabled && !isLoading) onClick();
       }}
-      type={type}
       className={clsx(
-        "text-m-semibold flex shrink-0 items-center justify-center gap-1 rounded-[8px] px-[14px] py-[10px] transition-opacity",
-        variantClass[variant],
+        "text-m-semibold flex h-[56px] shrink-0 items-center justify-center gap-1 rounded-[8px] transition-opacity hover:opacity-80",
+        typeClass[variant],
         className,
+        {
+          "h-[36px] w-[36px] shrink-0 rounded-full p-2": shape === "rounded",
+          "px-[12px] py-[8px]": shape === "rectangle",
+        },
         {
           "cursor-not-allowed opacity-65": isDisabled,
           "opacity-65": isLoading,
@@ -44,7 +64,7 @@ const Button = ({ variant = "primary", text, type, isDisabled = false, isLoading
         size === "full" && "w-full",
       )}
     >
-      {isLoading ? <div className={clsx(`${variantLoading[variant]} h-4 w-4 animate-spin rounded-full border-2`)} /> : icon}
+      {isLoading ? <div className={clsx(`${typeLoading[variant]} h-4 w-4 animate-spin rounded-full border-2`)} /> : icon}
       {text}
     </button>
   );

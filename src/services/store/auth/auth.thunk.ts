@@ -3,13 +3,13 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { client } from "../../config/client";
 
 import { IThunkPayload } from "@/shared/utils/shared-interfaces";
-import { ILoginResponseData, IUserProfile } from "./auth.model";
+import { ILoginResponseData, IRegisterResponseData, IUserProfile } from "./auth.model";
 
-const prefix = "/api/auth";
+const authPrefix = "/api/auth";
 
 export const getProfile = createAsyncThunk("auth/get-profile", async (_, { rejectWithValue }) => {
   try {
-    const { response, data } = await client.get<IUserProfile>(`${prefix}/profile`);
+    const { response, data } = await client.get<IUserProfile>(`${authPrefix}/profile`);
     return response.status >= 400 ? rejectWithValue(data) : data;
   } catch (error: any) {
     return rejectWithValue(error.response.data);
@@ -18,7 +18,7 @@ export const getProfile = createAsyncThunk("auth/get-profile", async (_, { rejec
 
 export const login = createAsyncThunk("auth/login", async (payload: IThunkPayload, { rejectWithValue }) => {
   try {
-    const { response, data } = await client.post<ILoginResponseData>(`${prefix}/login`, payload);
+    const { response, data } = await client.post<ILoginResponseData>(`${authPrefix}/login`, payload);
     return response.status >= 400 ? rejectWithValue(data) : data;
   } catch (error: any) {
     return rejectWithValue(error.response.data);
@@ -27,7 +27,16 @@ export const login = createAsyncThunk("auth/login", async (payload: IThunkPayloa
 
 export const register = createAsyncThunk("auth/register", async (payload: IThunkPayload, { rejectWithValue }) => {
   try {
-    const { response, data } = await client.post<ILoginResponseData>(`${prefix}/register`, payload);
+    const { response, data } = await client.post<IRegisterResponseData>(`${authPrefix}/register`, payload);
+    return response.status >= 400 ? rejectWithValue(data) : data;
+  } catch (error: any) {
+    return rejectWithValue(error.response.data);
+  }
+});
+
+export const sendVerifyEmail = createAsyncThunk("auth/send-verify", async (payload: IThunkPayload, { rejectWithValue }) => {
+  try {
+    const { response, data } = await client.post<ILoginResponseData>(`${authPrefix}/send-verify`, payload);
     return response.status >= 400 ? rejectWithValue(data) : data;
   } catch (error: any) {
     return rejectWithValue(error.response.data);
@@ -36,7 +45,7 @@ export const register = createAsyncThunk("auth/register", async (payload: IThunk
 
 export const verifyEmail = createAsyncThunk("auth/verify-email", async (payload: IThunkPayload, { rejectWithValue }) => {
   try {
-    const { response, data } = await client.post<ILoginResponseData>(`${prefix}/verify-email`, payload);
+    const { response, data } = await client.post<ILoginResponseData>(`${authPrefix}/verify-email`, payload);
     return response.status >= 400 ? rejectWithValue(data) : data;
   } catch (error: any) {
     return rejectWithValue(error.response.data);
@@ -45,7 +54,7 @@ export const verifyEmail = createAsyncThunk("auth/verify-email", async (payload:
 
 export const forgotPassword = createAsyncThunk("auth/forgot-password", async (payload: IThunkPayload, { rejectWithValue }) => {
   try {
-    const { response, data } = await client.post<ILoginResponseData>(`${prefix}/forgot-password`, payload);
+    const { response, data } = await client.post<ILoginResponseData>(`${authPrefix}/forgot-password`, payload);
     return response.status >= 400 ? rejectWithValue(data) : data;
   } catch (error: any) {
     return rejectWithValue(error.response.data);
@@ -61,7 +70,7 @@ export const resetPassword = createAsyncThunk(
     { rejectWithValue },
   ) => {
     try {
-      const { response, data } = await client.post<ILoginResponseData>(`${prefix}/reset-password/${payload.token}`, payload);
+      const { response, data } = await client.post<ILoginResponseData>(`${authPrefix}/reset-password/${payload.token}`, payload);
       return response.status >= 400 ? rejectWithValue(data) : data;
     } catch (error: any) {
       return rejectWithValue(error.response.data);
@@ -71,7 +80,7 @@ export const resetPassword = createAsyncThunk(
 
 export const logout = createAsyncThunk("auth/logout", async (_, { rejectWithValue }) => {
   try {
-    const { response, data } = await client.post(`${prefix}/logout`);
+    const { response, data } = await client.post(`${authPrefix}/logout`);
     return response.status >= 400 ? rejectWithValue(data) : data;
   } catch (error: any) {
     return rejectWithValue(error.response.data);

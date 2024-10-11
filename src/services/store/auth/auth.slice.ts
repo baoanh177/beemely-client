@@ -8,11 +8,13 @@ export interface IAuthInitialState extends Partial<IInitialState> {
   isLogin: boolean;
   profile: IUserProfile | null;
   loginTime: number;
+  isNewUser: boolean;
 }
 
 const initialState: IAuthInitialState = {
   isLogin: false,
   profile: null,
+  isNewUser: false,
   loginTime: 0,
   status: EFetchStatus.IDLE,
   message: "",
@@ -37,6 +39,7 @@ const authSlice = createSlice({
       .addCase(getProfile.fulfilled, (state, { payload }: PayloadAction<IResponse<IUserProfile>>) => {
         state.profile = payload.metaData;
         state.isLogin = true;
+        state.isNewUser = payload.metaData?.isNewUser;
         state.status = EFetchStatus.FULFILLED;
       })
       .addCase(getProfile.rejected, (state) => {
@@ -52,7 +55,7 @@ const authSlice = createSlice({
       })
       .addCase(register.rejected, (state, action) => {
         const payload = action.payload as IResponse<IRegisterResponseData>;
-        state.message = typeof payload.errors === "string" ? payload.errors : "Register failed! Please try again!";
+        state.message = payload?.errors?.auth || "Register failed! Please try again!";
         state.status = EFetchStatus.REJECTED;
       });
     // ? verify email
@@ -65,7 +68,7 @@ const authSlice = createSlice({
       })
       .addCase(verifyEmail.rejected, (state, action) => {
         const payload = action.payload as IResponse<IVerifyEmailResponseData>;
-        state.message = typeof payload.errors === "string" ? payload.errors : "Your verification token is invalid or exprised";
+        state.message = payload?.errors?.auth || "Your verification token is invalid or exprised";
         state.status = EFetchStatus.REJECTED;
       });
     // ? forgot password
@@ -78,7 +81,7 @@ const authSlice = createSlice({
       })
       .addCase(forgotPassword.rejected, (state, action) => {
         const payload = action.payload as IResponse<IForgotPasswordResponseData>;
-        state.message = typeof payload.errors === "string" ? payload.errors : "Some thing went wrong!";
+        state.message = payload?.errors?.auth || "Có lỗi xảy ra! vui lòng thử lại sau";
         state.status = EFetchStatus.REJECTED;
       });
     // ? reset password
@@ -101,12 +104,13 @@ const authSlice = createSlice({
       .addCase(login.fulfilled, (state, { payload }: PayloadAction<IResponse<ILoginResponseData>>) => {
         localStorage.setItem("accessToken", JSON.stringify(payload.metaData?.accessToken));
         localStorage.setItem("refreshToken", JSON.stringify(payload.metaData?.refreshToken));
+        state.isNewUser = payload.metaData.userData.isNewUser;
         state.loginTime = new Date().getTime() / 1000;
         state.status = EFetchStatus.FULFILLED;
       })
       .addCase(login.rejected, (state, action) => {
         const payload = action.payload as IResponse<ILoginResponseData>;
-        state.message = typeof payload.errors === "string" ? payload.errors : "Login failed! Please try again!";
+        state.message = payload?.errors?.auth || "Login failed! Please try again!";
         state.status = EFetchStatus.REJECTED;
       });
     // ? Logout

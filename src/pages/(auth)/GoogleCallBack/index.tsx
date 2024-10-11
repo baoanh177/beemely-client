@@ -18,7 +18,7 @@ const GoogleCallback = () => {
       const { accessToken, refreshToken } = metaData;
       localStorage.setItem("accessToken", JSON.stringify(accessToken));
       localStorage.setItem("refreshToken", JSON.stringify(refreshToken));
-      window.location.pathname = "/";
+      window.location.pathname = metaData.userData.isNewUser ? "/get-started" : "/";
     })();
   }, []);
 

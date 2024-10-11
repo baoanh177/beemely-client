@@ -64,7 +64,7 @@ const FormCheck = ({
           />
         )}
         {label && (
-          <label htmlFor={id} className="text-m-medium text-black-300 cursor-pointer">
+          <label htmlFor={id} className="black-300 cursor-pointer text-sm">
             {label}
           </label>
         )}

@@ -1,12 +1,23 @@
+import { ReactNode } from "react";
+
+//middle ware
 import GlobalMiddleware from "@/middlewares/GlobalMiddleware";
 import GuestMiddleware from "@/middlewares/GuestMiddleware";
-import ForgotPassword from "@/pages/(auth)/ForgotPassword/ForgotPassword";
-import GoogleCallback from "@/pages/(auth)/GoogleCallBack/GoogleCallBack";
-import Login from "@/pages/(auth)/Login/Login";
-import Register from "@/pages/(auth)/Register/Register";
-import ResetPassword from "@/pages/(auth)/ResetPassword/ResetPassword";
+import AuthMiddleware from "@/middlewares/AuthMiddleware";
+
+//auth router
+import ForgotPassword from "@/pages/(auth)/ForgotPassword";
+import GoogleCallback from "@/pages/(auth)/GoogleCallBack";
+import Login from "@/pages/(auth)/Login";
+import Register from "@/pages/(auth)/Register";
+import ResetPassword from "@/pages/(auth)/ResetPassword";
+
+//site router
 import Home from "@/pages/Home";
-import { ReactNode } from "react";
+import ProfilePage from "@/pages/Profile";
+import VerifyEmailPage from "@/pages/(auth)/VerifyEmail";
+import GetStartedPage from "@/pages/GetStarted";
+import NewUserMiddleware from "@/middlewares/NewUserMiddleware";
 
 export interface IRoute {
   path: string;
@@ -24,6 +35,21 @@ export const routes: IRoute[] = [
       {
         path: "/",
         element: () => <Home />,
+      },
+      {
+        path: "",
+        middleware: () => <AuthMiddleware />,
+        pages: [
+          {
+            path: "profile",
+            element: () => <ProfilePage />,
+          },
+        ],
+      },
+      {
+        path: "get-started",
+        middleware: () => <NewUserMiddleware />,
+        element: () => <GetStartedPage />,
       },
       {
         path: "auth",
@@ -48,6 +74,10 @@ export const routes: IRoute[] = [
           {
             path: "google/callback",
             element: () => <GoogleCallback />,
+          },
+          {
+            path: "verify-email",
+            element: () => <VerifyEmailPage />,
           },
         ],
       },

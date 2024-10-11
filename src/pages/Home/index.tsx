@@ -23,6 +23,7 @@ const Home = () => {
       },
     },
   });
+
   return (
     <Container tw="pt-[200px]">
       <Title>React + Typescript + Twin.macro + Antd</Title>

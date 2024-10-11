@@ -1,14 +1,17 @@
 import { useArchive } from "@/hooks/useArchive";
 import { IAuthInitialState, resetStatus } from "@/services/store/auth/auth.slice";
-import { Formik } from "formik";
+import { Form, Formik } from "formik";
 import { object, string } from "yup";
 import { forgotPassword } from "@/services/store/auth/auth.thunk";
 import useFetchStatus from "@/hooks/useFetchStatus";
 import { EFetchStatus } from "@/shared/enums/fetchStatus";
-import { MdOutlineEmail } from "react-icons/md";
 import FormInput from "@/components/form/FormInput";
-import FormError from "@/components/form/FormError";
 import Button from "@/components/common/Button";
+import { useAppModal } from "@/hooks/useAppModal";
+
+import { IoCheckmarkCircle } from "react-icons/io5";
+import NofificationModal from "@/components/modal/NofificationModal";
+import { useEffect } from "react";
 
 interface IForgotPasswordFormData {
   email: string;
@@ -16,6 +19,8 @@ interface IForgotPasswordFormData {
 
 const ForgotPasswordForm = () => {
   const { state, dispatch } = useArchive<IAuthInitialState>("auth");
+
+  const { isOpen, onClose, onOpen } = useAppModal();
 
   const handleLogin = (data: IForgotPasswordFormData) => {
     dispatch(forgotPassword({ body: data }));
@@ -25,9 +30,7 @@ const ForgotPasswordForm = () => {
     module: "auth",
     reset: resetStatus,
     actions: {
-      success: {
-        message: "Kiểm tra hộp thư của bạn để đặt lại mật khẩu.",
-      },
+      success: onOpen,
       error: {
         message: state.message,
       },
@@ -40,14 +43,28 @@ const ForgotPasswordForm = () => {
     email: string().email("Email không hợp lệ!").required("Vui lòng nhập email!"),
   });
 
+  useEffect(() => {
+    if (isOpen) onClose();
+  }, []);
+
   return (
-    <div className="w-full max-w-2xl">
-      <div className="flex flex-col gap-5 p-4 md:p-8">
+    <>
+      {isOpen && (
+        <NofificationModal
+          icon={IoCheckmarkCircle}
+          title="Yêu cầu đặt lại mật khẩu đã được gửi"
+          subTitle="Vui lòng kiểm tra email để đặt lại mật khẩu"
+          isOpen={isOpen}
+          onClose={onClose}
+        />
+      )}
+      <div className="w-full px-4 md:max-w-xl">
         <div className="flex flex-col space-y-2">
-          <h1 className="flex items-center text-4xl font-bold text-gray-900">Quên mật khẩu</h1>
-          <p className="text-gray-500">Nhập địa chỉ email đã đăng ký của bạn. Chúng tôi sẽ gửi cho bạn một mã để đặt lại mật khẩu của bạn.</p>
+          <h1 className="text-gray-900 flex items-center text-4xl font-bold">Quên mật khẩu</h1>
+          <p className="text-gray-500">
+            Nhập địa chỉ email đã đăng ký của bạn. Chúng tôi sẽ gửi 1 đường dẫn để bạn có thể thay đổi mật khẩu của mình
+          </p>
         </div>
-        {state.status === EFetchStatus.REJECTED && state.message && <FormError message={state.message} />}
         <Formik
           validationSchema={validateSchema}
           initialValues={initialValues}
@@ -58,9 +75,8 @@ const ForgotPasswordForm = () => {
         >
           {({ handleSubmit, values, setFieldValue, errors, touched, handleBlur }) => {
             return (
-              <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+              <Form className="mt-8 flex flex-col gap-4" onSubmit={handleSubmit}>
                 <FormInput
-                  icon={MdOutlineEmail}
                   label="Nhập địa chỉ email"
                   type="text"
                   value={values.email}
@@ -73,13 +89,20 @@ const ForgotPasswordForm = () => {
                   onBlur={handleBlur}
                   placeholder="beemely@example.com"
                 />
-                <Button className="py-6" variant="primary" type="submit" isDisabled={state.status === EFetchStatus.PENDING} text="Gửi email" />
-              </form>
+                <Button
+                  className="py-6"
+                  variant="primary"
+                  type="submit"
+                  isDisabled={state.status === EFetchStatus.PENDING}
+                  isLoading={state.status === EFetchStatus.PENDING}
+                  text="Gửi email"
+                />
+              </Form>
             );
           }}
         </Formik>
       </div>
-    </div>
+    </>
   );
 };
 

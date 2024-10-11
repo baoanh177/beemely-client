@@ -11,14 +11,18 @@ import { Outlet } from "react-router-dom";
 export interface IGlobalMiddlewareContext {
   profile: IUserProfile | null;
   isLogin: boolean;
+  isNewUser: boolean;
 }
 
 const GlobalMiddleware = () => {
   const { state, dispatch } = useArchive<IAuthInitialState>("auth");
 
-  const { getProfileLoading } = useAsyncEffect((async) => {
-    async(dispatch(getProfile()), "getProfileLoading");
-  }, [state.loginTime]);
+  const { getProfileLoading } = useAsyncEffect(
+    (async) => {
+      async(dispatch(getProfile()), "getProfileLoading");
+    },
+    [state.loginTime],
+  );
 
   useEffect(() => {
     if (state.status !== EFetchStatus.IDLE && state.status !== EFetchStatus.PENDING) {
@@ -27,7 +31,7 @@ const GlobalMiddleware = () => {
   }, [state.status]);
   if (getProfileLoading ?? true) return <Loading />;
 
-  return <Outlet context={{ profile: state.profile, isLogin: state.isLogin } as IGlobalMiddlewareContext} />;
+  return <Outlet context={{ profile: state.profile, isLogin: state.isLogin, isNewUser: state.isNewUser } as IGlobalMiddlewareContext} />;
 };
 
 export default GlobalMiddleware;
