@@ -12,6 +12,7 @@ type ActionType =
   | {
       navigate?: string;
       message?: string;
+      onFinish?: Function;
     };
 
 interface IUseFetchStatusProps {
@@ -48,6 +49,7 @@ const useFetchStatus = <S extends IInitialState>({ module, reset, actions }: IUs
       } else {
         showMessage(actions.success?.message, type);
         actions.success?.navigate && navigate(actions.success?.navigate);
+        actions.success.onFinish && actions.success.onFinish();
       }
     } else if (type === "error" && actions?.error) {
       if (typeof actions.error === "function") {

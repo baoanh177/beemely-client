@@ -11,6 +11,7 @@ import { Outlet } from "react-router-dom";
 export interface IGlobalMiddlewareContext {
   profile: IUserProfile | null;
   isLogin: boolean;
+  isNewUser: boolean;
 }
 
 const GlobalMiddleware = () => {
@@ -30,7 +31,7 @@ const GlobalMiddleware = () => {
   }, [state.status]);
   if (getProfileLoading ?? true) return <Loading />;
 
-  return <Outlet context={{ profile: state.profile, isLogin: state.isLogin } as IGlobalMiddlewareContext} />;
+  return <Outlet context={{ profile: state.profile, isLogin: state.isLogin, isNewUser: state.isNewUser } as IGlobalMiddlewareContext} />;
 };
 
 export default GlobalMiddleware;

@@ -1,11 +1,9 @@
-import WebRouter from "./routes/routes";
+import { Routes } from "react-router-dom";
+import { routes } from "./routes/routes";
+import { renderRoutes } from "./routes/renderRoutes";
 
 const App = () => {
-  return (
-    <div className="min-h-[10000px]">
-      <WebRouter />
-    </div>
-  );
+  return <Routes>{renderRoutes(routes)}</Routes>;
 };
 
 export default App;
