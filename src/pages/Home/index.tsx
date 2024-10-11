@@ -1,26 +1,29 @@
 import { Container } from "@/styles/common-styles";
-import tw from "twin.macro";
-import secretSound from "@/assets/sounds/secret.mp3";
-import { useRef } from "react";
-import { Button } from "antd";
-
-const Title = tw.h1`text-3xl font-semibold text-center`;
+// import NavBarAntd from "@/components/navbar-antd/Navbar";
+import BannerSlider from "@/components/banner/Banner";
+import Navbar from "@/components/navbar/NavBar";
+import Footer from "@/components/footer/footer";
 
 const Home = () => {
-  const audioRef = useRef<HTMLAudioElement>(null);
   return (
-    <Container tw="pt-[200px]">
-      <Title>React + Typescript + Twin.macro + Antd</Title>
-      <audio src={secretSound} ref={audioRef} />
-      <Button
-        className="mx-auto mt-9"
-        onClick={() => {
-          audioRef.current?.play();
-        }}
-      >
-        Make me laugh!
-      </Button>
-    </Container>
+    <header>
+      {/* <section className="navbar-antd">
+        <Container>
+          <NavBarAntd />
+        </Container>
+      </section> */}
+      <section className="navbar">
+        <Container>
+          <Navbar />
+        </Container>
+      </section>
+      <section className="banner-slide px-8">
+        <BannerSlider />
+      </section>
+      <section className="footer">
+        <Footer />
+      </section>
+    </header>
   );
 };
 

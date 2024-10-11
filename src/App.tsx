@@ -2,7 +2,7 @@ import WebRouter from "./routes/routes";
 
 const App = () => {
   return (
-    <div className="min-h-[10000px]">
+    <div>
       <WebRouter />
     </div>
   );
