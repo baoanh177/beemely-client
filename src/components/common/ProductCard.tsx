@@ -29,9 +29,8 @@ const ProductCard = ({ image, name, description, regularPrice, discountPrice, ty
       <div className="relative aspect-square">
         <img src={imageSrc} alt={name} className="h-full w-full rounded-t-md object-cover" onError={handleImageError} />
         <div
-          className={`absolute inset-0 flex flex-col justify-between p-6 transition-opacity duration-300 ${
-            isHovered ? "opacity-100" : "opacity-0"
-          }`}
+          className={`absolute inset-0 flex flex-col justify-between p-6 transition-opacity duration-300 ${isHovered ? "opacity-100" : "opacity-0"
+            }`}
         >
           <div className="self-end">
             {type === "wishlist" ? (
