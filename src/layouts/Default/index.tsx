@@ -1,10 +1,15 @@
 import { Container } from "@/styles/common-styles";
+import { Outlet } from "react-router-dom";
 // import NavBarAntd from "@/components/navbar-antd/Navbar";
 import BannerSlider from "@/components/banner/Banner";
 import Navbar from "@/components/navbar/NavBar";
 import Footer from "@/components/footer/Footer";
 
-const DefaultLayout = () => {
+interface DefaultLayoutProps {
+  children?: React.ReactNode;
+}
+
+const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
   return (
     <>
       <header>
@@ -21,10 +26,14 @@ const DefaultLayout = () => {
         <section className="banner-slide px-8">
           <BannerSlider />
         </section>
-        <section className="footer">
-          <Footer />
-        </section>
       </header>
+      <main>
+        {children}
+        <Outlet />
+      </main>
+      <footer className="footer">
+        <Footer />
+      </footer>
     </>
   );
 };
