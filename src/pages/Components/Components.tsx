@@ -8,12 +8,13 @@ import Label from "@/components/common/Label";
 import ProductCard from "@/components/common/ProductCard";
 import Title from "@/components/common/Title";
 import ProductFilter from "@/components/filter/ProductFilter";
+import Stories from "@/components/stories/Stories";
 import { IoSaveOutline } from "react-icons/io5";
 
 export const Components = () => {
   return (
     <div className="bg-gray-10%">
-      <div className="flex flex-col gap-4 bg-gray-10% max-w-[1272px] mx-auto" >
+      <div className="mx-auto flex max-w-[1272px] flex-col gap-4 bg-gray-10%">
         <div className="flex flex-col items-start gap-4">
           <div className="text-3xl font-bold text-tertiary-500">Button</div>
           <Button shape="rectangle" text="Đây là button primary" variant="primary" />
@@ -34,7 +35,7 @@ export const Components = () => {
           <Button icon={<IoSaveOutline />} shape="rounded" variant="ghost" />
         </div>
         <div className="">
-          <div className="text-3xl w-full font-bold text-tertiary-500">Custom Say</div>
+          <div className="w-full text-3xl font-bold text-tertiary-500">Custom Say</div>
           <CustomerSaySlider />
         </div>
         <div className="flex flex-col items-start gap-4">
@@ -121,6 +122,9 @@ export const Components = () => {
           </div>
         </div>
 
+        <div>
+          <Stories />
+        </div>
       </div>
     </div>
   );
