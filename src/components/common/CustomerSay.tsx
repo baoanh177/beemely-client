@@ -8,7 +8,7 @@ export interface ICustomerSayProps {
 
 const CustomerSay = ({ star, content, name, description, avatar }: ICustomerSayProps) => {
     return (
-        <div className="bg-white-500 p-6 shadow-md rounded-md">
+        <div className="bg-white-500 p-6 shadow-md rounded-md flex flex-col gap-4">
             <div>
                 {Array(star).fill('⭐').map((_, index) => (
                     <span key={index}>⭐</span>
