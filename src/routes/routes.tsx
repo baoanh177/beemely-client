@@ -18,6 +18,7 @@ import ProfilePage from "@/pages/Profile";
 import VerifyEmailPage from "@/pages/(auth)/VerifyEmail";
 import GetStartedPage from "@/pages/GetStarted";
 import NewUserMiddleware from "@/middlewares/NewUserMiddleware";
+import { Components } from "@/pages/Components/Components";
 
 export interface IRoute {
   path: string;
@@ -35,6 +36,10 @@ export const routes: IRoute[] = [
       {
         path: "/",
         element: () => <Home />,
+      },
+      {
+        path: "/components",
+        element: () => <Components />,
       },
       {
         path: "",

@@ -28,7 +28,7 @@ const Button = ({
 }: IButtonProps) => {
   const typeClass = {
     primary: "bg-primary-500 text-white-500",
-    secondary: "text-primary-500 bg-gray-10%",
+    secondary: "text-primary-500 bg-gray-20%",
     ghost: "border border-primary-500 text-primary-500",
     default: "text-primary-500 bg-white-500",
     danger: "bg-white-500 text-red-500",
@@ -49,7 +49,7 @@ const Button = ({
         if (onClick && !isDisabled && !isLoading) onClick();
       }}
       className={clsx(
-        "text-m-semibold flex h-[56px] shrink-0 items-center justify-center gap-1 rounded-[8px] transition-opacity hover:opacity-80",
+        "text-m-semibold flex shrink-0 items-center justify-center gap-1 rounded-[8px] transition-opacity hover:opacity-80",
         typeClass[variant],
         className,
         {
