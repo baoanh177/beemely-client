@@ -1,86 +1,102 @@
-import Button from "@/components/common/Button";
+import React, { useRef } from "react";
+import Slider from "react-slick";
+import { IoMdArrowBack, IoMdArrowForward } from "react-icons/io";
+
 import CategoryCard from "@/components/common/CategoryCard";
 import Title from "@/components/common/Title";
-import { useEffect, useState } from "react";
-import { IoMdArrowBack, IoMdArrowForward } from "react-icons/io";
+import Button from "@/components/common/Button";
+
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 const categoriesData = [
   {
     name: "Ethnic Wear",
-    imageUrl:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbQcomXUzdpwhHdzndL4q11JANkQ5ek4pvC63w1h0lmSZPO0J-1aq3O5pgn_-REZxIvzY&usqp=CAU",
+    imageUrl: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
   },
   {
-    name: "Ethnic Wear",
-    imageUrl:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTs2nZu5KtEVqMKiKxPnlN3l4eH1L04tJwtFYazHswojRUGC6_yTF85aRIjbDo3dRIY-g&usqp=CAU",
+    name: "Western Wear",
+    imageUrl: "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
   },
   {
-    name: "Ethnic Wear",
-    imageUrl: "kenh14cdn.com/203336854389633024/2022/1/6/27154529142922991942036028975731191338863150n-16414625147692013111737.jpg",
+    name: "Formal Wear",
+    imageUrl: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
   },
   {
-    name: "Ethnic Wear",
-    imageUrl: "kenh14cdn.com/203336854389633024/2022/1/6/27154529142922991942036028975731191338863150n-16414625147692013111737.jpg",
+    name: "Casual Wear",
+    imageUrl: "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
   },
   {
-    name: "Ethnic Wear",
-    imageUrl:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbQcomXUzdpwhHdzndL4q11JANkQ5ek4pvC63w1h0lmSZPO0J-1aq3O5pgn_-REZxIvzY&usqp=CAU",
+    name: "Sports Wear",
+    imageUrl: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
   },
   {
-    name: "Ethnic Wear",
-    imageUrl:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTs2nZu5KtEVqMKiKxPnlN3l4eH1L04tJwtFYazHswojRUGC6_yTF85aRIjbDo3dRIY-g&usqp=CAU",
+    name: "Accessories",
+    imageUrl: "https://images.unsplash.com/photo-1523779917675-b6ed3a42a561?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
   },
 ];
 
-const Categories = () => {
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const [visibleItems, setVisibleItems] = useState<number>(2);
-  const totalItems = categoriesData.length;
+const Categories: React.FC = () => {
+  const sliderRef = useRef<Slider>(null);
 
-  useEffect(() => {
-    const updateVisibleItems = () => {
-      const width = window.innerWidth;
-      setVisibleItems(width < 768 ? 2 : 4);
-    };
-
-    window.addEventListener("resize", updateVisibleItems);
-    updateVisibleItems();
-
-    return () => {
-      window.removeEventListener("resize", updateVisibleItems);
-    };
-  }, []);
+  const settings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 4,
+    slidesToScroll: 1,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 3,
+        },
+      },
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 2,
+        },
+      },
+    ],
+  };
 
   const handlePrev = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === 0 ? totalItems - visibleItems : prevIndex - 1));
+    sliderRef.current?.slickPrev();
   };
 
   const handleNext = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === totalItems - visibleItems ? 0 : prevIndex + 1));
+    sliderRef.current?.slickNext();
   };
 
   return (
-    <div className="overflow-hidden">
+    <div className="relative">
       <div className="mb-6 flex items-center justify-between">
-        <Title text="What our Customers say" />
+        <Title text="Shop by Category" />
         <div className="flex gap-2">
-          <Button variant="secondary" shape="rectangle" icon={<IoMdArrowBack />} onClick={handlePrev} />
-          <Button variant="primary" shape="rectangle" icon={<IoMdArrowForward />} onClick={handleNext} />
+          <Button
+            variant="secondary"
+            shape="rectangle"
+            icon={<IoMdArrowBack className="h-6 w-6" />}
+            onClick={handlePrev}
+            aria-label="Previous slide"
+          />
+          <Button
+            variant="primary"
+            shape="rectangle"
+            icon={<IoMdArrowForward className="h-6 w-6" />}
+            onClick={handleNext}
+            aria-label="Next slide"
+          />
         </div>
       </div>
-      <div
-        className="flex gap-4 transition-transform duration-500 ease-in-out"
-        style={{ transform: `translateX(-${currentIndex * (100 / visibleItems)}%)` }}
-      >
+      <Slider ref={sliderRef} {...settings}>
         {categoriesData.map((category, index) => (
-          <div key={index} className="w-[calc((100%_-_96px)/4] flex-shrink-0 md:w-1/4">
+          <div key={index} className="px-2">
             <CategoryCard background={category.imageUrl} name={category.name} />
           </div>
         ))}
-      </div>
+      </Slider>
     </div>
   );
 };
