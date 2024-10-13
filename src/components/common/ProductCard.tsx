@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Button from "./Button";
 import { HiOutlineTrash } from "react-icons/hi2";
 import { CiHeart } from "react-icons/ci";

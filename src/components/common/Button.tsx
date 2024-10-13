@@ -49,7 +49,7 @@ const Button = ({
         if (onClick && !isDisabled && !isLoading) onClick();
       }}
       className={clsx(
-        "text-m-semibold flex h-[56px] shrink-0 items-center justify-center gap-1 rounded-[8px] transition-opacity hover:opacity-80",
+        "text-m-semibold flex shrink-0 items-center justify-center gap-1 rounded-[8px] transition-opacity hover:opacity-80",
         typeClass[variant],
         className,
         {

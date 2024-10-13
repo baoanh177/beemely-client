@@ -66,11 +66,11 @@ const FormInput = ({
     <div className="flex flex-col gap-1">
       {label && <Label text={label} isRequired={isRequired} />}
       <div
-        className={clsx("flex shrink-0 items-center gap-1 overflow-hidden rounded-[8px] border border-black bg-white", isFocused && "bg-white")}
+        className={clsx("border-black bg-white flex shrink-0 items-center gap-1 overflow-hidden rounded-[8px] border", isFocused && "bg-white")}
       >
         {Icon && (
           <Icon
-            className={clsx("ml-3 cursor-pointer text-gray-400", {
+            className={clsx("text-gray-400 ml-3 cursor-pointer", {
               "text-black-500": isFocused,
             })}
             onClick={handleIconClick}
@@ -90,12 +90,12 @@ const FormInput = ({
           onBlur={handleBlur}
           ref={inputRef}
           className={clsx(
-            "text-m-regular placeholder:text-m-medium bg-gray-25 text-black-500 w-full flex-1 grow py-3 outline-none focus:bg-white",
+            "text-m-regular placeholder:text-m-medium bg-gray-25 text-black-500 focus:bg-white w-full flex-1 grow py-3 outline-none",
             {
               "px-3": !Icon,
               "pl-0": Icon,
               "border-red-500": error,
-              "!text-black-300 select-none !bg-gray-50": isDisabled,
+              "!text-black-300 !bg-gray-50 select-none": isDisabled,
             },
             className,
           )}

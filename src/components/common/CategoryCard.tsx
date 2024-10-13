@@ -14,8 +14,8 @@ const CategoryCard = ({ background, name }: ICategoryCardProps) => {
   };
 
   return (
-    <div className="relative flex max-h-[500px] w-[calc((100%_-_16px)_/_2)] flex-wrap gap-[16px] md:w-[calc((100%_-_36px)_/_4)] md:gap-[12px]">
-      <img src={imageSrc} alt={name} className="h-full max-h-[350px] min-h-[250px] w-full object-cover" onError={handleImageError} />
+    <div className="relative flex max-h-[500px] flex-wrap">
+      <img src={imageSrc} alt={name} className="h-full min-h-[350px] w-full object-cover" onError={handleImageError} />
       <Button className="absolute bottom-6 left-6 right-6" text={name} variant="default" />
     </div>
   );
