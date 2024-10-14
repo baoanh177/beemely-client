@@ -176,6 +176,11 @@ export default {
         backgroundColor: ["checked"],
       },
     },
+    extend: {
+      aspectRatio: {
+        "5/6": "5 / 6",
+      },
+    },
     plugins: [],
   },
   plugins: [],
