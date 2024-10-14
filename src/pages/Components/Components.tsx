@@ -10,14 +10,15 @@ import Label from "@/components/common/Label";
 import ProductCard from "@/components/common/ProductCard";
 import Title from "@/components/common/Title";
 import ProductFilter from "@/components/filter/ProductFilter";
-import Stories from "@/components/stories/Stories";
 import { IoSaveOutline } from "react-icons/io5";
 import Categories from "./categories/Categories";
+import Stories from "@/components/stories/Stories";
 
 export const Components = () => {
   return (
     <div className="bg-gray-10%">
       <div className="mx-auto flex max-w-[1272px] flex-col gap-4 bg-gray-10%">
+        <Stories />
         <div className="flex flex-col items-start gap-4">
           <div className="text-3xl font-bold text-tertiary-500">Button</div>
           <Button shape="rectangle" text="Đây là button primary" variant="primary" />
@@ -159,10 +160,6 @@ export const Components = () => {
           <div className="flex w-full max-w-[1272px] flex-wrap gap-[16px] px-4 md:gap-[12px]">
             <FormApply />
           </div>
-        </div>
-
-        <div>
-          <Stories />
         </div>
       </div>
     </div>

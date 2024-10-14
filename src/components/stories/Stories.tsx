@@ -27,8 +27,8 @@ const Stories = () => {
         <Title text={"Our Instagram Stories"} />
       </div>
       <div className="grid grid-cols-2 gap-4 px-4 md:grid-cols-4 md:gap-8">
-        {storiesData.map((item) => (
-          <div className="group relative max-h-[280px]">
+        {storiesData.map((item, index) => (
+          <div key={index} className="group relative max-h-[280px]">
             <img src={item.img} alt={item.name} className="h-full w-full object-cover" />
             <Button
               type="button"
