@@ -10,6 +10,7 @@ import Label from "@/components/common/Label";
 import ProductCard from "@/components/common/ProductCard";
 import Title from "@/components/common/Title";
 import ProductFilter from "@/components/filter/ProductFilter";
+import Services from "@/components/service/Services";
 import { IoSaveOutline } from "react-icons/io5";
 import Categories from "./categories/Categories";
 
@@ -18,6 +19,9 @@ export const Components = () => {
     <div className="bg-gray-10%">
       <div className="mx-auto flex max-w-[1272px] flex-col gap-4 bg-gray-10%">
         <div className="flex flex-col items-start gap-4">
+          <div className="mt-6">
+            <Services />
+          </div>
           <div className="text-3xl font-bold text-tertiary-500">Button</div>
           <Button shape="rectangle" text="Đây là button primary" variant="primary" />
           <Button shape="rectangle" text="Đây là button secondary" variant="secondary" />
@@ -41,6 +45,7 @@ export const Components = () => {
           <CustomerSaySlider />
         </div>
       </div>
+
       <section className="categories flex px-16">
         <Categories />
       </section>
