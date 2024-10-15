@@ -54,7 +54,7 @@ const Button = ({
         className,
         {
           "h-[36px] w-[36px] shrink-0 rounded-full p-2": shape === "rounded",
-          "px-[12px] py-[8px]": shape === "rectangle",
+          "px-[16px] py-[15px]": shape === "rectangle",
         },
         {
           "cursor-not-allowed opacity-65": isDisabled,
