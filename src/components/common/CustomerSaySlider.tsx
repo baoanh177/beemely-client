@@ -97,7 +97,7 @@ const CustomerSaySlider = () => {
                     />
                 </div>
             </div>
-            <div className='flex transition-transform duration-500 ease-in-out gap-8' style={{ transform: `translateX(-${currentIndex * (100 / visibleItems)}%)` }}>
+            <div className='flex transition-transform duration-500 ease-in-out md:gap-8 ' style={{ transform: `translateX(-${currentIndex * (100 / visibleItems)}%)` }}>
                 {data.map((item, index) => (
                     <div
                         key={index}
