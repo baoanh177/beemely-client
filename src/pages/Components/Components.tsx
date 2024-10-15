@@ -13,11 +13,13 @@ import ProductFilter from "@/components/filter/ProductFilter";
 import Services from "@/components/service/Services";
 import { IoSaveOutline } from "react-icons/io5";
 import Categories from "./categories/Categories";
+import Stories from "@/components/stories/Stories";
 
 export const Components = () => {
   return (
     <div className="bg-gray-10%">
       <div className="mx-auto flex max-w-[1272px] flex-col gap-4 bg-gray-10%">
+        <Stories />
         <div className="flex flex-col items-start gap-4">
           <div className="mt-6">
             <Services />
