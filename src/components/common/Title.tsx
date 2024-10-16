@@ -1,13 +1,8 @@
-export interface ITitleProps {
-  text: string;
-}
+import clsx from "clsx";
+import { HTMLProps } from "react";
 
-const Title = ({ text }: ITitleProps) => {
-  return (
-    <div>
-      <h1 className="text-2xl font-semibold">{text}</h1>
-    </div>
-  );
+const Title = ({ children, className }: HTMLProps<HTMLHeadingElement>) => {
+  return <h2 className={clsx("text-4xl font-semibold", className)}>{children}</h2>;
 };
 
 export default Title;
