@@ -1,13 +1,12 @@
-import React, { useRef } from "react";
-import Slider from "react-slick";
+import React from "react";
 import { IoMdArrowBack, IoMdArrowForward } from "react-icons/io";
 
 import CategoryCard from "@/components/common/CategoryCard";
 import Title from "@/components/common/Title";
 import Button from "@/components/common/Button";
 
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import { Carousel } from "antd";
+import { CarouselRef } from "antd/es/carousel";
 
 const categoriesData = [
   {
@@ -37,42 +36,20 @@ const categoriesData = [
 ];
 
 const Categories: React.FC = () => {
-  const sliderRef = useRef<Slider>(null);
-
-  const settings = {
-    dots: false,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 4,
-    slidesToScroll: 1,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 3,
-        },
-      },
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: 2,
-        },
-      },
-    ],
-  };
+  const carouselRef = React.useRef<CarouselRef>(null);
 
   const handlePrev = () => {
-    sliderRef.current?.slickPrev();
+    carouselRef.current?.prev();
   };
 
   const handleNext = () => {
-    sliderRef.current?.slickNext();
+    carouselRef.current?.next();
   };
 
   return (
     <div className="relative">
       <div className="mb-6 flex items-center justify-between">
-        <Title text="Shop by Category" />
+        <Title text="Danh mục sản phẩm" className="text-4xl" />
         <div className="flex gap-2">
           <Button
             variant="secondary"
@@ -90,13 +67,40 @@ const Categories: React.FC = () => {
           />
         </div>
       </div>
-      <Slider ref={sliderRef} {...settings}>
-        {categoriesData.map((category, index) => (
-          <div key={index} className="px-2">
-            <CategoryCard background={category.imageUrl} name={category.name} />
-          </div>
-        ))}
-      </Slider>
+      <div className="product-list-container">
+        <Carousel
+          ref={carouselRef}
+          slidesToShow={4}
+          responsive={[
+            {
+              breakpoint: 1024,
+              settings: {
+                slidesToShow: 3,
+              },
+            },
+            {
+              breakpoint: 768,
+              settings: {
+                slidesToShow: 2,
+              },
+            },
+            {
+              breakpoint: 480,
+              settings: {
+                slidesToShow: 1,
+              },
+            },
+          ]}
+          dots={false}
+          infinite
+        >
+          {categoriesData.map((category, index) => (
+            <div key={index} className="px-2">
+              <CategoryCard background={category.imageUrl} name={category.name} />
+            </div>
+          ))}
+        </Carousel>
+      </div>
     </div>
   );
 };

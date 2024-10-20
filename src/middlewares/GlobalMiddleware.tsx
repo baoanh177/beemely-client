@@ -2,36 +2,60 @@ import { useArchive } from "@/hooks/useArchive";
 import useAsyncEffect from "@/hooks/useAsyncEffect";
 import Loading from "@/pages/Loading/Loading";
 import { IUserProfile } from "@/services/store/auth/auth.model";
-import { IAuthInitialState, resetStatus } from "@/services/store/auth/auth.slice";
+import { IAuthInitialState, resetStatus as resetAuthStatus } from "@/services/store/auth/auth.slice";
 import { getProfile } from "@/services/store/auth/auth.thunk";
+import { ICart } from "@/services/store/cart/cart.model";
+import { ICartInitialState, resetStatus as resetCartStatus } from "@/services/store/cart/cart.slice";
+import { getCartByUser } from "@/services/store/cart/cart.thunk";
 import { EFetchStatus } from "@/shared/enums/fetchStatus";
 import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 
 export interface IGlobalMiddlewareContext {
   profile: IUserProfile | null;
+  cart: ICart | null;
   isLogin: boolean;
   isNewUser: boolean;
 }
 
 const GlobalMiddleware = () => {
-  const { state, dispatch } = useArchive<IAuthInitialState>("auth");
+  const { state: authState, dispatch: authDispatch } = useArchive<IAuthInitialState>("auth");
+  const { state: cartState, dispatch: cartDispatch } = useArchive<ICartInitialState>("cart");
 
-  const { getProfileLoading } = useAsyncEffect(
+  const { getProfileLoading, getCartLoading } = useAsyncEffect(
     (async) => {
-      async(dispatch(getProfile()), "getProfileLoading");
+      async(authDispatch(getProfile()), "getProfileLoading");
+      async(cartDispatch(getCartByUser()), "getCartLoading");
     },
-    [state.loginTime],
+    [authState.loginTime],
   );
 
   useEffect(() => {
-    if (state.status !== EFetchStatus.IDLE && state.status !== EFetchStatus.PENDING) {
-      dispatch(resetStatus());
+    if (authState.status !== EFetchStatus.IDLE && authState.status !== EFetchStatus.PENDING) {
+      authDispatch(resetAuthStatus());
     }
-  }, [state.status]);
-  if (getProfileLoading ?? true) return <Loading />;
+  }, [authState.status]);
 
-  return <Outlet context={{ profile: state.profile, isLogin: state.isLogin, isNewUser: state.isNewUser } as IGlobalMiddlewareContext} />;
+  useEffect(() => {
+    if (cartState.status !== EFetchStatus.IDLE && cartState.status !== EFetchStatus.PENDING) {
+      cartDispatch(resetCartStatus());
+    }
+  }, [cartState.status]);
+
+  if (getProfileLoading ?? getCartLoading ?? true) return <Loading />;
+
+  return (
+    <Outlet
+      context={
+        {
+          profile: authState.profile,
+          cart: cartState.cart,
+          isLogin: authState.isLogin,
+          isNewUser: authState.isNewUser,
+        } as IGlobalMiddlewareContext
+      }
+    />
+  );
 };
 
 export default GlobalMiddleware;

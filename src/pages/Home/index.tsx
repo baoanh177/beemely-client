@@ -1,14 +1,19 @@
-import DefaultLayout from "@/layouts/Default";
+import BannerSlider from "@/components/banner/Banner";
+import BestsellerSection from "@/components/common/BestsellerSection";
+import Categories from "../Components/categories/Categories";
+import { Container } from "@/styles/common-styles";
 
 const Home = () => {
   return (
-    <>
-      <DefaultLayout>
-        <div>
-          <h1 className="mt-10 text-center text-4xl">Home Page</h1>
-        </div>
-      </DefaultLayout>
-    </>
+    <div className="space-y-20">
+      <section className="banner-slide px-8">
+        <BannerSlider />
+      </section>
+      <Container>
+        <Categories />
+      </Container>
+      <BestsellerSection />
+    </div>
   );
 };
 
