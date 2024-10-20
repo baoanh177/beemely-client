@@ -20,8 +20,10 @@ import CartPage from "@/pages/Cart";
 import ProfilePage from "@/pages/Profile";
 import GetStartedPage from "@/pages/GetStarted";
 import ProductPage from "@/pages/ProductPage";
-import DefaultLayout from "@/layouts/Default";
 import { Components } from "@/pages/Components/Components";
+import DefaultLayout from "@/layouts/Default";
+import ShippingAddress from "@/pages/(checkout)/ShippingAddress";
+import PaymentMethod from "@/pages/(checkout)/PaymentMethod";
 
 export interface IRoute {
   path: string;
@@ -96,6 +98,20 @@ export const routes: IRoute[] = [
           {
             path: "verify-email",
             element: () => <VerifyEmailPage />,
+          },
+        ],
+      },
+      {
+        path: "/checkout",
+        layout: () => <DefaultLayout />,
+        pages: [
+          {
+            path: "/shipping-address",
+            element: () => <ShippingAddress />,
+          },
+          {
+            path: "/payment-method",
+            element: () => <PaymentMethod />,
           },
         ],
       },

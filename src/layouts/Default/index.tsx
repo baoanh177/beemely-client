@@ -13,11 +13,6 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
   return (
     <>
       <header>
-        {/* <section className="navbar-antd">
-        <Container>
-          <NavBarAntd />
-        </Container>
-      </section> */}
         <section className="navbar">
           <Container>
             <Navbar />

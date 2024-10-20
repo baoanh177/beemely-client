@@ -3,19 +3,19 @@ import { FaShoppingCart } from "react-icons/fa";
 import { BsHeart } from "react-icons/bs";
 
 import { useArchive } from "@/hooks/useArchive";
-import { ICartInitialState, resetStatus } from "@/services/store/cart/cart.slice";
 import { addToCart } from "@/services/store/cart/cart.thunk";
 import useFetchStatus from "@/hooks/useFetchStatus";
 import { IProduct, IVariant } from "@/services/store/product/product.model";
-import PriceSection from "./PriceSection";
-import ColorSelectSection from "./ColorSelectSection";
-import SizeSelectSection from "./SizeSelectSection";
+import { ICartInitialState, resetStatus } from "@/services/store/cart/cart.slice";
 import Button from "@/components/common/Button";
 import { EFetchStatus } from "@/shared/enums/fetchStatus";
 import { useProductModal } from "@/hooks/useProductModal";
 import DescriptionSection from "./DescriptionSection";
+import PriceSection from "./PriceSection";
 import StarSection from "./StarSection";
 import StockSection from "./StockSection";
+import ColorSelectSection from "./ColorSelectSection";
+import SizeSelectSection from "./SizeSelectSection";
 import QuantityInput from "../common/QuantityInput";
 
 interface ProductDetailsProps {
