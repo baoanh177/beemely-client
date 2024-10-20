@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 import GlobalMiddleware from "@/middlewares/GlobalMiddleware";
 import GuestMiddleware from "@/middlewares/GuestMiddleware";
 import AuthMiddleware from "@/middlewares/AuthMiddleware";
+import NewUserMiddleware from "@/middlewares/NewUserMiddleware";
 
 //auth router
 import ForgotPassword from "@/pages/(auth)/ForgotPassword";
@@ -11,13 +12,14 @@ import GoogleCallback from "@/pages/(auth)/GoogleCallBack";
 import Login from "@/pages/(auth)/Login";
 import Register from "@/pages/(auth)/Register";
 import ResetPassword from "@/pages/(auth)/ResetPassword";
+import VerifyEmailPage from "@/pages/(auth)/VerifyEmail";
 
 //site router
 import Home from "@/pages/Home";
+import CartPage from "@/pages/Cart";
 import ProfilePage from "@/pages/Profile";
-import VerifyEmailPage from "@/pages/(auth)/VerifyEmail";
 import GetStartedPage from "@/pages/GetStarted";
-import NewUserMiddleware from "@/middlewares/NewUserMiddleware";
+import ProductPage from "@/pages/ProductPage";
 import { Components } from "@/pages/Components/Components";
 import DefaultLayout from "@/layouts/Default";
 import ShippingAddress from "@/pages/(checkout)/ShippingAddress";
@@ -37,22 +39,32 @@ export const routes: IRoute[] = [
     middleware: () => <GlobalMiddleware />,
     pages: [
       {
-        path: "/",
-        element: () => <Home />,
-      },
-      {
-        path: "/components",
-        element: () => <Components />,
-      },
-      {
         path: "",
-        middleware: () => <AuthMiddleware />,
+        layout: () => <DefaultLayout />,
         pages: [
           {
-            path: "profile",
-            element: () => <ProfilePage />,
+            path: "",
+            element: () => <Home />,
+          },
+          {
+            path: "cart",
+            element: () => <CartPage />,
+          },
+          {
+            path: "/components",
+            element: () => <Components />,
+          },
+          {
+            path: "product/:id",
+            element: () => <ProductPage />,
           },
         ],
+      },
+      {
+        path: "profile",
+        layout: () => <DefaultLayout />,
+        middleware: () => <AuthMiddleware />,
+        element: () => <ProfilePage />,
       },
       {
         path: "get-started",
@@ -95,14 +107,14 @@ export const routes: IRoute[] = [
         pages: [
           {
             path: "/shipping-address",
-            element: () => <ShippingAddress />
+            element: () => <ShippingAddress />,
           },
           {
             path: "/payment-method",
-            element: () => <PaymentMethod />
-          }
-        ]
-      }
+            element: () => <PaymentMethod />,
+          },
+        ],
+      },
     ],
   },
 ];

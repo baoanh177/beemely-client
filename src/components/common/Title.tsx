@@ -1,8 +1,17 @@
 import clsx from "clsx";
-import { HTMLProps } from "react";
 
-const Title = ({ children, className }: HTMLProps<HTMLHeadingElement>) => {
-  return <h2 className={clsx("text-4xl font-semibold", className)}>{children}</h2>;
+export interface ITitleProps {
+  text: string;
+  className?: string;
+  isCenter?: boolean;
+}
+
+const Title = ({ text, className, isCenter }: ITitleProps) => {
+  return (
+    <div>
+      <h1 className={clsx("text-2xl font-semibold", className, isCenter && "text-center")}>{text}</h1>
+    </div>
+  );
 };
 
 export default Title;

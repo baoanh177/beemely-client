@@ -45,8 +45,8 @@ export interface ClientReturnType<ReturnDataType> {
 export interface IInitialState {
   status: EFetchStatus;
   message: string;
-  filter: ISearchParams;
-  totalRecords: number;
+  filter?: ISearchParams;
+  totalRecords?: number;
   [key: string]: unknown;
 }
 

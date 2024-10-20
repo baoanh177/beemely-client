@@ -1,7 +1,7 @@
 import { Container } from "@/styles/common-styles";
 import { Outlet } from "react-router-dom";
 // import NavBarAntd from "@/components/navbar-antd/Navbar";
-import BannerSlider from "@/components/banner/Banner";
+
 import Navbar from "@/components/navbar/NavBar";
 import Footer from "@/components/footer/Footer";
 
