@@ -9,7 +9,7 @@ import QuantityInput from "../common/QuantityInput";
 import Button from "../common/Button";
 import CartProduct from "./CartProduct";
 
-const CartList = () => {
+const CartTable = () => {
   const { state, dispatch } = useArchive<ICartInitialState>("cart");
 
   const handleRemoveItem = (itemId: string) => {
@@ -84,4 +84,4 @@ const CartList = () => {
   return <>{content}</>;
 };
 
-export default CartList;
+export default CartTable;
