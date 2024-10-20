@@ -24,6 +24,11 @@ import { Components } from "@/pages/Components/Components";
 import DefaultLayout from "@/layouts/Default";
 import ShippingAddress from "@/pages/(checkout)/ShippingAddress";
 import PaymentMethod from "@/pages/(checkout)/PaymentMethod";
+import Orders from "@/pages/Profile/Order/Orders";
+import Wishlist from "@/pages/Profile/Wishlists/Wishlist";
+import Personal from "@/pages/Profile/Personal/Personal";
+import Address from "@/pages/Profile/Address/Address";
+import Notifications from "@/pages/Profile/Notifications/Notifications";
 
 export interface IRoute {
   path: string;
@@ -63,8 +68,36 @@ export const routes: IRoute[] = [
       {
         path: "profile",
         layout: () => <DefaultLayout />,
-        middleware: () => <AuthMiddleware />,
-        element: () => <ProfilePage />,
+        // middleware: () => <AuthMiddleware />,
+        pages: [
+          {
+            path: "/",
+            layout: ProfilePage,
+            pages: [
+              {
+                path: "/",
+                element: Personal,
+              },
+              {
+                path: "/orders",
+                element: Orders,
+              },
+              {
+                path: "/wishlists",
+                element: Wishlist,
+              },
+              {
+                path: "/address",
+                element: Address,
+              },
+              {
+                path: "/notification",
+                element: Notifications,
+              },
+            ]
+          }
+
+        ]
       },
       {
         path: "get-started",
