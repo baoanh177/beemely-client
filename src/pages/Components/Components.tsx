@@ -14,6 +14,7 @@ import Services from "@/components/service/Services";
 import { IoSaveOutline } from "react-icons/io5";
 import Categories from "./categories/Categories";
 import Stories from "@/components/stories/Stories";
+import ProductInformation from "@/components/product-information";
 
 export const Components = () => {
   return (
@@ -24,6 +25,9 @@ export const Components = () => {
           <div className="mt-6">
             <Services />
           </div>
+
+          <ProductInformation />
+
           <div className="text-3xl font-bold text-tertiary-500">Button</div>
           <Button shape="rectangle" text="Đây là button primary" variant="primary" />
           <Button shape="rectangle" text="Đây là button secondary" variant="secondary" />
