@@ -5,27 +5,27 @@ import { FaArrowRight } from "react-icons/fa";
 
 const bannerData = [
   {
-    title: "Classic Exclusive",
-    subtitle: "Women's Collection",
-    discount: "UPTO 40% OFF",
+    title: "Độc Quyền Cổ Điển",
+    subtitle: "Bộ Sưu Tập Nữ",
+    discount: "GIẢM ĐẾN 40%",
     imageUrl: mylover,
   },
   {
-    title: "Summer Sale",
-    subtitle: "Men's Collection",
-    discount: "UPTO 50% OFF",
+    title: "Giảm Giá Mùa Hè",
+    subtitle: "Bộ Sưu Tập Nam",
+    discount: "GIẢM ĐẾN 50%",
     imageUrl: mylover,
   },
   {
-    title: "New Arrivals",
-    subtitle: "Kids Collection",
-    discount: "UPTO 30% OFF",
+    title: "Hàng Mới Về",
+    subtitle: "Bộ Sưu Tập Trẻ Em",
+    discount: "GIẢM ĐẾN 30%",
     imageUrl: mylover,
   },
   {
-    title: "Winter Special",
-    subtitle: "Accessories",
-    discount: "UPTO 20% OFF",
+    title: "Đặc Biệt Mùa Đông",
+    subtitle: "Phụ Kiện",
+    discount: "GIẢM ĐẾN 20%",
     imageUrl: mylover,
   },
 ];
@@ -56,7 +56,7 @@ const BannerSlider = () => {
               <h2 className="text-gray-900 text-3xl font-bold md:text-6xl">{slide.subtitle}</h2>
               <p className="text-gray-700 text-lg font-medium md:text-2xl">{slide.discount}</p>
               <Button type="default" className="h-auto bg-dark-500 px-4 py-2 text-sm text-white-500 md:px-6 md:py-2 md:text-lg">
-                <span>Shop Now</span>
+                <span>Mua ngay</span>
                 <span className="ml-2">
                   <FaArrowRight />
                 </span>
