@@ -1,7 +1,6 @@
 import { ReactNode, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
-import { Tooltip } from "antd";
 import { CiHeart, CiUser } from "react-icons/ci";
 import { PiCodesandboxLogoThin, PiMapPinLight } from "react-icons/pi";
 import { IoIosNotificationsOutline } from "react-icons/io";
@@ -71,13 +70,8 @@ const Menu = () => {
                             }
                         }}
                     >
-                        <Tooltip placement="right" title={item.label} className="sm:hidden">
-                            <div className="shrink-0 flex items-center">{item.icon}</div>
-                        </Tooltip>
-                        <div className="hidden sm:flex items-center">
                             {item.icon}
-                        </div>
-                        <div className="hidden sm:block">{item.label}</div>
+                            {item.label}
                     </li>
                 ))}
             </ul>

@@ -7,17 +7,31 @@ export interface IUserData {
 export interface IUserProfile {
   id: string;
   fullName: string;
-  userName: string;
   avatarUrl: string;
   email: string;
-  addresses: unknown[];
-  gender: unknown;
+  addresses: IAddress[];
+  gender: EGenders;
   phone: string;
   roles: unknown[];
   status: EActiveStatus;
   vouchers: unknown[];
   isVerified: boolean;
   isNewUser: boolean;
+}
+
+export interface IAddress {
+  id: string;
+  commune: string;
+  district: string;
+  city: string;
+  userId: string;
+  detailAddress: string;
+  default: boolean; 
+}
+export enum EGenders {
+  NAM = "Nam",
+  NỮ = "Nữ",
+  KHÁC = "Khác",
 }
 
 export interface ILoginResponseData {

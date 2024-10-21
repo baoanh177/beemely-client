@@ -15,6 +15,14 @@ export const getProfile = createAsyncThunk("auth/get-profile", async (_, { rejec
     return rejectWithValue(error.response.data);
   }
 });
+export const editProfile = createAsyncThunk("auth/edit-profile", async (payload: IThunkPayload, { rejectWithValue }) => {
+  try {
+    const { response, data } = await client.patch<IUserProfile>(`${authPrefix}/profile`, payload);
+    return response.status >= 400 ? rejectWithValue(data) : data;
+  } catch (error: any) {
+    return rejectWithValue(error.response.data);
+  }
+});
 
 export const login = createAsyncThunk("auth/login", async (payload: IThunkPayload, { rejectWithValue }) => {
   try {
