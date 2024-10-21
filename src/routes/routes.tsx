@@ -24,6 +24,7 @@ import { Components } from "@/pages/Components/Components";
 import DefaultLayout from "@/layouts/Default";
 import ShippingAddress from "@/pages/(checkout)/ShippingAddress";
 import PaymentMethod from "@/pages/(checkout)/PaymentMethod";
+import Products from "@/pages/Products";
 import Orders from "@/pages/Profile/Order/Orders";
 import Wishlist from "@/pages/Profile/Wishlists/Wishlist";
 import Personal from "@/pages/Profile/Personal/Personal";
@@ -58,6 +59,10 @@ export const routes: IRoute[] = [
           {
             path: "/components",
             element: () => <Components />,
+          },
+          {
+            path: "products",
+            element: () => <Products />,
           },
           {
             path: "product/:id",

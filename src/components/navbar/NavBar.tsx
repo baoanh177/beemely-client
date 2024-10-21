@@ -28,7 +28,7 @@ const Navbar = () => {
           </div>
         </div>
         <ul className="hidden items-center justify-between gap-8 font-[Poppins] uppercase lg:flex">
-          <NavLinks />
+          <NavLinks setOpen={setOpen} />
         </ul>
 
         <div className="hidden items-center space-x-4 lg:flex">
@@ -46,7 +46,7 @@ const Navbar = () => {
             open ? "left-0" : "left-[-100%]",
           )}
         >
-          <NavLinks />
+          <NavLinks setOpen={setOpen} />
           <div className="py-5">
             <ButtonLogin />
           </div>
