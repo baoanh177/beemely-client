@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { EFetchStatus } from "@/shared/enums/fetchStatus";
 import { IInitialState, IResponse } from "@/shared/utils/shared-interfaces";
-import { forgotPassword, getProfile, login, logout, register, resetPassword, verifyEmail } from "./auth.thunk";
+import { editProfile, forgotPassword, getProfile, login, logout, register, resetPassword, verifyEmail } from "./auth.thunk";
 import { IForgotPasswordResponseData, ILoginResponseData, IRegisterResponseData, IUserProfile, IVerifyEmailResponseData } from "./auth.model";
 
 export interface IAuthInitialState extends Partial<IInitialState> {
@@ -45,6 +45,24 @@ const authSlice = createSlice({
       .addCase(getProfile.rejected, (state) => {
         state.status = EFetchStatus.REJECTED;
       });
+    // ? Edit Profile
+    builder
+      .addCase(editProfile.pending, (state) => {
+        state.status = EFetchStatus.PENDING;
+      })
+      .addCase(editProfile.fulfilled, (state, { payload }: PayloadAction<IResponse<IUserProfile>>) => {
+        if (state.profile) {
+          state.profile = {
+            ...state.profile,
+            ...payload.metaData,
+          };
+        }
+        state.status = EFetchStatus.FULFILLED;
+      })
+      .addCase(editProfile.rejected, (state) => {
+        state.status = EFetchStatus.REJECTED;
+      });
+
     // ? register
     builder
       .addCase(register.pending, (state) => {
