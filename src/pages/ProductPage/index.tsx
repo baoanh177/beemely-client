@@ -1,29 +1,40 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 import ProductWrapper from "@/components/product/ProductWrapper";
-import { productMock } from "@/services/store/product/mockData";
-import { IProduct } from "@/services/store/product/product.model";
 import { Container } from "@/styles/common-styles";
+import ProductInformation from "@/components/product-information";
+import BestsellerSection from "@/components/common/BestsellerSection";
+import { useGetProductDetailQuery } from "@/services/store/product/product.slice";
 
 const ProductPage = () => {
   const { id } = useParams();
-  const [product, setProduct] = useState<IProduct | undefined>();
 
   useEffect(() => {
-    if (id) {
-      const findProduct = productMock.find((p) => p.id === id);
-      setProduct(findProduct);
-    }
+    window.scrollTo({
+      behavior: "smooth",
+      top: 0,
+    });
   }, [id]);
+
+  if (!id) return null;
+
+  const { data: product, isLoading } = useGetProductDetailQuery({ id });
 
   if (!product) {
     return null;
   }
+
+  if (isLoading) return <>loading....</>;
+
   return (
-    <Container>
-      <ProductWrapper product={product} />
-    </Container>
+    <>
+      <Container className="space-y-20 py-20">
+        <ProductWrapper product={product.metaData} />
+        <ProductInformation />
+      </Container>
+      <BestsellerSection />
+    </>
   );
 };
 

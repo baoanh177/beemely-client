@@ -1,11 +1,18 @@
-import { productMock } from "@/services/store/product/mockData";
 import ProductCard from "./ProductCard";
 import { Container } from "@/styles/common-styles";
 import Title from "./Title";
+import { useGetProductsQuery } from "@/services/store/product/product.slice";
 
 const BestsellerSection = () => {
-  const content = productMock.map((product, index) => {
-    const sortVariants = product.variants.sort((a, b) => a.price - b.price);
+  const { data, isLoading } = useGetProductsQuery({ _limit: 8 });
+
+  if (!data) return null;
+  if (isLoading) return <>Loading....</>;
+
+  const { metaData } = data;
+
+  const content = metaData.map((product, index) => {
+    const sortVariants = [...product.variants].sort((a, b) => a.price - b.price);
     return (
       <ProductCard
         key={index}

@@ -19,6 +19,12 @@ interface IProduct {
   status: EActiveStatus;
 }
 
+interface IProductQueryParams {
+  name?: string;
+  _limit?: number;
+  [key: string]: unknown;
+}
+
 interface IProductColor {
   id: string;
   colorId: IColor;
@@ -83,4 +89,4 @@ interface IProductType {
   slug: string;
 }
 
-export type { IBrand, IColor, IGender, ILabel, IProduct, IProductColor, IProductType, ISize, IVariant };
+export type { IBrand, IColor, IGender, ILabel, IProduct, IProductColor, IProductType, ISize, IVariant, IProductQueryParams };

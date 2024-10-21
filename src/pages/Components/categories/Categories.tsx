@@ -54,14 +54,14 @@ const Categories: React.FC = () => {
           <Button
             variant="secondary"
             shape="rectangle"
-            icon={<IoMdArrowBack className="h-6 w-6" />}
+            icon={<IoMdArrowBack className="h-4 w-4" />}
             onClick={handlePrev}
             aria-label="Previous slide"
           />
           <Button
             variant="primary"
             shape="rectangle"
-            icon={<IoMdArrowForward className="h-6 w-6" />}
+            icon={<IoMdArrowForward className="h-4 w-4" />}
             onClick={handleNext}
             aria-label="Next slide"
           />

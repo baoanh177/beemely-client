@@ -31,6 +31,9 @@ const PriceCard = () => {
           <div>Tổng thanh toán</div>
           <div>$205.00</div>
         </PriceRow>
+        <Button size="large" variant="solid" color="default" className="h-[52px] px-7">
+          Tiến hành thanh toán
+        </Button>
       </PriceCardWrapper>
     </>
   );

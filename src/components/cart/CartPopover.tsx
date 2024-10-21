@@ -52,7 +52,7 @@ const CartPopover: React.FC = () => {
             <Link className="block" to="/cart" onClick={handleViewCart}>
               <Button size="full" icon={<BsEye className="h-4 w-4" />} text="Xem giỏ hàng" variant="ghost" />
             </Link>
-            <Link className="block" to={"/checkout"}>
+            <Link className="block" to={"/checkout/shipping-address"}>
               <Button size="full" icon={<MdOutlinePayment className="h-4 w-4" />} text="Tiến hành đặt hàng" />
             </Link>
           </div>
