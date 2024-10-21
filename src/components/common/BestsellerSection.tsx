@@ -23,7 +23,7 @@ const BestsellerSection = () => {
   return (
     <Container className="space-y-10">
       <Title text="Sản phẩm bán chạy nhất" isCenter className="text-3xl font-normal" />
-      <div className="grid grid-cols-2 gap-4 gap-y-6 md:grid-cols-3 md:gap-6 lg:grid-cols-4">{content}</div>
+      <div className="grid grid-cols-2 gap-4 gap-y-6 pt-6 pb-10 md:grid-cols-3 md:gap-6 lg:grid-cols-4 ">{content}</div>
     </Container>
   );
 };
