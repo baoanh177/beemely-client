@@ -24,6 +24,7 @@ import { Components } from "@/pages/Components/Components";
 import DefaultLayout from "@/layouts/Default";
 import ShippingAddress from "@/pages/(checkout)/ShippingAddress";
 import PaymentMethod from "@/pages/(checkout)/PaymentMethod";
+import Products from "@/pages/Products";
 
 export interface IRoute {
   path: string;
@@ -53,6 +54,10 @@ export const routes: IRoute[] = [
           {
             path: "/components",
             element: () => <Components />,
+          },
+          {
+            path: "products",
+            element: () => <Products />,
           },
           {
             path: "product/:id",
