@@ -1,17 +1,17 @@
 import clsx from "clsx";
 import { useState } from "react";
-
 import { FaBars, FaTimes } from "react-icons/fa";
 import { RiSearchLine } from "react-icons/ri";
 import { FaRegHeart } from "react-icons/fa";
-
 import Logo from "@/assets/images/logo.png";
-import ButtonLogin from "./ButtonLogin";
 import NavLinks from "./NavLinks";
 import CartPopover from "../cart/CartPopover";
+import UserDropdown from "./UserDropdown";
+import ButtonLogin from "./ButtonLogin";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
+  const isLoggedIn = !!localStorage.getItem("accessToken");
 
   return (
     <nav className="w-full bg-white-500">
@@ -22,6 +22,7 @@ const Navbar = () => {
             <RiSearchLine className="text-lg" />
             <FaRegHeart className="text-lg" />
             <CartPopover />
+            {isLoggedIn && <UserDropdown isMobile={true} />}
             <div className="text-3xl" onClick={() => setOpen(!open)}>
               {open ? <FaTimes /> : <FaBars />}
             </div>
@@ -36,7 +37,15 @@ const Navbar = () => {
           <FaRegHeart className="text-lg" />
           <CartPopover />
           <div className="hidden lg:block">
-            <ButtonLogin />
+            {isLoggedIn ? (
+              <div className="hidden lg:block">
+                <UserDropdown isMobile={false} />
+              </div>
+            ) : (
+              <div className="hidden lg:block">
+                <ButtonLogin />
+              </div>
+            )}
           </div>
         </div>
         {/* Mobile and Tablet nav */}
@@ -47,9 +56,11 @@ const Navbar = () => {
           )}
         >
           <NavLinks setOpen={setOpen} />
-          <div className="py-5">
-            <ButtonLogin />
-          </div>
+          {!isLoggedIn && (
+            <div className="py-5">
+              <ButtonLogin />
+            </div>
+          )}
         </ul>
       </div>
     </nav>

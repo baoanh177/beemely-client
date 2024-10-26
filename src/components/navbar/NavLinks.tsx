@@ -34,19 +34,21 @@ const NavLinks = ({ setOpen }: NavLinkType) => {
               <Link to={link.navLink || "#"} className="hover:text-primary" onClick={() => handleLinkClick(link.navLink || "#")}>
                 {link.name}
               </Link>
-              <span className="inline text-xl md:hidden">{link?.submenu && (heading === link.name ? <FaChevronUp /> : <FaChevronDown />)}</span>
+              <span className="inline text-xl md:hidden">
+                {link?.submenu && (heading === link.name ? <FaChevronUp size={12} /> : <FaChevronDown size={12} />)}
+              </span>
               <span className="hidden text-xl group-hover:-mt-2 group-hover:rotate-180 md:ml-2 md:mt-1 md:block">
-                {link?.submenu && <FaChevronDown />}
+                {link?.submenu && <FaChevronDown size={12} />}
               </span>
             </h1>
 
             {link.submenu && (
               <div>
-                <div className="absolute top-20 hidden hover:md:block group-hover:md:block">
+                <div className="absolute top-20 z-50 hidden hover:md:block group-hover:md:block">
                   <div className="py-3">
-                    <div className="bg-white-500 absolute left-3 mt-1 h-4 w-4 rotate-45"></div>
+                    <div className="absolute left-3 mt-1 h-4 w-4 rotate-45 bg-white-500"></div>
                   </div>
-                  <div className="bg-white-500 grid grid-cols-3 gap-10 p-5">
+                  <div className="grid grid-cols-3 gap-10 bg-white-500 p-5">
                     {link?.sublinks?.map((mysublinks) => (
                       <div key={mysublinks.Head}>
                         <h1 className="text-lg font-semibold">{mysublinks.Head}</h1>
@@ -77,7 +79,9 @@ const NavLinks = ({ setOpen }: NavLinkType) => {
                       className="flex items-center justify-between py-4 pl-7 pr-5 font-semibold md:pr-0"
                     >
                       {slinks.Head}
-                      <span className="inline text-xl md:ml-2 md:mt-1">{subHeading === slinks.Head ? <FaChevronUp /> : <FaChevronDown />}</span>
+                      <span className="inline text-xl md:ml-2 md:mt-1">
+                        {subHeading === slinks.Head ? <FaChevronUp size={12} /> : <FaChevronDown size={12} />}
+                      </span>
                     </h1>
 
                     <div className={`${subHeading === slinks.Head ? "md:hidden" : "hidden"}`}>
