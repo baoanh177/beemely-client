@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "./fonts";
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: gray;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-track {
+  background: #ccc;
+}
+
+:-webkit-autofill{
+  box-shadow: 0 0 0 999px #eee inset;
+}

@@ -16,7 +16,7 @@ const SizeSelectSection = ({ sizes, selectedSize, setSelectedSize }: SizeSelectS
           <button
             key={size.id}
             className={clsx(
-              "h-11 w-11 rounded-md border-2 border-primary-500 text-base font-semibold",
+              "h-11 w-11 rounded-md border border-primary-500 text-base font-semibold",
               selectedSize === size.id ? "bg-primary-600 text-primary-5%" : "border-gray-300 text-gray-700",
             )}
             onClick={() => setSelectedSize(size.id)}

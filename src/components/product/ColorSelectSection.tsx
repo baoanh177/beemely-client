@@ -17,7 +17,7 @@ const ColorSelectSection = ({ colors, selectedColor, setSelectedColor }: ColorSe
           <Tooltip title={color.colorId.name} key={color.id}>
             <button
               key={color.id}
-              className={clsx("h-11 w-11 rounded-md border-2", selectedColor === color.colorId.id ? "border-primary-90%" : "border-primary-20%")}
+              className={clsx("h-11 w-11 rounded-md shadow", selectedColor === color.colorId.id ? "border" : "")}
               style={{ backgroundColor: color.colorId.value }}
               onClick={() => setSelectedColor(color.colorId.id)}
             />

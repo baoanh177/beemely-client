@@ -27,7 +27,7 @@ const Navbar = () => {
             </div>
           </div>
         </div>
-        <ul className="hidden items-center justify-between gap-8 font-[Poppins] uppercase lg:flex">
+        <ul className="hidden items-center justify-between gap-8 uppercase lg:flex">
           <NavLinks />
         </ul>
 
