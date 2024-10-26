@@ -47,7 +47,6 @@ const Categories: React.FC = () => {
     (async) => async(dispatch(getAllCategories({ query: { _pagination: false, ...state.filter } })), "getAllProductsLoading"),
     [JSON.stringify(state.filter)],
   );
-  console.log(state);
   const handlePrev = () => {
     carouselRef.current?.prev();
   };
@@ -106,7 +105,9 @@ const Categories: React.FC = () => {
         >
           {state.categories.map((category, index) => (
             <div key={index} className="px-2">
-              <CategoryCard background={category.imageUrl} name={category.name} />
+              <a href={category.path}>
+                <CategoryCard background={category.imageUrl} name={category.name} />
+              </a>
             </div>
           ))}
         </Carousel>

@@ -8,7 +8,6 @@ const prefix = "/api/client/product";
 export const getAllProducts = createAsyncThunk("product/getAllProducts", async (payload: IThunkPayload, { rejectWithValue }) => {
   try {
     const { response, data } = await client.get<IProduct[]>(prefix, payload);
-    console.log("thunkj", response);
     return response.status >= 400 ? rejectWithValue(data) : data;
   } catch (error: any) {
     return rejectWithValue(error.response.data);
