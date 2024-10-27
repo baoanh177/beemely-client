@@ -65,20 +65,21 @@ const BannerSlider = () => {
             index === currentSlide ? "opacity-100" : "opacity-0"
           }`}
         >
-          <div className="flex h-full items-center justify-center px-4 md:flex-row md:justify-between md:px-16">
-            <div className="z-10 w-full space-y-4 text-center md:w-1/2 md:space-y-6 md:text-left">
-              <h3 className="text-gray-800 text-lg font-medium md:text-2xl">{slide.title}</h3>
-              <h2 className="text-gray-900 text-3xl font-bold md:text-6xl">{slide.description}</h2>
-              {/* <p className="text-gray-700 text-lg font-medium md:text-2xl">{slide.discount}</p> */}
-              <Button type="default" className="h-auto bg-dark-500 px-4 py-2 text-sm text-white-500 md:px-6 md:py-2 md:text-lg">
-                <a href={slide.path}>Mua ngay</a>
-                <span className="ml-2">
+          <div className="relative h-full items-center justify-center px-4 md:flex-row md:justify-between md:px-0">
+            <div className="text-white absolute z-10 flex w-full justify-end space-y-4 text-center md:space-y-6 md:text-left">
+              {/* <h3 className="text-white text-lg font-medium md:text-2xl">{slide.title}</h3>
+              <h2 className="text-white text-3xl font-bold md:text-6xl">{slide.description}</h2> */}
+              {/* <Button type="default" className="h-auto bg-dark-500 px-4 py-2 text-sm text-white-500 md:px-6 md:py-2 md:text-lg"> */}
+              {/* <a href={slide.path}>Mua ngay</a> */}
+              {/* <span className="ml-2">
                   <FaArrowRight />
-                </span>
-              </Button>
+                </span> */}
+              {/* </Button> */}
             </div>
-            <div className="relative h-48 w-full md:h-full md:w-3/5">
-              <img src={slide.imageUrl} alt="Banner" className="h-full w-full object-cover" />
+            <div className="relative h-48 w-full md:h-full">
+              <a href={slide.path}>
+                <img src={slide.imageUrl} alt="Banner" className="h-full w-full" />
+              </a>
             </div>
           </div>
         </div>
