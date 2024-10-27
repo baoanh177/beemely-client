@@ -7,6 +7,10 @@ import Button from "@/components/common/Button";
 
 import { Carousel } from "antd";
 import { CarouselRef } from "antd/es/carousel";
+import { useArchive } from "@/hooks/useArchive";
+import { ICategoryInitialState } from "@/services/store/category/category.slice";
+import useAsyncEffect from "@/hooks/useAsyncEffect";
+import { getAllCategories } from "@/services/store/category/category.thunk";
 
 const categoriesData = [
   {
@@ -38,6 +42,11 @@ const categoriesData = [
 const Categories: React.FC = () => {
   const carouselRef = React.useRef<CarouselRef>(null);
 
+  const { state, dispatch } = useArchive<ICategoryInitialState>("category");
+  const {} = useAsyncEffect(
+    (async) => async(dispatch(getAllCategories({ query: { _pagination: false, ...state.filter } })), "getAllProductsLoading"),
+    [JSON.stringify(state.filter)],
+  );
   const handlePrev = () => {
     carouselRef.current?.prev();
   };
@@ -94,9 +103,11 @@ const Categories: React.FC = () => {
           dots={false}
           infinite
         >
-          {categoriesData.map((category, index) => (
+          {state.categories.map((category, index) => (
             <div key={index} className="px-2">
-              <CategoryCard background={category.imageUrl} name={category.name} />
+              <a href={category.path}>
+                <CategoryCard background={category.imageUrl} name={category.name} />
+              </a>
             </div>
           ))}
         </Carousel>
