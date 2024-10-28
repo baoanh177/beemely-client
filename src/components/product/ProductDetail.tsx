@@ -17,6 +17,9 @@ import StockSection from "./StockSection";
 import ColorSelectSection from "./ColorSelectSection";
 import SizeSelectSection from "./SizeSelectSection";
 import QuantityInput from "../common/QuantityInput";
+import { IWishListInitialState } from "@/services/store/wishlist/wishlist.slice";
+import { addWishList } from "@/services/store/wishlist/wishlist.thunk";
+import toast from "react-hot-toast";
 
 interface ProductDetailsProps {
   product: IProduct;
@@ -30,7 +33,9 @@ const ProductDetails = ({ product, selectedVariant, setSelectedVariant }: Produc
   const [quantity, setQuantity] = useState<number>(1);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
 
-  const { dispatch, state } = useArchive<ICartInitialState>("cart");
+  const { dispatch: cartDispatch, state: cartState } = useArchive<ICartInitialState>("cart");
+  const { dispatch: wishlistDispatch } = useArchive<IWishListInitialState>("wishlist");
+
   const { isOpen, onClose } = useProductModal();
 
   useEffect(() => {
@@ -42,10 +47,20 @@ const ProductDetails = ({ product, selectedVariant, setSelectedVariant }: Produc
     }
   }, [product, selectedColor, selectedSize, setSelectedVariant]);
 
+  const handleAddWishlist = () => {
+    if (product?.id) {
+      wishlistDispatch(addWishList({ param: product.id })).then(() => {
+        toast.success("Thêm vào Wishlist thành công!");
+      }).catch(() => {
+        toast.error("Thêm vào Wishlist thất bại");
+      });
+    }
+  };
+
   const handleAddCart = () => {
     if (product?.id && selectedVariant) {
       setIsAddingToCart(true);
-      dispatch(
+      cartDispatch(
         addToCart({
           body: {
             product_id: product.id,
@@ -64,14 +79,14 @@ const ProductDetails = ({ product, selectedVariant, setSelectedVariant }: Produc
     reset: resetStatus,
     actions: isAddingToCart
       ? {
-          success: {
-            message: "Thêm giỏ hàng thành công!",
-            onFinish: isOpen ? onClose : undefined,
-          },
-          error: {
-            message: state.message,
-          },
-        }
+        success: {
+          message: "Thêm giỏ hàng thành công!",
+          onFinish: isOpen ? onClose : undefined,
+        },
+        error: {
+          message: cartState.message,
+        },
+      }
       : undefined,
   });
 
@@ -101,13 +116,18 @@ const ProductDetails = ({ product, selectedVariant, setSelectedVariant }: Produc
         </div>
         <div className="flex w-full gap-4">
           <Button
-            isDisabled={!selectedSize || !selectedColor || state.status === EFetchStatus.PENDING}
+            isDisabled={!selectedSize || !selectedColor || cartState.status === EFetchStatus.PENDING}
             icon={<FaShoppingCart className="mr-2" />}
             onClick={handleAddCart}
             className="grow"
             text="Thêm sản phẩm vào giỏ hàng"
           />
-          <Button icon={<BsHeart className="h-5 w-5" />} variant="ghost" shape="rectangle" />
+          <Button
+            icon={<BsHeart className="h-5 w-5" />}
+            variant="ghost"
+            shape="rectangle"
+            onClick={handleAddWishlist}
+          />
         </div>
       </div>
     </div>
