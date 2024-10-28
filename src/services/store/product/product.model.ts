@@ -13,6 +13,7 @@ interface IProduct {
   labels: ILabel[];
   brand: IBrand;
   productColors: IProductColor[];
+  sortDescription: string;
   productSizes: ISize[];
   productType: IProductType;
   flag: string;
