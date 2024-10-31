@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 @import "./fonts";
+@import "./overwrite/index.scss";
 
 .no-scrollbar::-webkit-scrollbar {
   display: none;
@@ -22,6 +23,6 @@
   background: #ccc;
 }
 
-:-webkit-autofill{
+:-webkit-autofill {
   box-shadow: 0 0 0 999px #eee inset;
 }

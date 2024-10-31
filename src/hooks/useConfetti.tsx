@@ -1,15 +1,13 @@
 import { create } from "zustand";
 
-interface useAppModalProps {
+type ConfettiStore = {
   isOpen: boolean;
   onOpen: () => void;
   onClose: () => void;
-}
+};
 
-export const useAppModal = create<useAppModalProps>((set) => ({
+export const useConfetti = create<ConfettiStore>((set) => ({
   isOpen: false,
-  onClose: () => {
-    set({ isOpen: false });
-  },
   onOpen: () => set({ isOpen: true }),
+  onClose: () => set({ isOpen: false }),
 }));

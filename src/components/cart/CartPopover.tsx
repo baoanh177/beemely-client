@@ -22,13 +22,6 @@ const CartPopover: React.FC = () => {
 
   const cartItems = state.cart?.cartItems ?? [];
 
-  const cartTotal = useMemo(() => {
-    return cartItems.reduce((acc, cur) => {
-      const cal = cur?.variant?.discountPrice ? cur?.variant?.discountPrice * cur.quantity : cur?.variant?.discountPrice;
-      return acc + cal;
-    }, 0);
-  }, [cartItems]);
-
   const cartCount = useMemo(() => cartItems.length, [cartItems]);
 
   const handleViewCart = () => {
@@ -46,13 +39,13 @@ const CartPopover: React.FC = () => {
         <div className="space-y-3 border-t border-t-primary-10%">
           <div className="mt-4 flex justify-between text-base">
             <p className="font-bold">Tổng tiền</p>
-            <p className="font-bold">{formatPrice(cartTotal)}</p>
+            <p className="font-bold">{formatPrice(state.subTotal)}</p>
           </div>
           <div className="space-y-3">
             <Link className="block" to="/cart" onClick={handleViewCart}>
               <Button size="full" icon={<BsEye className="h-4 w-4" />} text="Xem giỏ hàng" variant="ghost" />
             </Link>
-            <Link className="block" to={"/checkout"}>
+            <Link className="block" to={"/checkout"} onClick={handleViewCart}>
               <Button size="full" icon={<MdOutlinePayment className="h-4 w-4" />} text="Tiến hành đặt hàng" />
             </Link>
           </div>

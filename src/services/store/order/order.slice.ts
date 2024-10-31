@@ -1,0 +1,81 @@
+import { EFetchStatus } from "@/shared/enums/fetchStatus";
+import { IInitialState, IResponse } from "@/shared/utils/shared-interfaces";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { ICreateOrderResponse, IOrder } from "./order.model";
+import { createNewOrder, getOrderDetail, rePaymentOrder, updateOrder } from "./order.thunk";
+
+export interface IOrderInitialState extends IInitialState {
+  orders: IOrder[] | [];
+  acctiveOrder: IOrder | null;
+}
+
+const initialState: IOrderInitialState = {
+  status: EFetchStatus.IDLE,
+  message: "",
+  orders: [],
+  acctiveOrder: null,
+};
+
+const orderSlice = createSlice({
+  name: "order",
+  initialState,
+  reducers: {
+    resetStatus(state) {
+      state.status = EFetchStatus.IDLE;
+      state.message = "";
+    },
+  },
+  extraReducers(builder) {
+    // Create new order
+    builder
+      .addCase(createNewOrder.pending, (state) => {
+        state.status = EFetchStatus.PENDING;
+      })
+      .addCase(createNewOrder.fulfilled, (state, { payload }: PayloadAction<IResponse<ICreateOrderResponse>>) => {
+        state.order = payload.metaData;
+        state.status = EFetchStatus.FULFILLED;
+      })
+      .addCase(createNewOrder.rejected, (state) => {
+        state.status = EFetchStatus.REJECTED;
+      });
+    // Get one order
+    builder
+      .addCase(getOrderDetail.pending, (state) => {
+        state.status = EFetchStatus.PENDING;
+      })
+      .addCase(getOrderDetail.fulfilled, (state, { payload }: PayloadAction<IResponse<IOrder>>) => {
+        state.acctiveOrder = payload.metaData;
+        state.status = EFetchStatus.FULFILLED;
+      })
+      .addCase(getOrderDetail.rejected, (state) => {
+        state.status = EFetchStatus.REJECTED;
+      });
+    // Update order
+    builder
+      .addCase(updateOrder.pending, (state) => {
+        state.status = EFetchStatus.PENDING;
+      })
+      .addCase(updateOrder.fulfilled, (state, { payload }: PayloadAction<IResponse<IOrder>>) => {
+        state.acctiveOrder = payload.metaData;
+        state.status = EFetchStatus.FULFILLED;
+      })
+      .addCase(updateOrder.rejected, (state) => {
+        state.status = EFetchStatus.REJECTED;
+      });
+    // Re payment
+    builder
+      .addCase(rePaymentOrder.pending, (state) => {
+        state.status = EFetchStatus.PENDING;
+      })
+      .addCase(rePaymentOrder.fulfilled, (state, { payload }: PayloadAction<IResponse<IOrder>>) => {
+        state.acctiveOrder = payload.metaData;
+        state.status = EFetchStatus.FULFILLED;
+      })
+      .addCase(rePaymentOrder.rejected, (state) => {
+        state.status = EFetchStatus.REJECTED;
+      });
+  },
+});
+
+export const { resetStatus } = orderSlice.actions;
+export { orderSlice };

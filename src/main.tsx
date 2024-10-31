@@ -12,12 +12,14 @@ import { Provider } from "react-redux";
 import { store } from "@/services/store.ts";
 import { Toaster } from "react-hot-toast";
 import ModalProvider from "./components/modal/ModalProvider";
+import ConfettiProvider from "./components/common/ConfettiProvider";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <BrowserRouter>
     <Provider store={store}>
       <Toaster />
       <ModalProvider />
+      <ConfettiProvider />
       <App />
     </Provider>
   </BrowserRouter>,
