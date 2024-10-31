@@ -1,4 +1,5 @@
 import { EActiveStatus } from "@/shared/enums/fetchStatus";
+import { EGender } from "@/shared/enums/genders";
 
 export interface IUserData {
   [key: string]: any;
@@ -10,7 +11,7 @@ export interface IUserProfile {
   avatarUrl: string;
   email: string;
   addresses: IAddress[];
-  gender: EGenders;
+  gender: EGender;
   phone: string;
   roles: unknown[];
   status: EActiveStatus;
@@ -26,12 +27,8 @@ export interface IAddress {
   city: string;
   userId: string;
   detailAddress: string;
-  default: boolean; 
-}
-export enum EGenders {
-  NAM = "Nam",
-  NỮ = "Nữ",
-  KHÁC = "Khác",
+  default: boolean;
+  province: string;
 }
 
 export interface ILoginResponseData {

@@ -3,7 +3,11 @@ import { appSlice } from "./store/app/app.slice";
 import { authSlice } from "./store/auth/auth.slice";
 import { cartSlice } from "./store/cart/cart.slice";
 import { checkoutSlice } from "./store/checkout/checkout.slice";
+import { wishlistSlice } from "./store/wishlist/wishlist.slice";
 import { orderSlice } from "./store/order/order.slice";
+import { productSlice } from "./store/product/product.slice";
+import { bannerSlice } from "./store/banner/banner.slice";
+import { categorySlice } from "./store/category/category.slice";
 
 export const reducers = combineReducers({
   app: appSlice.reducer,
@@ -11,6 +15,10 @@ export const reducers = combineReducers({
   cart: cartSlice.reducer,
   checkout: checkoutSlice.reducer,
   order: orderSlice.reducer,
+  wishlist: wishlistSlice.reducer,
+  product: productSlice.reducer,
+  banner: bannerSlice.reducer,
+  category: categorySlice.reducer,
 });
 
 export type RootStateType = ReturnType<typeof reducers>;

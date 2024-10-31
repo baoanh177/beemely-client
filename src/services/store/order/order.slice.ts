@@ -2,7 +2,7 @@ import { EFetchStatus } from "@/shared/enums/fetchStatus";
 import { IInitialState, IResponse } from "@/shared/utils/shared-interfaces";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ICreateOrderResponse, IOrder } from "./order.model";
-import { createNewOrder, getOrderDetail, rePaymentOrder, updateOrder } from "./order.thunk";
+import { createNewOrder, getOrderDetail, rePaymentOrder, updateOrder, getAllOrderByUser } from "./order.thunk";
 
 export interface IOrderInitialState extends IInitialState {
   orders: IOrder[] | [];
@@ -72,6 +72,18 @@ const orderSlice = createSlice({
         state.status = EFetchStatus.FULFILLED;
       })
       .addCase(rePaymentOrder.rejected, (state) => {
+        state.status = EFetchStatus.REJECTED;
+      });
+
+    builder
+      .addCase(getAllOrderByUser.pending, (state) => {
+        state.status = EFetchStatus.PENDING;
+      })
+      .addCase(getAllOrderByUser.fulfilled, (state, { payload }: PayloadAction<IResponse<IOrder[]>>) => {
+        state.orders = payload.metaData;
+        state.status = EFetchStatus.FULFILLED;
+      })
+      .addCase(getAllOrderByUser.rejected, (state) => {
         state.status = EFetchStatus.REJECTED;
       });
   },

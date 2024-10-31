@@ -1,3 +1,4 @@
+import { EStatusOrder } from "@/shared/enums/order";
 import { IUserProfile } from "../auth/auth.model";
 import { IProduct, IVariant } from "../product/product.model";
 
@@ -10,7 +11,7 @@ export interface IOrder {
   discountPrice: number;
   shippingAddress: string;
   phoneNumber: string;
-  orderStatus: EOrderStatus;
+  orderStatus: EStatusOrder;
   paymentStatus: EPaymentStatus;
   paymentType: string;
   userName: string;
@@ -35,12 +36,4 @@ export enum EPaymentStatus {
   PENDING = "pending",
   COMPLETED = "completed",
   FAILED = "failed",
-}
-
-export enum EOrderStatus {
-  PENDING = "pending",
-  PROCESSING = "processing",
-  SHIPPED = "shipped",
-  DELIVERED = "delivered",
-  CANCELLED = "cancelled",
 }

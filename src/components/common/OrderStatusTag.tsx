@@ -1,9 +1,9 @@
 import React from "react";
 import { Tag } from "antd";
-import { EOrderStatus } from "@/services/store/order/order.model";
+import { EStatusOrder } from "@/shared/enums/order";
 
 interface OrderStatusTagProps {
-  status: EOrderStatus;
+  status: EStatusOrder;
 }
 
 const OrderStatusTag: React.FC<OrderStatusTagProps> = ({ status }) => {
@@ -11,23 +11,23 @@ const OrderStatusTag: React.FC<OrderStatusTagProps> = ({ status }) => {
   let label: string;
 
   switch (status) {
-    case EOrderStatus.PENDING:
+    case EStatusOrder.PENDING:
       color = "orange";
       label = "Đang chờ xử lý";
       break;
-    case EOrderStatus.PROCESSING:
+    case EStatusOrder.PROCESSING:
       color = "blue";
       label = "Đang xử lý";
       break;
-    case EOrderStatus.SHIPPED:
+    case EStatusOrder.SHIPPED:
       color = "purple";
       label = "Đã gửi hàng";
       break;
-    case EOrderStatus.DELIVERED:
+    case EStatusOrder.DELIVERED:
       color = "green";
       label = "Đã giao hàng";
       break;
-    case EOrderStatus.CANCELLED:
+    case EStatusOrder.CANCELLED:
       color = "red";
       label = "Đã hủy";
       break;
