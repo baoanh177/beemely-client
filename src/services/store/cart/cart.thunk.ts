@@ -3,7 +3,7 @@ import { IThunkPayload } from "@/shared/utils/shared-interfaces";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { ICart } from "./cart.model";
 
-const prefix = "/api/carts";
+const prefix = "/api/client/cart";
 
 export const getCartByUser = createAsyncThunk("brand/get-cart-by-user", async (_, { rejectWithValue }) => {
   try {

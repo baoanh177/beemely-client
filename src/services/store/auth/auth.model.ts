@@ -27,11 +27,9 @@ export interface IAddress {
   city: string;
   userId: string;
   detailAddress: string;
-  default: boolean; 
+  default: boolean;
   province: string;
-
 }
-
 
 export interface ILoginResponseData {
   [key: string]: any;

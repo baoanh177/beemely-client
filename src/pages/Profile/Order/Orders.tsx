@@ -6,7 +6,7 @@ import { getAllOrderByUser } from "@/services/store/order/order.thunk";
 import { useEffect } from "react";
 
 const Orders = () => {
-  const { state, dispatch } = useArchive<IOrderInitialState>('order');
+  const { state, dispatch } = useArchive<IOrderInitialState>("order");
 
   useEffect(() => {
     dispatch(getAllOrderByUser({}));
@@ -14,17 +14,21 @@ const Orders = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      {state.items.map((item) => (
-        <div key={item.id} className="border-b border-gray-20% pb-6 flex flex-col gap-4">
+      {state.orders.map((item) => (
+        <div key={item.id} className="flex flex-col gap-4 border-b border-gray-20% pb-6">
           {item.items.map((order) => (
-            <div key={order.id} className="flex justify-between items-center">
+            <div key={order.id} className="flex items-center justify-between">
               <div className="flex flex-col gap-4">
                 <div className="flex gap-4">
                   <img className="w-[100px]" src={order.product.thumbnail} alt={order.product.name} />
                   <div className="flex flex-col gap-2">
                     <div className="font-semibold">{order.product.name}</div>
-                    <div>Size: <span>{order.variant.size.name}</span></div>
-                    <div>Qty: <span>{order.quantity}</span></div>
+                    <div>
+                      Size: <span>{order.variant.size.name}</span>
+                    </div>
+                    <div>
+                      Qty: <span>{order.quantity}</span>
+                    </div>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
@@ -46,6 +50,5 @@ const Orders = () => {
     </div>
   );
 };
-
 
 export default Orders;
