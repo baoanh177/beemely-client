@@ -21,7 +21,7 @@ const ProductModal: React.FC = () => {
   return (
     <Modal
       width="auto"
-      className={clsx("max-h-[60vh] max-w-[90vw] px-4 md:max-w-[80vw] lg:w-[80vw]")}
+      className={clsx("h-[70vh] max-w-[90vw] px-4 md:max-w-[80vw] lg:w-[80vw]")}
       open={isOpen}
       loading={getProductByIdLoading || !state.activeProduct}
       onCancel={onClose}
