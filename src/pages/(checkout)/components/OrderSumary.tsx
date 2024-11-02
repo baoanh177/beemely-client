@@ -6,16 +6,17 @@ import { formatPrice } from "@/utils/curency";
 import { IOrderInitialState } from "@/services/store/order/order.slice";
 import { Card, message } from "antd";
 import { useMemo } from "react";
-import { getAddress } from "./data/dataForm";
 import { createNewOrder } from "@/services/store/order/order.thunk";
 import CartList from "./CartList";
 import { EFetchStatus } from "@/shared/enums/fetchStatus";
 import Button from "@/components/common/Button";
+import { ILocationInitialState } from "@/services/store/location/location.slice";
 
 const OrderSummary = () => {
   const { state: cartState } = useArchive<ICartInitialState>("cart");
   const { state: checkoutState } = useArchive<ICheckoutState>("checkout");
   const { dispatch, state: orderState } = useArchive<IOrderInitialState>("order");
+  const { state: locationState } = useArchive<ILocationInitialState>("location");
   const { isLoading, shippingFee, error } = useShippingFee();
 
   const discountPrice = checkoutState.discount_price || 0;
@@ -23,7 +24,7 @@ const OrderSummary = () => {
 
   const isValidAddress = useMemo(() => {
     const { user_name, phone_number, user_email, city, district, commune, detail_address } = checkoutState.shippingAddress;
-
+    const { location: dataLocation } = locationState;
     return (
       user_name.trim() !== "" &&
       phone_number.trim() !== "" &&
@@ -31,9 +32,12 @@ const OrderSummary = () => {
       city.trim() !== "" &&
       district.trim() !== "" &&
       commune.trim() !== "" &&
-      detail_address.trim() !== ""
+      detail_address.trim() !== "" &&
+      dataLocation.province &&
+      dataLocation.district &&
+      dataLocation.ward
     );
-  }, [checkoutState.shippingAddress]);
+  }, [checkoutState.shippingAddress, locationState.location]);
 
   const handleCheckout = async () => {
     if (!isValidAddress) {
@@ -55,12 +59,9 @@ const OrderSummary = () => {
       message.error("Đang tính phí vận chuyển. Vui lòng đợi!");
       return;
     }
-
-    const formatedAddress = getAddress(
-      checkoutState.shippingAddress.city,
-      checkoutState.shippingAddress.district,
-      checkoutState.shippingAddress.commune,
-    );
+    const { detail_address } = checkoutState.shippingAddress;
+    const { location: dataLocation } = locationState;
+    const formatedAddress = `${detail_address}, ${dataLocation.ward?.WardName}, ${dataLocation.district?.DistrictName}, ${dataLocation.province?.ProvinceName}`;
 
     const cartItemsFormated = cartState.cart?.cartItems.map((item) => ({
       product_id: item.product.id,
@@ -72,7 +73,7 @@ const OrderSummary = () => {
       items: cartItemsFormated,
       user_name: checkoutState.shippingAddress.user_name,
       user_email: checkoutState.shippingAddress.user_email,
-      shipping_address: `${checkoutState.shippingAddress.detail_address}, ${formatedAddress}`,
+      shipping_address: formatedAddress,
       payment_type: checkoutState.paymentType,
       shipping_fee: shippingFee,
       phone_number: checkoutState.shippingAddress.phone_number,

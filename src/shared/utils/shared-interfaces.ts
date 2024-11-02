@@ -6,6 +6,7 @@ import { MethodType } from "./shared-types";
 interface IFetchHeaders {
   "Content-Type"?: string;
   Authorization?: string;
+  token?: string;
 }
 
 export interface IFetchOptions extends IFetchHeaders {
@@ -35,6 +36,11 @@ export interface IResponse<MetaDataType> {
   page?: number;
   totalDocs?: number;
   totalPages?: number;
+}
+export interface ILocationResponse<DataType> {
+  code: number;
+  message: string | { [key: string]: string };
+  data: DataType;
 }
 
 export interface ClientReturnType<ReturnDataType> {

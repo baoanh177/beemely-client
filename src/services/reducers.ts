@@ -8,6 +8,7 @@ import { orderSlice } from "./store/order/order.slice";
 import { productSlice } from "./store/product/product.slice";
 import { bannerSlice } from "./store/banner/banner.slice";
 import { categorySlice } from "./store/category/category.slice";
+import { locationSlice } from "./store/location/location.slice";
 
 export const reducers = combineReducers({
   app: appSlice.reducer,
@@ -19,6 +20,7 @@ export const reducers = combineReducers({
   product: productSlice.reducer,
   banner: bannerSlice.reducer,
   category: categorySlice.reducer,
+  location: locationSlice.reducer,
 });
 
 export type RootStateType = ReturnType<typeof reducers>;
