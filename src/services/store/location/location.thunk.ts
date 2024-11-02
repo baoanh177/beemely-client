@@ -1,4 +1,3 @@
-// src/location/locationThunks.ts
 import { ILocationResponse } from "@/shared/utils/shared-interfaces";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 

@@ -1,4 +1,3 @@
-// src/location/locationSlice.ts
 import { EFetchStatus } from "@/shared/enums/fetchStatus";
 import { IInitialState, ILocationResponse } from "@/shared/utils/shared-interfaces";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
