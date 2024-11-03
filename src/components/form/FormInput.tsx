@@ -95,7 +95,7 @@ const FormInput = ({
               "px-3": !Icon,
               "pl-0": Icon,
               "border-red-500": error,
-              "!text-black-300 !bg-gray-50 select-none": isDisabled,
+              "!text-primary-200 !bg-gray-20% select-none cursor-not-allowed": isDisabled,
             },
             className,
           )}

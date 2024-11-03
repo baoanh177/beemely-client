@@ -27,8 +27,8 @@ import PaymentMethod from "@/pages/(checkout)/PaymentMethod";
 import Orders from "@/pages/Profile/Order/Orders";
 import Wishlist from "@/pages/Profile/Wishlists/Wishlist";
 import Personal from "@/pages/Profile/Personal/Personal";
-import Address from "@/pages/Profile/Address/Address";
 import Notifications from "@/pages/Profile/Notifications/Notifications";
+import Addresses from "@/pages/Profile/Address/Address";
 
 export interface IRoute {
   path: string;
@@ -88,7 +88,7 @@ export const routes: IRoute[] = [
               },
               {
                 path: "/address",
-                element: Address,
+                element: Addresses,
               },
               {
                 path: "/notification",
