@@ -1,4 +1,3 @@
-import ProductFilter from "@/components/filter/ProductFilter";
 import { Container } from "@/styles/common-styles";
 import ProductList from "./Products/ProductList";
 
@@ -7,7 +6,7 @@ const Products = () => {
     <Container>
       <div className="flex flex-col gap-4 py-10 md:flex-row">
         <div className="w-full md:w-3/12 lg:w-2/12">
-          <ProductFilter />
+          <h1>filter</h1>
         </div>
         <div className="w-full md:w-9/12 lg:w-10/12">
           <ProductList />

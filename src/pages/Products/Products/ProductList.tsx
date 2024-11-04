@@ -8,22 +8,22 @@ import { IProduct } from "@/services/store/product/product.model";
 const ProductList: React.FC = () => {
   const { state, dispatch } = useArchive<IProductInitialState>("products");
   const { products } = state;
+  console.log("products", products);
 
   useEffect(() => {
     dispatch(getProducts());
   }, [dispatch]);
 
   const content = products.map((product: IProduct, index) => {
-    const hasVariants = product.variants && product.variants.length > 0;
     return (
       <ProductCard
         key={index}
-        productId={product.id}
-        image={product.thumbnail}
-        description={product.description}
+        productId={product?.id}
+        image={product?.thumbnail}
+        description={product?.description}
         type="wishlist"
-        regularPrice={hasVariants ? product.variants[0].price : 0}
-        discountPrice={hasVariants ? product.variants[0].discountPrice : 0}
+        regularPrice={product?.maxPrice ?? 0}
+        discountPrice={product?.minPrice}
         name={product.name}
       />
     );

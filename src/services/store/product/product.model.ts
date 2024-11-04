@@ -6,6 +6,8 @@ interface IProduct {
   slug: string;
   description: string;
   thumbnail: string;
+  minPrice?: number;
+  maxPrice?: number;
   images: string[];
   tags: Tag[];
   gender: IGender;
