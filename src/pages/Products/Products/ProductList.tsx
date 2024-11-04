@@ -1,19 +1,12 @@
-import React, { useEffect } from "react";
+import React from "react";
 import ProductCard from "@/components/common/ProductCard";
-import { getProducts } from "@/services/store/product/product.thunk";
-import { IProductInitialState } from "@/services/store/product/product.slice";
-import { useArchive } from "@/hooks/useArchive";
 import { IProduct } from "@/services/store/product/product.model";
 
-const ProductList: React.FC = () => {
-  const { state, dispatch } = useArchive<IProductInitialState>("products");
-  const { products } = state;
-  console.log("products", products);
+interface ProductProps {
+  products: IProduct[];
+}
 
-  useEffect(() => {
-    dispatch(getProducts());
-  }, [dispatch]);
-
+const ProductList: React.FC<ProductProps> = ({ products }) => {
   const content = products.map((product: IProduct, index) => {
     return (
       <ProductCard
