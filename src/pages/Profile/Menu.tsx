@@ -5,78 +5,72 @@ import { CiHeart, CiUser } from "react-icons/ci";
 import { PiCodesandboxLogoThin, PiMapPinLight } from "react-icons/pi";
 import { IoIosNotificationsOutline } from "react-icons/io";
 
-
 type ProfileItem = {
-    key: string;
-    label: string;
-    path: string;
-    icon: ReactNode;
+  key: string;
+  label: string;
+  path: string;
+  icon: ReactNode;
 };
 
 const profileItems: ProfileItem[] = [
-    {
-        key: 'personal',
-        label: 'Personal Information',
-        path: 'profile/',
-        icon: < CiUser size={24} />
-    },
-    {
-        key: 'orders',
-        label: 'My Orders',
-        path: 'profile/orders',
-        icon: <PiCodesandboxLogoThin size={24} />
-
-    },
-    {
-        key: 'wishlists',
-        label: 'My Wishlists',
-        path: 'profile/wishlists',
-        icon: <CiHeart size={24} />
-
-    },
-    {
-        key: 'address',
-        label: 'Manage Address',
-        path: 'profile/address',
-        icon: <PiMapPinLight size={24} />
-
-    },
-    {
-        key: 'notifications',
-        label: 'Notifications',
-        path: 'profile/notification',
-        icon: <IoIosNotificationsOutline size={24} />
-
-
-    }
+  {
+    key: "personal",
+    label: "Thông tin tài khoản",
+    path: "profile/",
+    icon: <CiUser size={24} />,
+  },
+  {
+    key: "orders",
+    label: "Đơn hàng của tôi",
+    path: "profile/orders",
+    icon: <PiCodesandboxLogoThin size={24} />,
+  },
+  {
+    key: "wishlists",
+    label: "Yêu thích",
+    path: "profile/wishlists",
+    icon: <CiHeart size={24} />,
+  },
+  {
+    key: "address",
+    label: "Quản lý địa chỉ",
+    path: "profile/address",
+    icon: <PiMapPinLight size={24} />,
+  },
+  {
+    key: "notifications",
+    label: "Thông báo",
+    path: "profile/notification",
+    icon: <IoIosNotificationsOutline size={24} />,
+  },
 ];
 const Menu = () => {
-    const navigate = useNavigate();
-    const [selectedKey, setSelectedKey] = useState('personal');
-    return (
-        <nav>
-            <ul className="flex flex-col gap-2">
-                {profileItems.map((item, index) => (
-                    <li
-                        key={index}
-                        className={clsx(
-                            "flex flex-1 sm:flex-none items-center text-[14px] gap-2 py-2 p-4 cursor-pointer border-t border-transparent",
-                            selectedKey === item.key && "text-white-500 bg-primary-500"
-                        )}
-                        onClick={() => {
-                            if (item.path) {
-                                setSelectedKey(item.key);
-                                navigate(item.path);
-                            }
-                        }}
-                    >
-                            {item.icon}
-                            {item.label}
-                    </li>
-                ))}
-            </ul>
-        </nav>
-    );
-}
+  const navigate = useNavigate();
+  const [selectedKey, setSelectedKey] = useState("personal");
+  return (
+    <nav>
+      <ul className="flex flex-col gap-2">
+        {profileItems.map((item, index) => (
+          <li
+            key={index}
+            className={clsx(
+              "flex flex-1 cursor-pointer items-center gap-2 border-t border-transparent p-4 py-2 text-[14px] sm:flex-none",
+              selectedKey === item.key && "bg-primary-500 text-white-500",
+            )}
+            onClick={() => {
+              if (item.path) {
+                setSelectedKey(item.key);
+                navigate(item.path);
+              }
+            }}
+          >
+            {item.icon}
+            {item.label}
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+};
 
 export default Menu;

@@ -4,7 +4,7 @@
 
 @import "./fonts";
 @import "./overwrite/index.scss";
-
+@import './_select-antd.css';
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }

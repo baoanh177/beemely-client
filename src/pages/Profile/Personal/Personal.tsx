@@ -5,68 +5,44 @@ import Label from "@/components/form/Label";
 import { useArchive } from "@/hooks/useArchive";
 import { IAuthInitialState } from "@/services/store/auth/auth.slice";
 import { MdOutlineSaveAlt } from "react-icons/md";
-import FormSelect from "@/components/common/Input/FormSelect";
 import { EGender } from "@/shared/enums/genders";
 import { editProfile } from "@/services/store/auth/auth.thunk";
 import FormCheck from "@/components/form/FormCheck";
-import { IDistrict, IProvince, provinces } from "@/data/provinces";
+import UploadImage from "@/components/form/UploadImage";
+import { Modal } from "antd";
 
 const Personal = () => {
   const { state, dispatch } = useArchive<IAuthInitialState>("auth");
-  const [selectedProvince, setSelectedProvince] = useState<string | undefined>(state?.profile?.addresses[0]?.province || undefined);
-  const [selectedDistrict, setSelectedDistrict] = useState<string | undefined>(state?.profile?.addresses[0]?.district || undefined);
-  const [selectedCommune, setSelectedCommune] = useState<string | undefined>(state?.profile?.addresses[0]?.commune || undefined);
   const [fullName, setFullName] = useState<string>(state.profile?.fullName || "");
   const [phone, setPhone] = useState<string>(state.profile?.phone || "");
   const [email, setEmail] = useState<string>(state.profile?.email || "");
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [avatar, setAvatar] = useState<string>(state.profile?.avatarUrl || "");
+  const handleOpenModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleUploadImage = (imageUrl: string | string[]) => {
+    setAvatar(Array.isArray(imageUrl) ? imageUrl[0] : imageUrl);
+    handleCloseModal();
+  };
 
   useEffect(() => {
-    setSelectedProvince(state.profile?.addresses[0]?.province);
-    setSelectedDistrict(state.profile?.addresses[0]?.district);
-    setSelectedCommune(state.profile?.addresses[0]?.commune);
     setFullName(state.profile?.fullName || "");
     setPhone(state.profile?.phone || "");
     setEmail(state.profile?.email || "");
+    setAvatar(state.profile?.avatarUrl || "");
   }, [state.profile]);
-
-  const handleProvinceChange = (value: string | string[]) => {
-    setSelectedProvince(value as string);
-    setSelectedDistrict(undefined);
-    setSelectedCommune(undefined);
-  };
-
-  const handleDistrictChange = (value: string | string[]) => {
-    setSelectedDistrict(value as string);
-    setSelectedCommune(undefined);
-  };
-
-  const selectedDistrictOptions = provinces.find((p: IProvince) => p.idProvince === selectedProvince)?.districts || [];
-  const selectedCommuneOptions = selectedDistrictOptions.find((d: IDistrict) => d.idDistrict === selectedDistrict)?.communes || [];
-
-  const districtOptions = selectedDistrictOptions.map((district: IDistrict) => ({
-    value: district.idDistrict,
-    label: district.name,
-  }));
-
-  const communeOptions = selectedCommuneOptions.map((commune: any) => ({
-    value: commune.idCommune,
-    label: commune.name,
-  }));
-
-  const provinceOptions = provinces.map((province: any) => ({
-    value: province.idProvince,
-    label: province.name,
-  }));
 
   const handleEditProfile = () => {
     const updatedProfile = {
-      fullName,
-      phone,
-      email,
-      province: selectedProvince,
-      district: selectedDistrict,
-      commune: selectedCommune,
+      full_name: fullName,
       gender: state.profile?.gender,
+      avatar_url: avatar,
     };
     dispatch(editProfile({ body: updatedProfile }));
   };
@@ -75,16 +51,18 @@ const Personal = () => {
     <div>
       <div className="flex justify-between">
         <div className="relative w-fit">
-          <img
-            className="h-[80px] w-[80px] shrink-0 rounded-full object-cover"
-            src="https://product.hstatic.net/200000255701/product/02800den__5__fb6f5367106342348f60cd7b9b70dee6_1024x1024_c1a0421479b44aa7adf0d95260c7c4de_master.jpg"
-            alt="Avatar"
-          />
-          <div className="absolute bottom-2 right-0 flex h-[20px] w-[20px] items-center justify-center rounded-md bg-primary-500 text-white-500">
+          <img className="h-[80px] w-[80px] shrink-0 rounded-full object-cover" src={state.profile?.avatarUrl} alt="Avatar" />
+          <div
+            className="absolute bottom-2 right-0 flex h-[20px] w-[20px] cursor-pointer items-center justify-center rounded-md bg-primary-500 text-white-500"
+            onClick={handleOpenModal}
+          >
             <MdOutlineSaveAlt size={16} />
           </div>
         </div>
-        <Button icon={<MdOutlineSaveAlt />} className="h-[50px]" text="Edit Profile" onClick={handleEditProfile} />
+        <Modal title="Tải lên hình ảnh" visible={isModalVisible} onCancel={handleCloseModal} footer={null}>
+          <UploadImage currentImageUrl={state.profile?.avatarUrl} onImageUpload={handleUploadImage} />
+        </Modal>
+        <Button icon={<MdOutlineSaveAlt />} className="h-[50px]" text="Cập nhật" onClick={handleEditProfile} />
       </div>
       <div className="flex flex-col gap-6 py-10">
         <div className="flex justify-between gap-6">
@@ -95,62 +73,29 @@ const Personal = () => {
           <div className="flex w-full flex-col gap-1">
             <Label text="Giới tính" />
             <div className="flex gap-4">
-              {(Object.keys(EGender) as Array<keyof typeof EGender>).map((key, index) => {
-                const genderValue = EGender[key];
-                return (
-                  <FormCheck
-                    key={index}
-                    type="radio"
-                    label={genderValue}
-                    name="gender"
-                    checked={state.profile?.gender === genderValue}
-                    value={genderValue}
-                    onChange={() => {
-                      dispatch(editProfile({ body: { ...state.profile, gender: genderValue } }));
-                    }}
-                  />
-                );
-              })}
+              {(Object.keys(EGender) as Array<keyof typeof EGender>).map((key, index) => (
+                <FormCheck
+                  key={index}
+                  type="radio"
+                  label={EGender[key]}
+                  name="gender"
+                  checked={state.profile?.gender === EGender[key]}
+                  value={EGender[key]}
+                  onChange={() => {
+                    dispatch(editProfile({ body: { gender: EGender[key] } }));
+                  }}
+                />
+              ))}
             </div>
-          </div>
-        </div>
-        <div className="flex justify-between gap-6">
-          <div className="flex w-full flex-col gap-1">
-            <Label text="Số điện thoại" />
-            <FormInput value={phone} onChange={(e) => setPhone(e as string)} />
-          </div>
-          <div className="flex w-full flex-col gap-1">
-            <Label text="Email" />
-            <FormInput value={email} onChange={(e) => setEmail(e as string)} />
           </div>
         </div>
         <div className="flex flex-col gap-1">
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-1">
-              <Label text="Tỉnh/Thành phố" />
-              <FormSelect placeholder="Chọn tỉnh/thành phố" options={provinceOptions} value={selectedProvince} onChange={handleProvinceChange} />
-            </div>
-            <div className="flex flex-col gap-1">
-              <Label text="Quận/Huyện" />
-              <FormSelect
-                placeholder="Chọn quận/huyện"
-                options={districtOptions}
-                value={selectedDistrict}
-                onChange={handleDistrictChange}
-                isDisabled={!selectedProvince}
-              />
-            </div>
-            <div className="flex flex-col gap-1">
-              <Label text="Phường/Xã" />
-              <FormSelect
-                placeholder="Chọn phường/xã"
-                options={communeOptions}
-                value={selectedCommune}
-                onChange={(value) => setSelectedCommune(value as string)}
-                isDisabled={!selectedDistrict}
-              />
-            </div>
-          </div>
+          <Label text="Số điện thoại" />
+          <FormInput value={phone} onChange={(e) => setPhone(e as string)} />
+        </div>
+        <div className="flex flex-col gap-1">
+          <Label text="Email" />
+          <FormInput isDisabled value={email} onChange={(e) => setEmail(e as string)} />
         </div>
       </div>
     </div>

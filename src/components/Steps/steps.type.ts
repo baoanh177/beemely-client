@@ -1,4 +1,4 @@
-import { ReactNode } from "react"
+import { ReactNode } from "react";
 
 export interface IStepItem {
   icon?: ReactNode;
@@ -8,5 +8,5 @@ export interface IStepItem {
 }
 
 export interface IProps {
-  items: IStepItem[]
+  items: IStepItem[];
 }

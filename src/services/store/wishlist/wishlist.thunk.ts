@@ -22,8 +22,8 @@ export const deleteWishlist = createAsyncThunk("wishlist/delete-item-wishlish", 
   }
 });
 export const addWishList = createAsyncThunk("wishlist/add-item-wishlish", async (payload: IThunkPayload, { rejectWithValue }) => {
-  try {    
-    const { response, data } = await client.patch(`${prefix}/wishlist/${payload.param}/add`);    
+  try {
+    const { response, data } = await client.patch(`${prefix}/wishlist/${payload.param}/add`);
     return response.status >= 400 ? rejectWithValue(data) : data;
   } catch (error: any) {
     return rejectWithValue(error.response.data);
