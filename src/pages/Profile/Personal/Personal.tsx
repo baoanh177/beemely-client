@@ -18,7 +18,6 @@ const Personal = () => {
     const [email, setEmail] = useState<string>(state.profile?.email || "");
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [avatar, setAvatar] = useState<string>(state.profile?.avatarUrl || "");
-
     const handleOpenModal = () => {
         setIsModalVisible(true);
     };
@@ -72,7 +71,7 @@ const Personal = () => {
                 >
                     <UploadImage currentImageUrl={state.profile?.avatarUrl} onImageUpload={handleUploadImage} />
                 </Modal>
-                <Button icon={<MdOutlineSaveAlt />} className="h-[50px]" text="Edit Profile" onClick={handleEditProfile} />
+                <Button icon={<MdOutlineSaveAlt />} className="h-[50px]" text="Cập nhật" onClick={handleEditProfile} />
             </div>
             <div className="flex flex-col gap-6 py-10">
                 <div className="flex justify-between gap-6">

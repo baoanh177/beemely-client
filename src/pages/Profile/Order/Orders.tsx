@@ -18,7 +18,7 @@ const Orders = () => {
         <div key={item.id} className="border-b border-gray-20% pb-6 flex flex-col gap-4">
           {item.items.map((order) => (
             <div key={order.id} className="flex justify-between items-center">
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-4 w-[400px]">
                 <div className="flex gap-4">
                   <img className="w-[100px]" src={order.product.thumbnail} alt={order.product.name} />
                   <div className="flex flex-col gap-2">

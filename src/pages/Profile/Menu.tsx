@@ -16,34 +16,34 @@ type ProfileItem = {
 const profileItems: ProfileItem[] = [
     {
         key: 'personal',
-        label: 'Personal Information',
+        label: 'Thông tin tài khoản',
         path: 'profile/',
         icon: < CiUser size={24} />
     },
     {
         key: 'orders',
-        label: 'My Orders',
+        label: 'Đơn hàng của tôi',
         path: 'profile/orders',
         icon: <PiCodesandboxLogoThin size={24} />
 
     },
     {
         key: 'wishlists',
-        label: 'My Wishlists',
+        label: 'Yêu thích',
         path: 'profile/wishlists',
         icon: <CiHeart size={24} />
 
     },
     {
         key: 'address',
-        label: 'Manage Address',
+        label: 'Quản lý địa chỉ',
         path: 'profile/address',
         icon: <PiMapPinLight size={24} />
 
     },
     {
         key: 'notifications',
-        label: 'Notifications',
+        label: 'Thông báo',
         path: 'profile/notification',
         icon: <IoIosNotificationsOutline size={24} />
 

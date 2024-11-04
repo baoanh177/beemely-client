@@ -20,7 +20,7 @@ const ProfilePage = () => {
           <div className="flex gap-4 items-center p-4 border-b-gray-20%">
             <img className="w-[60px] h-[60px] object-cover rounded-full shrink-0" src={state.profile?.avatarUrl} alt={state.profile?.fullName} />
             <div className="flex flex-col gap-2 ">
-              <div>Hello <span>👋</span></div>
+              <div>Chao xìn <span>👋</span></div>
               <div className="font-semibold">{state.profile?.fullName}</div>
             </div>
           </div>
