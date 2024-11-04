@@ -1,4 +1,5 @@
 import CartTable from "@/components/cart/CartTable";
+import CartTotal from "@/components/cart/CartTotal";
 import Title from "@/components/common/Title";
 import { Container } from "@/styles/common-styles";
 
@@ -10,7 +11,9 @@ const CartPage = () => {
         <div className="col-span-full md:col-span-2">
           <CartTable />
         </div>
-        <div className="col-span-full md:col-span-1"></div>
+        <div className="col-span-full md:col-span-1">
+          <CartTotal />
+        </div>
       </div>
     </Container>
   );

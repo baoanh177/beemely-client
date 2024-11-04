@@ -16,7 +16,7 @@ const ShippingAddress = () => {
     <>
       <Container>
         <Title children="Địa Chỉ Giao Hàng" className="mt-14" />
-        <Row gutter={50} className="mt-5 mb-20">
+        <Row gutter={50} className="mb-20 mt-5">
           <Col span={16}>
             <Steps
               items={[

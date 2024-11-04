@@ -17,30 +17,32 @@ const AddressForm = () => {
             <FormInner>
               <FormGroup>
                 <Label>Tên người nhận</Label>
-                <Input size="large" placeholder="Nhập tên người nhận" className="border-primary-600 h-[44px]"/>
+                <Input size="large" placeholder="Nhập tên người nhận" className="h-[44px] border-primary-600" />
               </FormGroup>
               <FormGroup>
                 <Label>Số điện thoại</Label>
-                <Input size="large" placeholder="Nhập số điện thoại" className="border-primary-600 h-[44px]"/>
+                <Input size="large" placeholder="Nhập số điện thoại" className="h-[44px] border-primary-600" />
               </FormGroup>
               <FormGroup>
                 <Label>Tỉnh/Thành phố</Label>
-                <Input size="large" placeholder="Nhập tỉnh/thành phố" className="border-primary-600 h-[44px]"/>
+                <Input size="large" placeholder="Nhập tỉnh/thành phố" className="h-[44px] border-primary-600" />
               </FormGroup>
               <FormGroup>
                 <Label>Quận/Huyện</Label>
-                <Input size="large" placeholder="Nhập quận/huyện" className="border-primary-600 h-[44px]"/>
+                <Input size="large" placeholder="Nhập quận/huyện" className="h-[44px] border-primary-600" />
               </FormGroup>
               <FormGroup>
                 <Label>Phường/Xã</Label>
-                <Input size="large" placeholder="Nhập phường/xã" className="border-primary-600 h-[44px]"/>
+                <Input size="large" placeholder="Nhập phường/xã" className="h-[44px] border-primary-600" />
               </FormGroup>
               <FormGroup>
                 <Label>Số nhà, tên đường</Label>
-                <Input size="large" placeholder="Nhập địa chỉ chi tiết" className="border-primary-600 h-[44px]"/>
+                <Input size="large" placeholder="Nhập địa chỉ chi tiết" className="h-[44px] border-primary-600" />
               </FormGroup>
               <Checkbox>Đặt làm địa chỉ mặc định</Checkbox>
-              <Button size="large"color="default" variant="solid" className="h-[52px] px-24 mt-3 self-start">Thêm Địa Chỉ</Button>
+              <Button size="large" color="default" variant="solid" className="mt-3 h-[52px] self-start px-24">
+                Thêm Địa Chỉ
+              </Button>
             </FormInner>
           );
         }}

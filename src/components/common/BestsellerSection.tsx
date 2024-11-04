@@ -1,4 +1,3 @@
-import { productMock } from "@/services/store/product/mockData";
 import ProductCard from "./ProductCard";
 import { Container } from "@/styles/common-styles";
 import Title from "./Title";
@@ -13,6 +12,7 @@ const BestsellerSection = () => {
     (async) => async(dispatch(getAllProducts({ query: { _pagination: false, ...state.filter } })), "getAllProductsLoading"),
     [JSON.stringify(state.filter)],
   );
+
   const content = state.products.map((product, index) => {
     const sortVariants = [...product.variants].sort((a, b) => a.price - b.price);
     return (

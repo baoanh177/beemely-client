@@ -4,6 +4,7 @@ interface IProduct {
   id: string;
   name: string;
   slug: string;
+  sortDescription: string;
   description: string;
   thumbnail: string;
   images: string[];
@@ -13,11 +14,18 @@ interface IProduct {
   labels: ILabel[];
   brand: IBrand;
   productColors: IProductColor[];
-  sortDescription: string;
   productSizes: ISize[];
   productType: IProductType;
   flag: string;
   status: EActiveStatus;
+  dimensions: IDimensions;
+}
+
+export interface IDimensions {
+  weight: number;
+  length: number;
+  width: number;
+  height: number;
 }
 
 interface IProductColor {
@@ -67,6 +75,8 @@ interface IGender {
   id: string;
   name: string;
   slug?: string;
+  imageUrl: string;
+  path: string;
 }
 
 interface Tag {

@@ -6,11 +6,10 @@ interface useAppModalProps {
   onClose: () => void;
 }
 
-export const useAppModal = create<useAppModalProps>((set, get) => ({
+export const useAppModal = create<useAppModalProps>((set) => ({
   isOpen: false,
   onClose: () => {
     set({ isOpen: false });
-    console.log(get().isOpen);
   },
   onOpen: () => set({ isOpen: true }),
 }));

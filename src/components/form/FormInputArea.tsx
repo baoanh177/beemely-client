@@ -12,8 +12,19 @@ interface FormInputAreaProps {
   isReadonly?: boolean;
   onChange?: (value: string) => void;
   error?: string;
+  className?: string;
 }
-const FormInputArea: React.FC<FormInputAreaProps> = ({ label, placeholder, name, value, isReadonly, defaultValue, onChange, error }) => {
+const FormInputArea: React.FC<FormInputAreaProps> = ({
+  label,
+  placeholder,
+  name,
+  value,
+  isReadonly,
+  defaultValue,
+  onChange,
+  error,
+  className,
+}) => {
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const inputValue = e.target.value;
     if (onChange) {
@@ -31,7 +42,7 @@ const FormInputArea: React.FC<FormInputAreaProps> = ({ label, placeholder, name,
         readOnly={isReadonly}
         defaultValue={defaultValue}
         rows={5}
-        className={clsx("text-m-regular custom-textarea bg-gray-25 min-h-[500px] px-2 py-3", { readonly: isReadonly })}
+        className={clsx("custom-textarea w-full px-2 py-3", className, { readonly: isReadonly })}
       />
       {error && <p className="text-red-500">{error}</p>}
     </div>

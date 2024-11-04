@@ -49,11 +49,13 @@ const ProductDetails = ({ product, selectedVariant, setSelectedVariant }: Produc
 
   const handleAddWishlist = () => {
     if (product?.id) {
-      wishlistDispatch(addWishList({ param: product.id })).then(() => {
-        toast.success("Thêm vào Wishlist thành công!");
-      }).catch(() => {
-        toast.error("Thêm vào Wishlist thất bại");
-      });
+      wishlistDispatch(addWishList({ param: product.id }))
+        .then(() => {
+          toast.success("Thêm vào Wishlist thành công!");
+        })
+        .catch(() => {
+          toast.error("Thêm vào Wishlist thất bại");
+        });
     }
   };
 
@@ -79,14 +81,14 @@ const ProductDetails = ({ product, selectedVariant, setSelectedVariant }: Produc
     reset: resetStatus,
     actions: isAddingToCart
       ? {
-        success: {
-          message: "Thêm giỏ hàng thành công!",
-          onFinish: isOpen ? onClose : undefined,
-        },
-        error: {
-          message: cartState.message,
-        },
-      }
+          success: {
+            message: "Thêm giỏ hàng thành công!",
+            onFinish: isOpen ? onClose : undefined,
+          },
+          error: {
+            message: cartState.message,
+          },
+        }
       : undefined,
   });
 
@@ -101,7 +103,7 @@ const ProductDetails = ({ product, selectedVariant, setSelectedVariant }: Produc
 
       <PriceSection regularPrice={selectedVariant.price} discountPrice={selectedVariant.discountPrice} />
 
-      <DescriptionSection content={product.description} />
+      <DescriptionSection content={product.sortDescription} />
 
       <ColorSelectSection colors={product?.productColors} selectedColor={selectedColor} setSelectedColor={setSelectedColor} />
 
@@ -122,12 +124,7 @@ const ProductDetails = ({ product, selectedVariant, setSelectedVariant }: Produc
             className="grow"
             text="Thêm sản phẩm vào giỏ hàng"
           />
-          <Button
-            icon={<BsHeart className="h-5 w-5" />}
-            variant="ghost"
-            shape="rectangle"
-            onClick={handleAddWishlist}
-          />
+          <Button icon={<BsHeart className="h-5 w-5" />} variant="ghost" shape="rectangle" onClick={handleAddWishlist} />
         </div>
       </div>
     </div>

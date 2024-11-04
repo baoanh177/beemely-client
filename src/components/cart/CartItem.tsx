@@ -9,7 +9,7 @@ const RemoveButton = tw.button`text-red-500 transition-colors duration-200 hover
 
 interface CartItemProps {
   item: ICartItem;
-  onRemove: (itemId: string) => void;
+  onRemove?: (itemId: string) => void;
 }
 
 const CartItem: React.FC<CartItemProps> = ({ item, onRemove }) => {
@@ -20,9 +20,11 @@ const CartItem: React.FC<CartItemProps> = ({ item, onRemove }) => {
   return (
     <CartWrapper>
       <CartProduct item={item} />
-      <RemoveButton onClick={handleRemove}>
-        <HiOutlineTrash size={16} />
-      </RemoveButton>
+      {onRemove && (
+        <RemoveButton onClick={handleRemove}>
+          <HiOutlineTrash size={16} />
+        </RemoveButton>
+      )}
     </CartWrapper>
   );
 };
