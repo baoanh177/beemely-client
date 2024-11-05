@@ -1,60 +1,35 @@
-import { Radio, Space } from "antd";
-import React, { useEffect } from "react";
-import type { RadioChangeEvent } from "antd";
-import { useArchive } from "@/hooks/useArchive";
-import { IColorInitialState } from "@/services/store/color/color.slice";
-import { getAllColor } from "@/services/store/color/color.thunk";
+import Input from "../../components/Input";
 
 interface ColorProps {
-  handleChange: (event: RadioChangeEvent) => void;
-  isExpanded: boolean;
+  handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const Colors: React.FC<ColorProps> = ({ handleChange, isExpanded }) => {
-  const { state, dispatch } = useArchive<IColorInitialState>("colors");
-  const { colors } = state;
-
-  useEffect(() => {
-    dispatch(getAllColor());
-  }, [dispatch]);
-
+const Colors: React.FC<ColorProps> = ({ handleChange }) => {
   return (
-    <div
-      className={`bg-white rounded-lg p-4 pt-0 shadow-sm transition-all duration-300 ${
-        isExpanded ? "max-h-[1000px] opacity-100" : "max-h-0 overflow-hidden opacity-0"
-      }`}
-    >
-      <Radio.Group onChange={handleChange} className="w-full" defaultValue="">
-        <Space direction="vertical" className="w-full">
-          <Radio value="" className="hover:bg-gray-50 flex w-full items-center rounded-md p-2 transition-colors duration-200">
-            <div className="flex items-center gap-3">
-              <span className="text-gray-700 text-sm">Tất cả sản phẩm</span>
-            </div>
-          </Radio>
+    <>
+      <div>
+        <h2 className="sidebar-title color-title">Colors</h2>
+        <label className="sidebar-label-container">
+          <input onChange={handleChange} type="radio" value="" name="test1" />
+          <span className="checkmark all"></span>
+          All
+        </label>
 
-          {colors.map((color) => (
-            <Radio
-              key={color.id}
-              value={color.id}
-              className="hover:bg-gray-50 flex w-full items-center rounded-md p-2 transition-colors duration-200"
-            >
-              <div className="flex items-center gap-3">
-                <span
-                  className="h-5 w-5 rounded-full"
-                  style={{
-                    backgroundColor: color.value,
-                    border: color.value.toLowerCase() === "#ffffff" ? "2px solid #e5e7eb" : "none",
-                  }}
-                />
-                <span className="text-gray-700 text-sm">{color.name}</span>
-              </div>
-            </Radio>
-          ))}
-        </Space>
-      </Radio.Group>
+        <Input handleChange={handleChange} value="black" title="Black" name="test1" color="black" />
 
-      {colors.length === 0 && <p className="mt-2 text-sm italic text-gray-500">No colors available</p>}
-    </div>
+        <Input handleChange={handleChange} value="blue" title="Blue" name="test1" color="blue" />
+
+        <Input handleChange={handleChange} value="red" title="Red" name="test1" color="red" />
+
+        <Input handleChange={handleChange} value="green" title="Green" name="test1" color="green" />
+
+        <label className="sidebar-label-container">
+          <input onChange={handleChange} type="radio" value="white" name="test1" />
+          <span className="checkmark" style={{ background: "white", border: "2px solid black" }}></span>
+          White
+        </label>
+      </div>
+    </>
   );
 };
 
