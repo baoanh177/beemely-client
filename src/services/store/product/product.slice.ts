@@ -29,6 +29,29 @@ const productSlice = createSlice({
       state.message = "";
     },
   },
+
+  extraReducers(builder) {
+    // ? Get Products
+    builder
+      .addCase(getProducts.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.status = EFetchStatus.PENDING;
+      })
+      .addCase(getProducts.fulfilled, (state, { payload }: PayloadAction<IResponse<IProduct>>) => {
+        state.loading = false;
+        state.products = payload.metaData;
+        state.status = EFetchStatus.FULFILLED;
+      })
+      .addCase(getProducts.rejected, (state) => {
+        state.error = "Failed to fetch products";
+        state.status = EFetchStatus.REJECTED;
+      });
+  },
+});
+
+export const { resetStatus } = productsSlice.actions;
+export { productsSlice };
   extraReducers: (builder) => {
     // ? Get all products
     builder.addCase(getAllProducts.fulfilled, (state, { payload }: PayloadAction<IResponse<IProduct[]>>) => {

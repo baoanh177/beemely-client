@@ -21,6 +21,10 @@ import GetStartedPage from "@/pages/GetStarted";
 import ProductPage from "@/pages/ProductPage";
 import { Components } from "@/pages/Components/Components";
 import DefaultLayout from "@/layouts/Default";
+import ShippingAddress from "@/pages/(checkout)/ShippingAddress";
+import PaymentMethod from "@/pages/(checkout)/PaymentMethod";
+import Products from "@/pages/Products";
+import Orders from "@/pages/Profile/Order/Orders";
 import Wishlist from "@/pages/Profile/Wishlists/Wishlist";
 import Notifications from "@/pages/Profile/Notifications/Notifications";
 import Addresses from "@/pages/Profile/Address/Address";
@@ -67,6 +71,10 @@ export const routes: IRoute[] = [
           {
             path: "/components",
             element: () => <Components />,
+          },
+          {
+            path: "products",
+            element: () => <Products />,
           },
           {
             path: "product/:id",

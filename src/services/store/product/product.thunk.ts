@@ -1,3 +1,12 @@
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import { IProduct } from "./product.model";
+import { client } from "../../config/client";
+
+const productPrefix = "/api/client";
+
+export const getProducts = createAsyncThunk("products/getProducts", async (_, { rejectWithValue }) => {
+  try {
+    const { response, data } = await client.get<IProduct>(`${productPrefix}/products`);
 import { client } from "@/services/config/client";
 import { IThunkPayload } from "@/shared/utils/shared-interfaces";
 import { createAsyncThunk } from "@reduxjs/toolkit";

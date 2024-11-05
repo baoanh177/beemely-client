@@ -2,6 +2,11 @@ import { combineReducers } from "@reduxjs/toolkit";
 import { appSlice } from "./store/app/app.slice";
 import { authSlice } from "./store/auth/auth.slice";
 import { cartSlice } from "./store/cart/cart.slice";
+import { productsSlice } from "./store/product/product.slice";
+import { productTypesSlice } from "./store/product-type/product-type.slice";
+import { colorsSlice } from "./store/color/color.slice";
+import { sizesSlice } from "./store/size/size.slice";
+import { gendersSlice } from "./store/gender/gender.slice";
 import { checkoutSlice } from "./store/checkout/checkout.slice";
 import { wishlistSlice } from "./store/wishlist/wishlist.slice";
 import { orderSlice } from "./store/order/order.slice";
@@ -13,6 +18,11 @@ export const reducers = combineReducers({
   app: appSlice.reducer,
   auth: authSlice.reducer,
   cart: cartSlice.reducer,
+  products: productsSlice.reducer,
+  productTypes: productTypesSlice.reducer,
+  colors: colorsSlice.reducer,
+  sizes: sizesSlice.reducer,
+  genders: gendersSlice.reducer,
   checkout: checkoutSlice.reducer,
   order: orderSlice.reducer,
   wishlist: wishlistSlice.reducer,

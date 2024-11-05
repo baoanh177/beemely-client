@@ -1,18 +1,18 @@
 import clsx from "clsx";
 import { useState } from "react";
-
 import { FaBars, FaTimes } from "react-icons/fa";
 import { RiSearchLine } from "react-icons/ri";
 import { FaRegHeart } from "react-icons/fa";
-
 import Logo from "@/assets/images/logo.png";
-import ButtonLogin from "./ButtonLogin";
 import NavLinks from "./NavLinks";
 import CartPopover from "../cart/CartPopover";
+import UserDropdown from "./UserDropdown";
+import ButtonLogin from "./ButtonLogin";
 import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
+  const isLoggedIn = !!localStorage.getItem("accessToken");
 
   return (
     <nav className="w-full bg-white-500">
@@ -25,11 +25,14 @@ const Navbar = () => {
             <RiSearchLine className="text-lg" />
             <FaRegHeart className="text-lg" />
             <CartPopover />
+            {isLoggedIn && <UserDropdown isMobile={true} />}
             <div className="text-3xl" onClick={() => setOpen(!open)}>
               {open ? <FaTimes /> : <FaBars />}
             </div>
           </div>
         </div>
+        <ul className="hidden items-center justify-between gap-8 font-[Poppins] uppercase lg:flex">
+          <NavLinks setOpen={setOpen} />
         <ul className="hidden items-center justify-between gap-8 uppercase lg:flex">
           <NavLinks />
         </ul>
@@ -40,6 +43,15 @@ const Navbar = () => {
           <CartPopover />
 
           <div className="hidden lg:block">
+            {isLoggedIn ? (
+              <div className="hidden lg:block">
+                <UserDropdown isMobile={false} />
+              </div>
+            ) : (
+              <div className="hidden lg:block">
+                <ButtonLogin />
+              </div>
+            )}
             <Link to={"/auth/login"}>
               <ButtonLogin />
             </Link>
@@ -52,10 +64,12 @@ const Navbar = () => {
             open ? "left-0" : "left-[-100%]",
           )}
         >
-          <NavLinks />
-          <div className="py-5">
-            <ButtonLogin />
-          </div>
+          <NavLinks setOpen={setOpen} />
+          {!isLoggedIn && (
+            <div className="py-5">
+              <ButtonLogin />
+            </div>
+          )}
         </ul>
       </div>
     </nav>
