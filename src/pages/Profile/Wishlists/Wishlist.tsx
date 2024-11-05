@@ -1,54 +1,38 @@
-import ProductCard from "@/components/common/ProductCard"
+import ProductCard from "@/components/common/ProductCard";
+import { useArchive } from "@/hooks/useArchive";
+import { IWishListInitialState } from "@/services/store/wishlist/wishlist.slice";
+import { deleteWishlist, getAllWishList } from "@/services/store/wishlist/wishlist.thunk";
+import { useEffect } from "react";
 
-const remove = () => {
-    return (
-        <div className="flex w-full gap-8 flex-wrap">
-            <div className="w-[calc((100%-64px)/3)]">
-                <ProductCard
-                    productId=""
-                    image="https://product.hstatic.net/200000255701/product/02800den__5__fb6f5367106342348f60cd7b9b70dee6_1024x1024_c1a0421479b44aa7adf0d95260c7c4de_master.jpg"
-                    description="Giày đá bóng"
-                    type="remove"
-                    regularPrice={100}
-                    name="Cristiano Ronaldo"
-                    discountPrice={80}
-                />
-            </div>
-            <div className="w-[calc((100%-64px)/3)]">
-                <ProductCard
-                    productId=""
-                    image="https://product.hstatic.net/200000255701/product/02800den__5__fb6f5367106342348f60cd7b9b70dee6_1024x1024_c1a0421479b44aa7adf0d95260c7c4de_master.jpg"
-                    description="Giày đá bóng"
-                    type="remove"
-                    regularPrice={100}
-                    name="Cristiano Ronaldo"
-                    discountPrice={80}
-                />
-            </div>
-            <div className="w-[calc((100%-64px)/3)]">
-                <ProductCard
-                    productId=""
-                    image="https://product.hstatic.net/200000255701/product/02800den__5__fb6f5367106342348f60cd7b9b70dee6_1024x1024_c1a0421479b44aa7adf0d95260c7c4de_master.jpg"
-                    description="Giày đá bóng"
-                    type="remove"
-                    regularPrice={100}
-                    name="Cristiano Ronaldo"
-                    discountPrice={80}
-                />
-            </div>
-            <div className="w-[calc((100%-64px)/3)]">
-                <ProductCard
-                    productId=""
-                    image="https://product.hstatic.net/200000255701/product/02800den__5__fb6f5367106342348f60cd7b9b70dee6_1024x1024_c1a0421479b44aa7adf0d95260c7c4de_master.jpg"
-                    description="Giày đá bóng"
-                    type="remove"
-                    regularPrice={100}
-                    name="Cristiano Ronaldo"
-                    discountPrice={80}
-                />
-            </div>
+const Wishlist = () => {
+  const { state, dispatch } = useArchive<IWishListInitialState>("wishlist");
+
+  useEffect(() => {
+    dispatch(getAllWishList({}));
+  }, [dispatch]);
+
+  const handleRemove = (productId: string) => {
+    dispatch(deleteWishlist({ param: productId }));
+  };
+
+  return (
+    <div className="flex w-full flex-wrap gap-8">
+      {state.products.map((p) => (
+        <div className="w-[calc((100%-64px)/3)]" key={p.id}>
+          <ProductCard
+            productId={p.id}
+            image={p.thumbnail}
+            description={p.description}
+            type="remove"
+            name={p.name}
+            regularPrice={p.variants[0]?.price}
+            discountPrice={p.variants[0]?.discountPrice}
+            onRemove={handleRemove}
+          />
         </div>
-    )
-}
+      ))}
+    </div>
+  );
+};
 
-export default remove
+export default Wishlist;

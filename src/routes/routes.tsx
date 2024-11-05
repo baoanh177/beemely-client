@@ -17,7 +17,6 @@ import VerifyEmailPage from "@/pages/(auth)/VerifyEmail";
 //site router
 import Home from "@/pages/Home";
 import CartPage from "@/pages/Cart";
-import ProfilePage from "@/pages/Profile";
 import GetStartedPage from "@/pages/GetStarted";
 import ProductPage from "@/pages/ProductPage";
 import { Components } from "@/pages/Components/Components";
@@ -27,9 +26,13 @@ import PaymentMethod from "@/pages/(checkout)/PaymentMethod";
 import Products from "@/pages/Products";
 import Orders from "@/pages/Profile/Order/Orders";
 import Wishlist from "@/pages/Profile/Wishlists/Wishlist";
-import Personal from "@/pages/Profile/Personal/Personal";
-import Address from "@/pages/Profile/Address/Address";
 import Notifications from "@/pages/Profile/Notifications/Notifications";
+import Addresses from "@/pages/Profile/Address/Address";
+import CheckoutPage from "@/pages/(checkout)/Checkout";
+import PaymentPage from "@/pages/(checkout)/Payment";
+import Personal from "@/pages/Profile/Personal/Personal";
+import Orders from "@/pages/Profile/Order/Orders";
+import ProfilePage from "@/pages/Profile";
 
 export interface IRoute {
   path: string;
@@ -56,6 +59,15 @@ export const routes: IRoute[] = [
             path: "cart",
             element: () => <CartPage />,
           },
+          {
+            path: "checkout",
+            element: () => <CheckoutPage />,
+          },
+          {
+            path: "payment",
+            element: () => <PaymentPage />,
+          },
+
           {
             path: "/components",
             element: () => <Components />,
@@ -93,16 +105,15 @@ export const routes: IRoute[] = [
               },
               {
                 path: "/address",
-                element: Address,
+                element: Addresses,
               },
               {
                 path: "/notification",
                 element: Notifications,
               },
-            ]
-          }
-
-        ]
+            ],
+          },
+        ],
       },
       {
         path: "get-started",
@@ -136,20 +147,6 @@ export const routes: IRoute[] = [
           {
             path: "verify-email",
             element: () => <VerifyEmailPage />,
-          },
-        ],
-      },
-      {
-        path: "/checkout",
-        layout: () => <DefaultLayout />,
-        pages: [
-          {
-            path: "/shipping-address",
-            element: () => <ShippingAddress />,
-          },
-          {
-            path: "/payment-method",
-            element: () => <PaymentMethod />,
           },
         ],
       },

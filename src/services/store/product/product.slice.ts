@@ -1,25 +1,27 @@
-import { IProduct } from "@/services/store/product/product.model";
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { EFetchStatus } from "@/shared/enums/fetchStatus";
 import { IInitialState, IResponse } from "@/shared/utils/shared-interfaces";
-import { getProducts } from "./product.thunk";
+import { IProduct } from "./product.model";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { EFetchStatus } from "@/shared/enums/fetchStatus";
+import { getAllProducts, getProductById } from "./product.thunk";
 
-export interface IProductInitialState extends Partial<IInitialState> {
+export interface IProductInitialState extends IInitialState {
   products: IProduct[];
-  loading: boolean;
-  error: string | null;
+  activeProduct: IProduct | undefined;
 }
-
 const initialState: IProductInitialState = {
   products: [],
-  loading: false,
-  error: null,
-  status: EFetchStatus.IDLE,
+  activeProduct: undefined,
+  filter: {
+    _page: 1,
+    _limit: 10,
+  },
+  totalRecords: 0,
   message: "",
+  status: EFetchStatus.IDLE,
 };
 
-const productsSlice = createSlice({
-  name: "products",
+const productSlice = createSlice({
+  name: "product",
   initialState,
   reducers: {
     resetStatus(state) {
@@ -50,3 +52,18 @@ const productsSlice = createSlice({
 
 export const { resetStatus } = productsSlice.actions;
 export { productsSlice };
+  extraReducers: (builder) => {
+    // ? Get all products
+    builder.addCase(getAllProducts.fulfilled, (state, { payload }: PayloadAction<IResponse<IProduct[]>>) => {
+      state.products = payload.metaData;
+      state.totalRecords = payload.totalDocs ?? 0;
+    });
+    // ? Get product by id
+    builder.addCase(getProductById.fulfilled, (state, { payload }: PayloadAction<IResponse<IProduct>>) => {
+      state.activeProduct = payload.metaData;
+    });
+  },
+});
+
+export const { resetStatus } = productSlice.actions;
+export { productSlice };

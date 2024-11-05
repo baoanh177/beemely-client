@@ -11,9 +11,9 @@ interface ProductWrapperProps {
 const ProductWrapper = ({ product }: ProductWrapperProps) => {
   const [selectedVariant, setSelectedVariant] = useState<IVariant | null>(null);
 
-  const variantImage = product.productColors.find((color) => selectedVariant?.color.id === color.colorId.id)?.imageUrl;
+  const variantImage = [...product.productColors].find((color) => selectedVariant?.color.id === color.colorId.id)?.imageUrl;
 
-  const sortVariants = product.variants.sort((a, b) => a.price - b.price);
+  const sortVariants = [...product.variants].sort((a, b) => a.price - b.price);
 
   return (
     <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 md:gap-8">

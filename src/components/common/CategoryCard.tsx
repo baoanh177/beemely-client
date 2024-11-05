@@ -14,7 +14,7 @@ const CategoryCard = ({ background, name }: ICategoryCardProps) => {
   };
 
   return (
-    <div className="aspect-5/6 relative">
+    <div className="relative aspect-5/6">
       <img src={imageSrc} alt={name} className="h-full w-full object-cover" onError={handleImageError} />
       <Button className="absolute bottom-6 left-6 right-6" text={name} variant="default" />
     </div>

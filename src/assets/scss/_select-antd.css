@@ -1,0 +1,43 @@
+.ant-select {
+  height: 50px;
+  outline: none;
+  border: 1px solid #333 !important;
+  border-radius: 6px;
+
+  .ant-select-selector {
+    height: 100%;
+    box-shadow: none !important;
+    border: none;
+    .ant-select-selection-placeholder {
+      line-height: unset;
+      height: 20px;
+      color: #333;
+    }
+    .ant-select-selection-item {
+      height: 20px;
+      line-height: unset;
+    }
+    &:hover {
+      border: none;
+    }
+  }
+  &:hover {
+    .ant-select-selector {
+      border: none;
+    }
+  }
+  .ant-select-selection-overflow-item {
+    height: 20px;
+    .ant-select-selection-item {
+      margin: 4px 6px;
+      align-items: center;
+      height: 26px;
+    }
+  }
+  .ant-select-selection-item {
+    .ant-select-selection-item-content {
+      height: 20px;
+      font-weight: 400;
+    }
+  }
+}
