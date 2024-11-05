@@ -1,31 +1,31 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import { IProduct } from "./product.model";
-import { client } from "../../config/client";
-
-const productPrefix = "/api/client";
-
-export const getProducts = createAsyncThunk("products/getProducts", async (_, { rejectWithValue }) => {
-  try {
-    const { response, data } = await client.get<IProduct>(`${productPrefix}/products`);
 import { client } from "@/services/config/client";
 import { IThunkPayload } from "@/shared/utils/shared-interfaces";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { IProduct } from "./product.model";
 
-const prefix = "/api/client/product";
+const productPrefix = "/api/client";
 
-export const getAllProducts = createAsyncThunk("product/getAllProducts", async (payload: IThunkPayload, { rejectWithValue }) => {
+export const getProducts = createAsyncThunk("products/getProducts", async (_, { rejectWithValue }) => {
   try {
-    const { response, data } = await client.get<IProduct[]>(prefix, payload);
+    const { response, data } = await client.get<IProduct[]>(`${productPrefix}/products`);
     return response.status >= 400 ? rejectWithValue(data) : data;
   } catch (error: any) {
     return rejectWithValue(error.response.data);
   }
 });
 
-export const getProductById = createAsyncThunk("product/get-product-by-id", async (payload: IThunkPayload, { rejectWithValue }) => {
+export const getAllProducts = createAsyncThunk("product/getAllProducts", async (payload: IThunkPayload, { rejectWithValue }) => {
   try {
-    const { response, data } = await client.get<IProduct>(prefix, payload);
+    const { response, data } = await client.get<IProduct[]>(productPrefix, payload);
+    return response.status >= 400 ? rejectWithValue(data) : data;
+  } catch (error: any) {
+    return rejectWithValue(error.response.data);
+  }
+});
+
+export const getProductById = createAsyncThunk("product/getProductById", async (payload: IThunkPayload, { rejectWithValue }) => {
+  try {
+    const { response, data } = await client.get<IProduct>(`${productPrefix}/${payload}`);
     return response.status >= 400 ? rejectWithValue(data) : data;
   } catch (error: any) {
     return rejectWithValue(error.response.data);
