@@ -1,22 +1,22 @@
-import { Radio, Space } from "antd";
 import React, { useEffect } from "react";
 import Input from "../../components/Input";
-import type { RadioChangeEvent } from "antd";
 import { useArchive } from "@/hooks/useArchive";
-import { getAllProductTypes } from "@/services/store/product-type/product-type.thunk";
-import { IProductTypeInitialState } from "@/services/store/product-type/product-type.slice";
+import { ISizeInitialState } from "@/services/store/size/size.slice";
+import { getAllSize } from "@/services/store/size/size.thunk";
+import { Radio, Space } from "antd";
+import type { RadioChangeEvent } from "antd";
 
-interface CategoryProps {
+interface SizeProps {
   handleChange: (event: RadioChangeEvent) => void;
   isExpanded: boolean;
 }
 
-const Category: React.FC<CategoryProps> = ({ handleChange, isExpanded }) => {
-  const { state, dispatch } = useArchive<IProductTypeInitialState>("productTypes");
-  const { productTypes } = state;
+const Size: React.FC<SizeProps> = ({ handleChange, isExpanded }) => {
+  const { state, dispatch } = useArchive<ISizeInitialState>("sizes");
+  const { sizes } = state;
 
   useEffect(() => {
-    dispatch(getAllProductTypes());
+    dispatch(getAllSize());
   }, [dispatch]);
 
   return (
@@ -31,8 +31,8 @@ const Category: React.FC<CategoryProps> = ({ handleChange, isExpanded }) => {
             <span className="text-gray-700 text-sm">Tất cả sản phẩm</span>
           </Radio>
 
-          {productTypes.map((productType) => (
-            <Input key={productType.id} handleChange={handleChange} value={productType.id} title={productType.name} name="category" color="" />
+          {sizes.map((size) => (
+            <Input key={size.id} handleChange={handleChange} value={size.name} title={size.name} name="size" color="" />
           ))}
         </Space>
       </Radio.Group>
@@ -40,4 +40,4 @@ const Category: React.FC<CategoryProps> = ({ handleChange, isExpanded }) => {
   );
 };
 
-export default Category;
+export default Size;

@@ -6,6 +6,7 @@ import { productsSlice } from "./store/product/product.slice";
 import { productTypesSlice } from "./store/product-type/product-type.slice";
 import { colorsSlice } from "./store/color/color.slice";
 import { sizesSlice } from "./store/size/size.slice";
+import { gendersSlice } from "./store/gender/gender.slice";
 
 export const reducers = combineReducers({
   app: appSlice.reducer,
@@ -15,6 +16,7 @@ export const reducers = combineReducers({
   productTypes: productTypesSlice.reducer,
   colors: colorsSlice.reducer,
   sizes: sizesSlice.reducer,
+  genders: gendersSlice.reducer,
 });
 
 export type RootStateType = ReturnType<typeof reducers>;
