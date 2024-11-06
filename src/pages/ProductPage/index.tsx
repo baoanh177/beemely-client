@@ -12,12 +12,11 @@ const ProductPage = () => {
   const { id } = useParams();
 
   const { state, dispatch } = useArchive<IProductInitialState>("product");
-  const { getProductByIdLoading } = useAsyncEffect(
-    (async) => {
-      id && async(dispatch(getProductById({ param: id })), "getProductByIdLoading");
-    },
-    [id],
-  );
+  const { getProductByIdLoading } = useAsyncEffect(async () => {
+    if (id) {
+      await dispatch(getProductById({ param: id }));
+    }
+  }, [id]);
   if (getProductByIdLoading) return <Loading />;
   if (state.activeProduct)
     return (

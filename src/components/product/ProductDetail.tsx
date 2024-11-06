@@ -20,6 +20,7 @@ import QuantityInput from "../common/QuantityInput";
 import { IWishListInitialState } from "@/services/store/wishlist/wishlist.slice";
 import { addWishList } from "@/services/store/wishlist/wishlist.thunk";
 import toast from "react-hot-toast";
+import ProductInformation from "../product-information";
 
 interface ProductDetailsProps {
   product: IProduct;
@@ -126,6 +127,9 @@ const ProductDetails = ({ product, selectedVariant, setSelectedVariant }: Produc
           />
           <Button icon={<BsHeart className="h-5 w-5" />} variant="ghost" shape="rectangle" onClick={handleAddWishlist} />
         </div>
+      </div>
+      <div className="mt-6 flex items-center justify-center">
+        <ProductInformation product={product} />
       </div>
     </div>
   );
