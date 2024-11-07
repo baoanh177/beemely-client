@@ -1,5 +1,5 @@
 import { EFetchStatus } from "@/shared/enums/fetchStatus";
-import { IInitialState, ILocationResponse } from "@/shared/utils/shared-interfaces";
+import { IInitialState, IGHNApiRegsponse } from "@/shared/utils/shared-interfaces";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { getAllProvinces, getDistrictsByProvinceId, getWardsByDistrictId } from "./location.thunk";
 
@@ -57,7 +57,7 @@ const locationSlice = createSlice({
       .addCase(getAllProvinces.pending, (state) => {
         state.status = EFetchStatus.PENDING;
       })
-      .addCase(getAllProvinces.fulfilled, (state, { payload }: PayloadAction<ILocationResponse<IProvince[]>>) => {
+      .addCase(getAllProvinces.fulfilled, (state, { payload }: PayloadAction<IGHNApiRegsponse<IProvince[]>>) => {
         state.provinces = payload.data;
         state.status = EFetchStatus.FULFILLED;
       })
@@ -70,7 +70,7 @@ const locationSlice = createSlice({
       .addCase(getDistrictsByProvinceId.pending, (state) => {
         state.status = EFetchStatus.PENDING;
       })
-      .addCase(getDistrictsByProvinceId.fulfilled, (state, { payload }: PayloadAction<ILocationResponse<IDistrict[]>>) => {
+      .addCase(getDistrictsByProvinceId.fulfilled, (state, { payload }: PayloadAction<IGHNApiRegsponse<IDistrict[]>>) => {
         state.districts = payload.data;
         state.status = EFetchStatus.FULFILLED;
       })
@@ -84,7 +84,7 @@ const locationSlice = createSlice({
       .addCase(getWardsByDistrictId.pending, (state) => {
         state.status = EFetchStatus.PENDING;
       })
-      .addCase(getWardsByDistrictId.fulfilled, (state, { payload }: PayloadAction<ILocationResponse<IWard[]>>) => {
+      .addCase(getWardsByDistrictId.fulfilled, (state, { payload }: PayloadAction<IGHNApiRegsponse<IWard[]>>) => {
         state.wards = payload.data;
         state.status = EFetchStatus.FULFILLED;
       })
