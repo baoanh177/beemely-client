@@ -37,7 +37,7 @@ export interface IResponse<MetaDataType> {
   totalDocs?: number;
   totalPages?: number;
 }
-export interface ILocationResponse<DataType> {
+export interface IGHNApiRegsponse<DataType> {
   code: number;
   message: string | { [key: string]: string };
   data: DataType;

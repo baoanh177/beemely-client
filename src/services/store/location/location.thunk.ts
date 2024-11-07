@@ -1,5 +1,5 @@
 // src/location/locationThunks.ts
-import { ILocationResponse } from "@/shared/utils/shared-interfaces";
+import { IGHNApiRegsponse } from "@/shared/utils/shared-interfaces";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 const prefix = "https://online-gateway.ghn.vn/shiip/public-api/master-data";
@@ -16,7 +16,7 @@ export const getAllProvinces = createAsyncThunk("location/getAllProvinces", asyn
       const data = await response.json();
       return rejectWithValue(data);
     }
-    const data: ILocationResponse<IProvince[]> = await response.json();
+    const data: IGHNApiRegsponse<IProvince[]> = await response.json();
     return data;
   } catch (error: any) {
     return rejectWithValue(error.message || "An error occurred while fetching provinces");
@@ -37,7 +37,7 @@ export const getDistrictsByProvinceId = createAsyncThunk(
         const data = await response.json();
         return rejectWithValue(data);
       }
-      const data: ILocationResponse<IDistrict[]> = await response.json();
+      const data: IGHNApiRegsponse<IDistrict[]> = await response.json();
       return data;
     } catch (error: any) {
       return rejectWithValue(error.message || "An error occurred while fetching districts");
@@ -56,7 +56,7 @@ export const getWardsByDistrictId = createAsyncThunk("location/getWardsByDistric
       const data = await response.json();
       return rejectWithValue(data);
     }
-    const data: ILocationResponse<IWard[]> = await response.json();
+    const data: IGHNApiRegsponse<IWard[]> = await response.json();
     return data;
   } catch (error: any) {
     return rejectWithValue(error.message || "An error occurred while fetching wards");

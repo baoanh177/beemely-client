@@ -2,7 +2,7 @@ import { Form, Formik } from "formik";
 import { object, string } from "yup";
 
 import FormInput from "@/components/form/FormInput";
-import { IShippingAddress } from "@/services/store/checkout/checkout.model";
+import {  IShippingAddress } from "@/services/store/checkout/checkout.model";
 import { useEffect } from "react";
 import FormSelect from "@/components/form/FormSelect";
 import FormInputArea from "@/components/form/FormInputArea";
@@ -30,7 +30,6 @@ const validateSchema = object().shape({
 
 const ShippingForm = ({ initialValues, onSubmit, next }: IShippingFormProps) => {
   const { state: authState } = useArchive<IAuthInitialState>("auth");
-
   const formatedInitialValues: IShippingAddress = {
     ...initialValues,
     user_email: authState.profile?.email || "",
