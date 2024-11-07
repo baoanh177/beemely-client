@@ -6,7 +6,6 @@ import { MethodType } from "./shared-types";
 interface IFetchHeaders {
   "Content-Type"?: string;
   Authorization?: string;
-  token?: string;
 }
 
 export interface IFetchOptions extends IFetchHeaders {
