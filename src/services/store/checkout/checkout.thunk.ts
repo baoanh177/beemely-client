@@ -1,4 +1,3 @@
-// src/location/locationThunks.ts
 import { IGHNApiRegsponse, IThunkPayload } from "@/shared/utils/shared-interfaces";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { IGhnShippingFee } from "./checkout.model";
