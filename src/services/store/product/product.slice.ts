@@ -2,12 +2,13 @@ import { IInitialState, IResponse } from "@/shared/utils/shared-interfaces";
 import { IProduct } from "./product.model";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { EFetchStatus } from "@/shared/enums/fetchStatus";
-import { getAllProducts, getProductById } from "./product.thunk";
+import { getAllProducts, getProductById, getProducts } from "./product.thunk";
 
 export interface IProductInitialState extends IInitialState {
   products: IProduct[];
   activeProduct: IProduct | undefined;
 }
+
 const initialState: IProductInitialState = {
   products: [],
   activeProduct: undefined,
@@ -30,11 +31,28 @@ const productSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    // ? Get Products
+    builder
+      .addCase(getProducts.pending, (state) => {
+        state.status = EFetchStatus.PENDING;
+        state.message = "";
+      })
+      .addCase(getProducts.fulfilled, (state, { payload }: PayloadAction<IResponse<IProduct[]>>) => {
+        state.products = payload.metaData;
+        state.totalRecords = payload.totalDocs ?? 0;
+        state.status = EFetchStatus.FULFILLED;
+      })
+      .addCase(getProducts.rejected, (state) => {
+        state.status = EFetchStatus.REJECTED;
+        state.message = "Failed to fetch products";
+      });
+
     // ? Get all products
     builder.addCase(getAllProducts.fulfilled, (state, { payload }: PayloadAction<IResponse<IProduct[]>>) => {
       state.products = payload.metaData;
       state.totalRecords = payload.totalDocs ?? 0;
     });
+
     // ? Get product by id
     builder.addCase(getProductById.fulfilled, (state, { payload }: PayloadAction<IResponse<IProduct>>) => {
       state.activeProduct = payload.metaData;

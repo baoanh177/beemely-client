@@ -17,15 +17,15 @@ export interface IProductCardProps {
   type: "wishlist" | "remove";
   onRemove?: (productId: string) => void;
 }
-const ProductCard = ({ 
-  image, 
-  name, 
-  description, 
-  regularPrice, 
-  discountPrice, 
-  type = "wishlist", 
-  productId, 
-  onRemove 
+const ProductCard = ({
+  image,
+  name,
+  description,
+  regularPrice,
+  discountPrice,
+  type = "wishlist",
+  productId,
+  onRemove,
 }: IProductCardProps & { onRemove?: (id: string) => void }) => {
   const [imageSrc, setImageSrc] = useState<string>(image || "src/assets/images/errorbgcategory.jpg");
   const { onOpen } = useProductModal();
@@ -36,7 +36,7 @@ const ProductCard = ({
 
   const handleRemove = () => {
     if (onRemove) {
-      onRemove(productId); 
+      onRemove(productId);
     }
   };
 
@@ -61,7 +61,7 @@ const ProductCard = ({
               icon={<HiOutlineTrash size={24} />}
               type="button"
               variant="danger"
-              onClick={handleRemove} 
+              onClick={handleRemove}
               className="transition-transform duration-300 ease-in-out hover:scale-110"
             />
           )}

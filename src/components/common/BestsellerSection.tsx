@@ -7,10 +7,10 @@ import useAsyncEffect from "@/hooks/useAsyncEffect";
 import { getAllProducts } from "@/services/store/product/product.thunk";
 
 const BestsellerSection = () => {
-  const { state, dispatch } = useArchive<IProductInitialState>("product");
+  const { state, dispatch } = useArchive<IProductInitialState>("products");
   const { getAllProductsLoading } = useAsyncEffect(
     (async) => async(dispatch(getAllProducts({ query: { _pagination: false, ...state.filter } })), "getAllProductsLoading"),
-    [JSON.stringify(state.filter)],
+    [],
   );
 
   const content = state.products.map((product, index) => {

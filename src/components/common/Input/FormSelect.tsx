@@ -27,7 +27,6 @@ const FormSelect = ({ label, value, isDisabled, placeholder, options, error, def
         theme={{
           components: {
             Select: {
-              colorBorder: "#333",
               optionSelectedBg: "#6e6e6e656",
               colorPrimary: "#333",
             },
@@ -35,7 +34,7 @@ const FormSelect = ({ label, value, isDisabled, placeholder, options, error, def
         }}
       >
         <div className="flex flex-col gap-1">
-          <Label text={label} isRequired={isRequired}/>
+          <Label text={label} isRequired={isRequired} />
           <Select
             allowClear
             maxTagCount={"responsive"}

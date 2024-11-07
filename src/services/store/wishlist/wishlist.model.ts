@@ -3,5 +3,4 @@ export interface IWishList {
   name: string;
   description: string;
   thumbnail: string;
-  
 }

@@ -1,14 +1,16 @@
 export const links = [
   {
     name: "Trang chủ",
+    navLink: "/",
     submenu: false,
   },
   {
     name: "Cửa hàng",
+    navLink: "/products",
     submenu: true,
     sublinks: [
       {
-        Head: "Giày nam",
+        Head: "Giày Bede",
         sublink: [
           { name: "Giày thể thao", link: "/" },
           { name: "Giày da", link: "/" },

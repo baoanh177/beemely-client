@@ -17,20 +17,21 @@ import VerifyEmailPage from "@/pages/(auth)/VerifyEmail";
 //site router
 import Home from "@/pages/Home";
 import CartPage from "@/pages/Cart";
-import ProfilePage from "@/pages/Profile";
 import GetStartedPage from "@/pages/GetStarted";
 import ProductPage from "@/pages/ProductPage";
 import { Components } from "@/pages/Components/Components";
 import DefaultLayout from "@/layouts/Default";
 // import ShippingAddress from "@/pages/(checkout)/ShippingAddress";
 // import PaymentMethod from "@/pages/(checkout)/PaymentMethod";
-import Orders from "@/pages/Profile/Order/Orders";
+import Products from "@/pages/Products";
 import Wishlist from "@/pages/Profile/Wishlists/Wishlist";
-import Personal from "@/pages/Profile/Personal/Personal";
-import Address from "@/pages/Profile/Address/Address";
 import Notifications from "@/pages/Profile/Notifications/Notifications";
+import Addresses from "@/pages/Profile/Address/Address";
 import CheckoutPage from "@/pages/(checkout)/Checkout";
 import PaymentPage from "@/pages/(checkout)/Payment";
+import Personal from "@/pages/Profile/Personal/Personal";
+import Orders from "@/pages/Profile/Order/Orders";
+import ProfilePage from "@/pages/Profile";
 
 export interface IRoute {
   path: string;
@@ -71,6 +72,10 @@ export const routes: IRoute[] = [
             element: () => <Components />,
           },
           {
+            path: "products",
+            element: () => <Products />,
+          },
+          {
             path: "product/:id",
             element: () => <ProductPage />,
           },
@@ -99,7 +104,7 @@ export const routes: IRoute[] = [
               },
               {
                 path: "/address",
-                element: Address,
+                element: Addresses,
               },
               {
                 path: "/notification",
