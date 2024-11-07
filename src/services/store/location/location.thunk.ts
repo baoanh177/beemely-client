@@ -1,4 +1,3 @@
-// src/location/locationThunks.ts
 import { IGHNApiRegsponse } from "@/shared/utils/shared-interfaces";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
