@@ -11,7 +11,7 @@ const ProductList: React.FC<ProductProps> = ({ products }) => {
     return (
       <ProductCard
         key={index}
-        productId={product?.id}
+        slug={product?.slug}
         image={product?.thumbnail}
         description={product?.description}
         type="wishlist"

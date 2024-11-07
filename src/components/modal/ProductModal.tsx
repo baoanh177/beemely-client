@@ -6,17 +6,17 @@ import ProductWrapper from "../product/ProductWrapper";
 import { useArchive } from "@/hooks/useArchive";
 import { IProductInitialState } from "@/services/store/product/product.slice";
 import useAsyncEffect from "@/hooks/useAsyncEffect";
-import { getProductById } from "@/services/store/product/product.thunk";
+import { getProductBySlug } from "@/services/store/product/product.thunk";
 
 const ProductModal: React.FC = () => {
-  const { isOpen, onClose, productId } = useProductModal();
+  const { isOpen, onClose, slug } = useProductModal();
 
-  const { state, dispatch } = useArchive<IProductInitialState>("product");
+  const { state, dispatch } = useArchive<IProductInitialState>("products");
   const { getProductByIdLoading } = useAsyncEffect(
     (async) => {
-      productId && async(dispatch(getProductById({ param: productId })), "getProductByIdLoading");
+      slug && async(dispatch(getProductBySlug({ param: slug })), "getProductByIdLoading");
     },
-    [productId],
+    [slug],
   );
   return (
     <Modal

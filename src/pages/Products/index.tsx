@@ -4,7 +4,7 @@ import Recommended from "./Recommended/Recommended";
 import Sidebar from "./Sidebar/Sidebar";
 import ProductList from "./Products/ProductList";
 import { IProduct } from "@/services/store/product/product.model";
-import { getProducts } from "@/services/store/product/product.thunk";
+import { getAllProducts } from "@/services/store/product/product.thunk";
 import { useArchive } from "@/hooks/useArchive";
 import { IProductInitialState } from "@/services/store/product/product.slice";
 import { Container } from "@/styles/common-styles";
@@ -16,7 +16,7 @@ function Products() {
   const { products } = state;
 
   useEffect(() => {
-    dispatch(getProducts());
+    dispatch(getAllProducts({}));
   }, [dispatch]);
 
   // ----------- Radio Filtering -----------

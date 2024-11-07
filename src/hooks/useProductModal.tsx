@@ -1,17 +1,17 @@
 import { create } from "zustand";
 
 interface useProductModalProps {
-  productId: string | null;
+  slug: string | null;
   isOpen: boolean;
-  onOpen: (productId: string) => void;
+  onOpen: (slug: string) => void;
   onClose: () => void;
 }
 
 export const useProductModal = create<useProductModalProps>((set) => ({
-  productId: null,
+  slug: null,
   isOpen: false,
   onClose: () => {
-    set({ isOpen: false, productId: null });
+    set({ isOpen: false, slug: null });
   },
-  onOpen: (productId: string) => set({ isOpen: true, productId }),
+  onOpen: (slug: string) => set({ isOpen: true, slug }),
 }));
