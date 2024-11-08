@@ -1,3 +1,5 @@
+import { IVoucher } from "../voucher/voucher.model";
+
 export interface IShippingAddress {
   user_email: string;
   user_name: string;
@@ -22,4 +24,5 @@ export interface ICheckoutState {
   shippingAddress: IShippingAddress;
   paymentType: TPaymentMethod;
   discount_price: number;
+  voucher?: IVoucher;
 }

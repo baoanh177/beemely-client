@@ -16,7 +16,7 @@ export const getAllProducts = createAsyncThunk("product/getAllProducts", async (
 
 export const getProductBySlug = createAsyncThunk("product/getProductByIdSlug", async (payload: IThunkPayload, { rejectWithValue }) => {
   try {
-    const { response, data } = await client.get<IProduct>(`${productPrefix}/product/${payload.param}`);
+    const { response, data } = await client.get<IProduct>(`${productPrefix}/products/${payload.param}`);
     return response.status >= 400 ? rejectWithValue(data) : data;
   } catch (error: any) {
     return rejectWithValue(error.response.data);

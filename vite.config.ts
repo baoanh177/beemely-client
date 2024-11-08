@@ -15,7 +15,7 @@ export default defineConfig({
     macrosPlugin(),
   ],
   server: {
-    port: 3001,
+    port: 3000,
   },
   resolve: {
     alias: {

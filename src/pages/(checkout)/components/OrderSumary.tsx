@@ -11,6 +11,9 @@ import { createNewOrder } from "@/services/store/order/order.thunk";
 import CartList from "./CartList";
 import { EFetchStatus } from "@/shared/enums/fetchStatus";
 import Button from "@/components/common/Button";
+import { HiOutlineTicket } from "react-icons/hi2";
+import { MdNavigateNext } from "react-icons/md";
+import { useVoucherModal } from "@/hooks/useVoucherModal";
 
 const OrderSummary = () => {
   const { state: cartState } = useArchive<ICartInitialState>("cart");
@@ -18,8 +21,13 @@ const OrderSummary = () => {
   const { dispatch, state: orderState } = useArchive<IOrderInitialState>("order");
   const { isLoading, shippingFee, error } = useShippingFee();
 
-  const discountPrice = checkoutState.discount_price || 0;
-  const totalPrice = useMemo(() => cartState.subTotal + (shippingFee || 0) - discountPrice, [cartState.cart?.cartItems, shippingFee]);
+  const { onOpen } = useVoucherModal();
+
+  const discountPrice = useMemo(() => checkoutState.discount_price || 0, [checkoutState.discount_price]);
+  const totalPrice = useMemo(
+    () => cartState.subTotal + (shippingFee || 0) - discountPrice,
+    [cartState.cart?.cartItems, shippingFee, checkoutState.discount_price],
+  );
 
   const isValidAddress = useMemo(() => {
     const { user_name, phone_number, user_email, city, district, commune, detail_address } = checkoutState.shippingAddress;
@@ -80,8 +88,10 @@ const OrderSummary = () => {
       discount_price: discountPrice,
       regular_total_price: cartState.subTotal,
       note: checkoutState.shippingAddress.note || "",
+      voucher: checkoutState.voucher?.id || "",
     };
 
+    console.log(orderData);
     try {
       const { metaData } = await dispatch(createNewOrder({ body: orderData })).unwrap();
 
@@ -101,6 +111,15 @@ const OrderSummary = () => {
           <div className="flex justify-between text-sm font-bold text-primary-500">
             <p>Giá tạm tính</p>
             <p>{formatPrice(cartState.subTotal)}</p>
+          </div>
+
+          <div className="group -m-px flex justify-between text-sm text-primary-200" role="button" onClick={onOpen}>
+            <p className="flex items-center space-x-2">
+              <HiOutlineTicket className="mr-2 h-4 w-4" /> Voucher
+            </p>
+            <p className="flex items-end space-x-2 group-hover:underline">
+              Chọn mã giảm giá <MdNavigateNext className="h-4 w-4" />
+            </p>
           </div>
 
           <div className="flex justify-between text-sm text-primary-200">

@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ICheckoutState, IPaymentMethodLabel, IShippingAddress, TPaymentMethod } from "./checkout.model";
 import PayOsLogo from "@/assets/images/payos-logo.svg";
 import VnPayLogo from "@/assets/images/vnpay-logo.svg";
+import { IVoucher } from "../voucher/voucher.model";
 
 export const PAYMENT_METHODS: IPaymentMethodLabel[] = [
   { label: "Thanh toán Bằng PayOs", value: "payos", image: PayOsLogo },
@@ -22,6 +23,7 @@ const initialState: ICheckoutState = {
   },
   paymentType: "payos",
   discount_price: 0,
+  voucher: undefined,
 };
 
 const checkoutSlice = createSlice({
@@ -37,9 +39,14 @@ const checkoutSlice = createSlice({
     setPaymentMethod: (state, action: PayloadAction<TPaymentMethod>) => {
       state.paymentType = action.payload;
     },
+    setVoucher: (state, action: PayloadAction<IVoucher & { discount: number }>) => {
+      const voucher = action.payload;
+      state.voucher = voucher;
+      state.discount_price = voucher.discount;
+    },
     resetCheckout: () => initialState,
   },
 });
 
-export const { setCurrentStep, setShippingAddress, setPaymentMethod, resetCheckout } = checkoutSlice.actions;
+export const { setCurrentStep, setShippingAddress, setPaymentMethod, resetCheckout, setVoucher } = checkoutSlice.actions;
 export { checkoutSlice };
