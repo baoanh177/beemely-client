@@ -1,7 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ICheckoutState, IPaymentMethodLabel, IShippingAddress, TPaymentMethod } from "./checkout.model";
+import { ICheckoutState, IGhnShippingFee, IPaymentMethodLabel, IShippingAddress, TPaymentMethod } from "./checkout.model";
 import PayOsLogo from "@/assets/images/payos-logo.svg";
 import VnPayLogo from "@/assets/images/vnpay-logo.svg";
+import { getShipingFeeFromGhn } from "./checkout.thunk";
+import { EFetchStatus } from "@/shared/enums/fetchStatus";
+import { IGHNApiRegsponse } from "@/shared/utils/shared-interfaces";
 import { IVoucher } from "../voucher/voucher.model";
 
 export const PAYMENT_METHODS: IPaymentMethodLabel[] = [
@@ -9,7 +12,13 @@ export const PAYMENT_METHODS: IPaymentMethodLabel[] = [
   { label: "Thanh toán bằng VNpay", value: "vnpay", image: VnPayLogo },
 ] as const;
 
+interface ErrorPayload {
+  message: string;
+}
+
 const initialState: ICheckoutState = {
+  status: EFetchStatus.IDLE,
+  message: "",
   currentStep: 0,
   shippingAddress: {
     user_name: "",
@@ -21,6 +30,7 @@ const initialState: ICheckoutState = {
     detail_address: "",
     note: "",
   },
+  shipping_fee: 0,
   paymentType: "payos",
   discount_price: 0,
   voucher: undefined,
@@ -45,8 +55,26 @@ const checkoutSlice = createSlice({
       state.discount_price = voucher.discount;
     },
     resetCheckout: () => initialState,
+    resetShippingFee: (state, action: PayloadAction<number>) => {
+      state.shipping_fee = action.payload;
+    },
+  },
+  extraReducers(builder) {
+    builder
+      .addCase(getShipingFeeFromGhn.pending, (state) => {
+        state.status = EFetchStatus.PENDING;
+      })
+      .addCase(getShipingFeeFromGhn.fulfilled, (state, { payload }: PayloadAction<IGHNApiRegsponse<IGhnShippingFee>>) => {
+        state.shipping_fee = payload.data.total;
+        state.status = EFetchStatus.FULFILLED;
+      })
+      .addCase(getShipingFeeFromGhn.rejected, (state, { payload }) => {
+        state.status = EFetchStatus.REJECTED;
+        const errorPayload = payload as ErrorPayload;
+        state.message = errorPayload.message || "Something went wrong!";
+      });
   },
 });
 
-export const { setCurrentStep, setShippingAddress, setPaymentMethod, resetCheckout, setVoucher } = checkoutSlice.actions;
+export const { setCurrentStep, setShippingAddress, setPaymentMethod, resetCheckout, resetShippingFee, setVoucher } = checkoutSlice.actions;
 export { checkoutSlice };

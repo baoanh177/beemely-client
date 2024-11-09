@@ -36,6 +36,11 @@ export interface IResponse<MetaDataType> {
   totalDocs?: number;
   totalPages?: number;
 }
+export interface IGHNApiRegsponse<DataType> {
+  code: number;
+  message: string | { [key: string]: string };
+  data: DataType;
+}
 
 export interface ClientReturnType<ReturnDataType> {
   response: Response;

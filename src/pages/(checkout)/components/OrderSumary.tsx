@@ -1,37 +1,38 @@
+import { useEffect, useMemo } from "react";
 import { useArchive } from "@/hooks/useArchive";
-import { useShippingFee } from "@/hooks/useShipping";
 import { ICartInitialState } from "@/services/store/cart/cart.slice";
-import { ICheckoutState } from "@/services/store/checkout/checkout.model";
+import { ICheckoutState, IGhnPayloadToGetShippingFee } from "@/services/store/checkout/checkout.model";
 import { formatPrice } from "@/utils/curency";
 import { IOrderInitialState } from "@/services/store/order/order.slice";
 import { Card, message } from "antd";
-import { useMemo } from "react";
-import { getAddress } from "./data/dataForm";
 import { createNewOrder } from "@/services/store/order/order.thunk";
 import CartList from "./CartList";
 import { EFetchStatus } from "@/shared/enums/fetchStatus";
 import Button from "@/components/common/Button";
 import { HiOutlineTicket } from "react-icons/hi2";
 import { MdNavigateNext } from "react-icons/md";
+import { ILocationInitialState } from "@/services/store/location/location.slice";
+import { getShipingFeeFromGhn } from "@/services/store/checkout/checkout.thunk";
+import { resetShippingFee } from "@/services/store/checkout/checkout.slice";
 import { useVoucherModal } from "@/hooks/useVoucherModal";
 
 const OrderSummary = () => {
   const { state: cartState } = useArchive<ICartInitialState>("cart");
-  const { state: checkoutState } = useArchive<ICheckoutState>("checkout");
+  const { state: checkoutState, dispatch: checkoutDispatch } = useArchive<ICheckoutState>("checkout");
   const { dispatch, state: orderState } = useArchive<IOrderInitialState>("order");
-  const { isLoading, shippingFee, error } = useShippingFee();
+  const { state: locationState } = useArchive<ILocationInitialState>("location");
 
   const { onOpen } = useVoucherModal();
 
-  const discountPrice = useMemo(() => checkoutState.discount_price || 0, [checkoutState.discount_price]);
+  const discountPrice = checkoutState.discount_price || 0;
   const totalPrice = useMemo(
-    () => cartState.subTotal + (shippingFee || 0) - discountPrice,
-    [cartState.cart?.cartItems, shippingFee, checkoutState.discount_price],
+    () => cartState.subTotal + (checkoutState.shipping_fee || 0) - discountPrice,
+    [cartState.subTotal, checkoutState.shipping_fee, discountPrice],
   );
 
   const isValidAddress = useMemo(() => {
     const { user_name, phone_number, user_email, city, district, commune, detail_address } = checkoutState.shippingAddress;
-
+    const { location: dataLocation } = locationState;
     return (
       user_name.trim() !== "" &&
       phone_number.trim() !== "" &&
@@ -39,9 +40,12 @@ const OrderSummary = () => {
       city.trim() !== "" &&
       district.trim() !== "" &&
       commune.trim() !== "" &&
-      detail_address.trim() !== ""
+      detail_address.trim() !== "" &&
+      dataLocation.province &&
+      dataLocation.district &&
+      dataLocation.ward
     );
-  }, [checkoutState.shippingAddress]);
+  }, [checkoutState.shippingAddress, locationState.location]);
 
   const handleCheckout = async () => {
     if (!isValidAddress) {
@@ -59,16 +63,14 @@ const OrderSummary = () => {
       return;
     }
 
-    if (isLoading || !shippingFee) {
+    if (checkoutState.status === EFetchStatus.PENDING || !checkoutState.shipping_fee) {
       message.error("Đang tính phí vận chuyển. Vui lòng đợi!");
       return;
     }
 
-    const formatedAddress = getAddress(
-      checkoutState.shippingAddress.city,
-      checkoutState.shippingAddress.district,
-      checkoutState.shippingAddress.commune,
-    );
+    const { detail_address } = checkoutState.shippingAddress;
+    const { location: dataLocation } = locationState;
+    const formatedAddress = `${detail_address}, ${dataLocation.ward?.WardName}, ${dataLocation.district?.DistrictName}, ${dataLocation.province?.ProvinceName}`;
 
     const cartItemsFormated = cartState.cart?.cartItems.map((item) => ({
       product_id: item.product.id,
@@ -80,9 +82,9 @@ const OrderSummary = () => {
       items: cartItemsFormated,
       user_name: checkoutState.shippingAddress.user_name,
       user_email: checkoutState.shippingAddress.user_email,
-      shipping_address: `${checkoutState.shippingAddress.detail_address}, ${formatedAddress}`,
+      shipping_address: formatedAddress,
       payment_type: checkoutState.paymentType,
-      shipping_fee: shippingFee,
+      shipping_fee: checkoutState.shipping_fee,
       phone_number: checkoutState.shippingAddress.phone_number,
       total_price: totalPrice,
       discount_price: discountPrice,
@@ -102,6 +104,40 @@ const OrderSummary = () => {
       message.error("Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại!");
     }
   };
+
+  useEffect(() => {
+    if (locationState.location.district && locationState.location.province && locationState.location.ward && cartState.cart?.cartItems.length) {
+      const payloadData: IGhnPayloadToGetShippingFee = {
+        service_type_id: 2,
+        from_district_id: 1808,
+        from_ward_code: "1B1903",
+        weight: cartState.cart.cartItems.reduce((total, item) => total + item.product.dimensions.weight * item.quantity, 0),
+        to_district_id: locationState.location.district.DistrictID,
+        to_ward_code: locationState.location.ward.WardCode,
+        items: cartState.cart.cartItems.map((item) => ({
+          name: item.product.name,
+          quantity: item.quantity,
+          height: item.product.dimensions.height,
+          width: item.product.dimensions.width,
+          weight: item.product.dimensions.weight,
+          length: item.product.dimensions.length,
+        })),
+      };
+      checkoutDispatch(getShipingFeeFromGhn({ body: payloadData }));
+    }
+  }, [
+    locationState.location.province,
+    locationState.location.district,
+    locationState.location.ward,
+    cartState.cart?.cartItems,
+    checkoutDispatch,
+  ]);
+
+  useEffect(() => {
+    if (!locationState.location.province || !locationState.location.district || !locationState.location.ward) {
+      checkoutDispatch(resetShippingFee(0));
+    }
+  }, [locationState.location.province, locationState.location.district, locationState.location.ward, checkoutDispatch, dispatch]);
 
   return (
     <Card title="Thông tin đơn hàng" className="rounded-xl border border-primary-10% px-4 py-5 shadow-md" bordered={false}>
@@ -124,12 +160,21 @@ const OrderSummary = () => {
 
           <div className="flex justify-between text-sm text-primary-200">
             <p>Giảm giá</p>
-            <p>{formatPrice(discountPrice)}</p>
+            <p>
+              {discountPrice && "-"}
+              {formatPrice(discountPrice)}
+            </p>
           </div>
 
           <div className="flex justify-between text-sm text-primary-200">
             <p>Phí vận chuyển</p>
-            {isLoading ? <p>Đang tính...</p> : error ? <p className="text-red-500">Lỗi tính phí</p> : <p>{formatPrice(shippingFee || 0)}</p>}
+            {checkoutState.status === EFetchStatus.PENDING ? (
+              <p>Đang tính...</p>
+            ) : checkoutState.shipping_fee === 0 ? (
+              <p className="text-orange-200">Vui lòng nhập địa chỉ giao hàng</p>
+            ) : (
+              <p>{formatPrice(checkoutState.shipping_fee || 0)}</p>
+            )}
           </div>
 
           {checkoutState.shippingAddress.note && (
@@ -153,7 +198,12 @@ const OrderSummary = () => {
             text="Đặt hàng ngay"
             size="full"
             onClick={handleCheckout}
-            isDisabled={isLoading || !isValidAddress || !checkoutState.paymentType || orderState.status === EFetchStatus.PENDING}
+            isDisabled={
+              checkoutState.status === EFetchStatus.PENDING ||
+              !isValidAddress ||
+              !checkoutState.paymentType ||
+              orderState.status === EFetchStatus.PENDING
+            }
           />
         )}
       </div>

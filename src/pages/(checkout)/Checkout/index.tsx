@@ -51,7 +51,7 @@ const CheckoutPage: React.FC = () => {
     {
       title: <StepLabel>Xác nhận</StepLabel>,
       icon: <Button icon={<CgNotes size={18} />} shape="rectangle" variant={currentStep === 2 ? "primary" : "secondary"} />,
-      content: <OrderConfirmation checkoutData={checkoutData} />,
+      content: <OrderConfirmation />,
     },
   ];
 
