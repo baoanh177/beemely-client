@@ -1,3 +1,5 @@
+import { EFetchStatus } from "@/shared/enums/fetchStatus";
+
 export interface IShippingAddress {
   user_email: string;
   user_name: string;
@@ -18,8 +20,46 @@ export interface IPaymentMethodLabel {
 }
 
 export interface ICheckoutState {
+  status: EFetchStatus;
+  message: string;
   currentStep: number;
   shippingAddress: IShippingAddress;
   paymentType: TPaymentMethod;
   discount_price: number;
+  shipping_fee: number;
+}
+
+export interface IGhnShippingFee {
+  total: number;
+  service_fee: number;
+  insurance_fee: number;
+  pick_station_fee: number;
+  coupon_value: number;
+  r2s_fee: number;
+  return_again: number;
+  document_return: number;
+  double_check: number;
+  cod_fee: number;
+  pick_remote_areas_fee: number;
+  deliver_remote_areas_fee: number;
+  cod_failed_fee: number;
+}
+
+export interface IGhnPayloadToGetShippingFee {
+  service_type_id: number;
+  from_district_id: number;
+  from_ward_code: string;
+  to_district_id: number;
+  to_ward_code: string;
+  weight: number;
+  items: IGhnShippngItem[];
+}
+
+interface IGhnShippngItem {
+  name: string;
+  quantity: number;
+  height: number;
+  weight: number;
+  length: number;
+  width: number;
 }
