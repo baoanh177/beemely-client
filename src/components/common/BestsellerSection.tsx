@@ -9,7 +9,7 @@ import { getAllProducts } from "@/services/store/product/product.thunk";
 const BestsellerSection = () => {
   const { state, dispatch } = useArchive<IProductInitialState>("products");
   useAsyncEffect(
-    (async) => async(dispatch(getAllProducts({ query: { orderBy: "sold", ...state.filter, _limit: 8 } })), "getAllProductsLoading"),
+    (async) => async(dispatch(getAllProducts({ query: { ...state.filter, orderBy: "sold", _limit: 8 } })), "getAllProductsLoading"),
     [],
   );
 

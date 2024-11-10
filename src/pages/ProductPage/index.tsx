@@ -6,7 +6,9 @@ import { useArchive } from "@/hooks/useArchive";
 import { IProductInitialState } from "@/services/store/product/product.slice";
 import useAsyncEffect from "@/hooks/useAsyncEffect";
 import { getProductBySlug } from "@/services/store/product/product.thunk";
-import Loading from "../Loading/Loading";
+import ProductInformation from "@/components/product-information";
+import Services from "@/components/service/Services";
+import Loading from "./Loading";
 
 const ProductPage = () => {
   const { id } = useParams();
@@ -21,8 +23,10 @@ const ProductPage = () => {
   if (getProductByIdLoading) return <Loading />;
   if (state.activeProduct)
     return (
-      <Container>
+      <Container className="mt-20 space-y-14">
         <ProductWrapper product={state.activeProduct} />
+        <ProductInformation product={state.activeProduct} />
+        <Services />
       </Container>
     );
 };
