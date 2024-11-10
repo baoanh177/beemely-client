@@ -69,7 +69,6 @@ const NavLinks = ({ setOpen }: NavLinkType) => {
 
           {/* Mobile menus */}
           <div className={`${heading === link.name ? "md:hidden" : "hidden"}`}>
-            {/* sublinks */}
             {link.sublinks &&
               link.sublinks.map((slinks) => (
                 <div key={slinks.Head}>

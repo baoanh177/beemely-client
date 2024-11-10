@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { RiSearchLine } from "react-icons/ri";
@@ -12,6 +12,17 @@ const Navbar = () => {
   const [open, setOpen] = useState(false);
   const isLoggedIn = !!localStorage.getItem("accessToken");
 
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [open]);
+
   return (
     <nav className="w-full bg-white-500">
       <div className="flex items-center justify-between font-medium">
@@ -23,16 +34,9 @@ const Navbar = () => {
             <RiSearchLine className="text-lg" />
             <FaRegHeart className="text-lg" />
             <CartPopover />
-            {isLoggedIn ? (
-              <UserDropdown isMobile />
-            ) : (
-              <Link to="/auth/login">
-                <ButtonLogin />
-              </Link>
-            )}
-            <div className="text-3xl" onClick={() => setOpen(!open)}>
+            <button className="text-3xl" onClick={() => setOpen(!open)} aria-label={open ? "Close menu" : "Open menu"}>
               {open ? <FaTimes /> : <FaBars />}
-            </div>
+            </button>
           </div>
         </div>
         <ul className="hidden items-center justify-between gap-8 font-[Poppins] uppercase lg:flex">
@@ -48,7 +52,7 @@ const Navbar = () => {
           <FaRegHeart className="text-lg" />
           <CartPopover />
           {isLoggedIn ? (
-            <UserDropdown isMobile />
+            <UserDropdown isMobile={false} />
           ) : (
             <Link to="/auth/login">
               <ButtonLogin />
@@ -77,32 +81,53 @@ const MobileMenu = ({
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   isLoggedIn: boolean;
 }) => (
-  <ul
-    className={`fixed bottom-0 top-0 z-40 w-full overflow-y-auto bg-white-500 py-24 pl-4 duration-500 lg:hidden ${
-      open ? "left-0" : "left-[-100%]"
-    }`}
-  >
-    <MobileNavItem to="/" onClick={() => setOpen(false)}>
-      Trang chủ
-    </MobileNavItem>
-    <MobileNavItem to="/products" onClick={() => setOpen(false)}>
-      Cửa hàng
-    </MobileNavItem>
-    <MobileNavItem to="/about" onClick={() => setOpen(false)}>
-      Câu chuyện của chúng tôi
-    </MobileNavItem>
-    <MobileNavItem to="/blog" onClick={() => setOpen(false)}>
-      Blog
-    </MobileNavItem>
-    <MobileNavItem to="/contact" onClick={() => setOpen(false)}>
-      Liên hệ
-    </MobileNavItem>
-  </ul>
+  <div className={`fixed inset-0 z-40 lg:hidden ${open ? "visible" : "invisible"}`}>
+    <div
+      className={`bg-black/50 absolute inset-0 transition-opacity duration-300 ${open ? "opacity-100" : "opacity-0"}`}
+      onClick={() => setOpen(false)}
+    />
+
+    <div
+      className={`absolute bottom-0 left-0 top-0 flex w-full max-w-sm flex-col bg-white-500 transition-transform duration-300 ${
+        open ? "translate-x-0" : "-translate-x-full"
+      }`}
+    >
+      <div className="flex h-full flex-col overflow-y-auto py-24 pl-4">
+        <ul className="space-y-6">
+          <MobileNavItem to="/" onClick={() => setOpen(false)}>
+            Trang chủ
+          </MobileNavItem>
+          <MobileNavItem to="/products" onClick={() => setOpen(false)}>
+            Cửa hàng
+          </MobileNavItem>
+          <MobileNavItem to="/about" onClick={() => setOpen(false)}>
+            Câu chuyện của chúng tôi
+          </MobileNavItem>
+          <MobileNavItem to="/blog" onClick={() => setOpen(false)}>
+            Blog
+          </MobileNavItem>
+          <MobileNavItem to="/contact" onClick={() => setOpen(false)}>
+            Liên hệ
+          </MobileNavItem>
+        </ul>
+
+        <div className="mt-6 pr-4">
+          {isLoggedIn ? (
+            <UserDropdown isMobile={true} />
+          ) : (
+            <Link to="/auth/login" onClick={() => setOpen(false)}>
+              <ButtonLogin className="w-full" />
+            </Link>
+          )}
+        </div>
+      </div>
+    </div>
+  </div>
 );
 
 const MobileNavItem = ({ to, children, onClick }: { to: string; children: React.ReactNode; onClick?: () => void }) => (
-  <li className="mb-6">
-    <Link to={to} onClick={onClick}>
+  <li>
+    <Link to={to} onClick={onClick} className="block text-lg">
       {children}
     </Link>
   </li>
