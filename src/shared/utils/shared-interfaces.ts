@@ -22,7 +22,7 @@ export interface IThunkPayload {
 
 export interface ISearchParams {
   _page?: number;
-  _size?: number;
+  _limit?: number;
   [key: string]: unknown;
 }
 

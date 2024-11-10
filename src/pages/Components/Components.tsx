@@ -25,7 +25,7 @@ export const Components = () => {
             <Services />
           </div>
 
-          <ProductInformation />
+          {/* <ProductInformation /> */}
 
           <div className="text-3xl font-bold text-tertiary-500">Button</div>
           <Button shape="rectangle" text="Đây là button primary" variant="primary" />

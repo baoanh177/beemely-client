@@ -20,6 +20,7 @@ import QuantityInput from "../common/QuantityInput";
 import { IWishListInitialState } from "@/services/store/wishlist/wishlist.slice";
 import { addWishList } from "@/services/store/wishlist/wishlist.thunk";
 import toast from "react-hot-toast";
+import ProductInformation from "../product-information";
 
 interface ProductDetailsProps {
   product: IProduct;
