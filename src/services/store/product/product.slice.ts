@@ -2,7 +2,7 @@ import { IInitialState, IResponse } from "@/shared/utils/shared-interfaces";
 import { IProduct } from "./product.model";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { EFetchStatus } from "@/shared/enums/fetchStatus";
-import { getAllProducts, getProductById, getProducts } from "./product.thunk";
+import { getAllProducts, getProductBySlug } from "./product.thunk";
 
 export interface IProductInitialState extends IInitialState {
   products: IProduct[];
@@ -31,32 +31,36 @@ const productSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // ? Get Products
+    // Get all products
     builder
-      .addCase(getProducts.pending, (state) => {
+      .addCase(getAllProducts.pending, (state) => {
         state.status = EFetchStatus.PENDING;
         state.message = "";
       })
-      .addCase(getProducts.fulfilled, (state, { payload }: PayloadAction<IResponse<IProduct[]>>) => {
+      .addCase(getAllProducts.fulfilled, (state, { payload }: PayloadAction<IResponse<IProduct[]>>) => {
         state.products = payload.metaData;
         state.totalRecords = payload.totalDocs ?? 0;
         state.status = EFetchStatus.FULFILLED;
       })
-      .addCase(getProducts.rejected, (state) => {
+      .addCase(getAllProducts.rejected, (state) => {
         state.status = EFetchStatus.REJECTED;
-        state.message = "Failed to fetch products";
+        state.message = "Failed to fetch all products";
       });
 
-    // ? Get all products
-    builder.addCase(getAllProducts.fulfilled, (state, { payload }: PayloadAction<IResponse<IProduct[]>>) => {
-      state.products = payload.metaData;
-      state.totalRecords = payload.totalDocs ?? 0;
-    });
-
-    // ? Get product by id
-    builder.addCase(getProductById.fulfilled, (state, { payload }: PayloadAction<IResponse<IProduct>>) => {
-      state.activeProduct = payload.metaData;
-    });
+    // Get product by id
+    builder
+      .addCase(getProductBySlug.pending, (state) => {
+        state.status = EFetchStatus.PENDING;
+        state.message = "";
+      })
+      .addCase(getProductBySlug.fulfilled, (state, { payload }: PayloadAction<IResponse<IProduct>>) => {
+        state.activeProduct = payload.metaData;
+        state.status = EFetchStatus.FULFILLED;
+      })
+      .addCase(getProductBySlug.rejected, (state) => {
+        state.status = EFetchStatus.REJECTED;
+        state.message = "Failed to fetch product by slug";
+      });
   },
 });
 

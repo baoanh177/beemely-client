@@ -8,8 +8,8 @@ import { getAllProducts } from "@/services/store/product/product.thunk";
 
 const BestsellerSection = () => {
   const { state, dispatch } = useArchive<IProductInitialState>("products");
-  const { getAllProductsLoading } = useAsyncEffect(
-    (async) => async(dispatch(getAllProducts({ query: { _pagination: false, ...state.filter } })), "getAllProductsLoading"),
+  useAsyncEffect(
+    (async) => async(dispatch(getAllProducts({ query: { ...state.filter, orderBy: "sold", _limit: 8 } })), "getAllProductsLoading"),
     [],
   );
 
@@ -18,7 +18,7 @@ const BestsellerSection = () => {
     return (
       <ProductCard
         key={index}
-        productId={product.id}
+        slug={product.slug}
         image={product.thumbnail}
         description={product.sortDescription}
         type="wishlist"

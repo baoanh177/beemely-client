@@ -1,67 +1,113 @@
 import { useEffect, useState } from "react";
-import type { RadioChangeEvent } from "antd";
 import Recommended from "./Recommended/Recommended";
 import Sidebar from "./Sidebar/Sidebar";
 import ProductList from "./Products/ProductList";
 import { IProduct } from "@/services/store/product/product.model";
-import { getProducts } from "@/services/store/product/product.thunk";
+import { getAllProducts } from "@/services/store/product/product.thunk";
 import { useArchive } from "@/hooks/useArchive";
 import { IProductInitialState } from "@/services/store/product/product.slice";
 import { Container } from "@/styles/common-styles";
 
 function Products() {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [priceRange, setPriceRange] = useState<[number, number] | null>(null);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedGenders, setSelectedGenders] = useState<string[]>([]);
+  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
+  const [selectedColors, setSelectedColors] = useState<string[]>([]);
+  const [selectedPriceRanges, setSelectedPriceRanges] = useState<string[]>([]);
   const { state, dispatch } = useArchive<IProductInitialState>("products");
   const { products } = state;
 
   useEffect(() => {
-    dispatch(getProducts());
+    dispatch(getAllProducts({}));
   }, [dispatch]);
 
-  // ----------- Radio Filtering -----------
-  const handleChange = (event: RadioChangeEvent) => {
+  // ----------- Checkbox Filtering -----------
+  const handleChange = (event: any) => {
     const value = event.target.value;
-    if (value === "") {
-      setPriceRange(null);
-      setSelectedCategory(null);
-    } else if (value.includes("-")) {
-      const [min, max] = value.split("-").map(Number);
-      setPriceRange([min, max]);
-    } else {
-      setSelectedCategory(value);
+    const name = event.target.name;
+
+    switch (name) {
+      case "category":
+        setSelectedCategories((prevSelectedCategories) =>
+          prevSelectedCategories.includes(value)
+            ? prevSelectedCategories.filter((category) => category !== value)
+            : [...prevSelectedCategories, value],
+        );
+        break;
+      case "gender":
+        setSelectedGenders((prevSelectedGenders) =>
+          prevSelectedGenders.includes(value) ? prevSelectedGenders.filter((gender) => gender !== value) : [...prevSelectedGenders, value],
+        );
+        break;
+      case "size":
+        setSelectedSizes((prevSelectedSizes) =>
+          prevSelectedSizes.includes(value) ? prevSelectedSizes.filter((size) => size !== value) : [...prevSelectedSizes, value],
+        );
+        break;
+      case "color":
+        setSelectedColors((prevSelectedColors) =>
+          prevSelectedColors.includes(value) ? prevSelectedColors.filter((color) => color !== value) : [...prevSelectedColors, value],
+        );
+        break;
+      case "price":
+        setSelectedPriceRanges((prevSelectedPriceRanges) =>
+          prevSelectedPriceRanges.includes(value)
+            ? prevSelectedPriceRanges.filter((price) => price !== value)
+            : [...prevSelectedPriceRanges, value],
+        );
+        break;
+      default:
+        break;
     }
   };
 
   // ------------ Button Filtering -----------
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setSelectedCategory(event.currentTarget.value);
+  const handleClick = (selectedGenders: string[]) => {
+    setSelectedGenders(selectedGenders);
   };
 
-  function filteredData(products: IProduct[], selected: string | null, priceRange: [number, number] | null): IProduct[] {
+  function filteredData(
+    products: IProduct[],
+    selectedCategories: string[],
+    selectedGenders: string[],
+    selectedSizes: string[],
+    selectedColors: string[],
+    selectedPriceRanges: string[],
+  ): IProduct[] {
     let filteredProducts = products;
 
-    if (selected) {
+    if (selectedCategories.length > 0) {
+      filteredProducts = filteredProducts.filter(({ productType }) => selectedCategories.includes(productType.name.toString()));
+    }
+
+    if (selectedGenders.length > 0) {
+      filteredProducts = filteredProducts.filter(({ gender }) => selectedGenders.includes(gender.name.trim()));
+    }
+
+    if (selectedSizes.length > 0) {
       filteredProducts = filteredProducts.filter(
-        ({ maxPrice, minPrice, productType, productSizes, productColors, variants, gender }) =>
-          maxPrice === Number(selected) ||
-          minPrice === Number(selected) ||
-          productType.toString() === selected ||
-          gender.name.trim() === selected ||
-          productSizes.includes(selected as any) ||
-          productColors.some((color) => color.toString() === selected) ||
-          variants.some((variant) => variant.size.name.toString() === selected) ||
-          variants.some((variant) => variant.color.id.toString() === selected),
+        ({ productSizes, variants }) =>
+          productSizes.some((size) => selectedSizes.includes(size.name.toString())) ||
+          variants.some((variant) => selectedSizes.includes(variant.size.name.toString())),
       );
     }
 
-    if (priceRange) {
+    if (selectedColors.length > 0) {
       filteredProducts = filteredProducts.filter(
-        (product) =>
-          product.minPrice !== undefined &&
-          product.maxPrice !== undefined &&
-          product.minPrice >= priceRange[0] &&
-          product.maxPrice <= priceRange[1],
+        ({ productColors, variants }) =>
+          productColors.some((color) => selectedColors.includes(color.toString())) ||
+          variants.some((variant) => selectedColors.includes(variant.color.name.toString())),
+      );
+    }
+
+    if (selectedPriceRanges.length > 0) {
+      filteredProducts = filteredProducts.filter((product) =>
+        selectedPriceRanges.some((range) => {
+          const [min, max] = range.split("-").map(Number);
+          return (
+            product.minPrice !== undefined && product.maxPrice !== undefined && product.minPrice >= min && (max ? product.maxPrice <= max : true)
+          );
+        }),
       );
     }
 
@@ -73,11 +119,13 @@ function Products() {
       <Container>
         <div className="mb-8 flex">
           <div className="mr-4 w-3/12">
-            <Sidebar handleChange={handleChange} products={filteredData(products, "", null)} />
+            <Sidebar handleChange={handleChange} products={filteredData(products, [], [], [], [], [])} />
           </div>
           <div className="w-9/12">
             <Recommended handleClick={handleClick} />
-            <ProductList products={filteredData(products, selectedCategory, priceRange)} />
+            <ProductList
+              products={filteredData(products, selectedCategories, selectedGenders, selectedSizes, selectedColors, selectedPriceRanges)}
+            />
           </div>
         </div>
       </Container>

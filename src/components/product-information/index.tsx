@@ -1,13 +1,8 @@
-import { useState, useEffect } from "react";
-import ReviewProduct from "./ReviewProducts";
+import { useState } from "react";
 import DescriptionProduct from "./DescriptionProduct";
 import InfomationProduct from "./InfomationProduct";
 import { IProductColor, ISize } from "@/services/store/product/product.model";
-const currentUser = {
-  name: "Ahihi",
-  email: "thichanthitcho@gmail.com",
-  image: "https://picsum.photos/200/300",
-};
+
 interface ProductInformationProps {
   product: {
     description: string;
