@@ -1,4 +1,5 @@
 import { EFetchStatus } from "@/shared/enums/fetchStatus";
+import { IVoucher } from "../voucher/voucher.model";
 
 export interface IShippingAddress {
   user_email: string;
@@ -26,6 +27,7 @@ export interface ICheckoutState {
   shippingAddress: IShippingAddress;
   paymentType: TPaymentMethod;
   discount_price: number;
+  voucher?: IVoucher;
   shipping_fee: number;
 }
 
