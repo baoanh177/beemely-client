@@ -39,7 +39,14 @@ const ProductGallery: React.FC<ProductGalleryProps> = ({ thumbnail, images }) =>
         <Carousel ref={carouselRef} beforeChange={(_, next) => setCurrentIndex(next)} dots={false} infinite className="aspect-square w-full">
           {formattedImages.map((img, index) => (
             <div key={index} className="relative w-full">
-              <Image src={img} alt={`Product ${index + 1}`} className="aspect-square h-full w-full object-cover" preview={true} />
+              <Image
+                src={img}
+                alt={`Product ${index + 1}`}
+                width={"100%"}
+                height={"100%"}
+                className="aspect-square h-full w-full object-cover"
+                preview={true}
+              />
             </div>
           ))}
         </Carousel>

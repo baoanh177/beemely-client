@@ -8,7 +8,10 @@ import { getAllProducts } from "@/services/store/product/product.thunk";
 
 const BestsellerSection = () => {
   const { state, dispatch } = useArchive<IProductInitialState>("products");
-  useAsyncEffect((async) => async(dispatch(getAllProducts({ query: { _limit: 8, ...state.filter } })), "getAllProductsLoading"), []);
+  useAsyncEffect(
+    (async) => async(dispatch(getAllProducts({ query: { orderBy: "sold", ...state.filter, _limit: 8 } })), "getAllProductsLoading"),
+    [],
+  );
 
   const content = state.products.map((product, index) => {
     const sortVariants = [...product.variants].sort((a, b) => a.price - b.price);

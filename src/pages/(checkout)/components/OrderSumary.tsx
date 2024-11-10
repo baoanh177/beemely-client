@@ -93,7 +93,6 @@ const OrderSummary = () => {
       voucher: checkoutState.voucher?.id || "",
     };
 
-    console.log(orderData);
     try {
       const { metaData } = await dispatch(createNewOrder({ body: orderData })).unwrap();
 
@@ -148,21 +147,12 @@ const OrderSummary = () => {
             <p>Giá tạm tính</p>
             <p>{formatPrice(cartState.subTotal)}</p>
           </div>
-
           <div className="group -m-px flex justify-between text-sm text-primary-200" role="button" onClick={onOpen}>
             <p className="flex items-center space-x-2">
               <HiOutlineTicket className="mr-2 h-4 w-4" /> Voucher
             </p>
             <p className="flex items-end space-x-2 group-hover:underline">
               Chọn mã giảm giá <MdNavigateNext className="h-4 w-4" />
-            </p>
-          </div>
-
-          <div className="flex justify-between text-sm text-primary-200">
-            <p>Giảm giá</p>
-            <p>
-              {discountPrice && "-"}
-              {formatPrice(discountPrice)}
             </p>
           </div>
 
@@ -175,6 +165,14 @@ const OrderSummary = () => {
             ) : (
               <p>{formatPrice(checkoutState.shipping_fee || 0)}</p>
             )}
+          </div>
+
+          <div className="flex justify-between text-sm text-primary-200">
+            <p>Giảm giá</p>
+            <p>
+              {discountPrice ? "-" : ""}
+              {discountPrice ? formatPrice(discountPrice) : "0 VND"}
+            </p>
           </div>
 
           {checkoutState.shippingAddress.note && (

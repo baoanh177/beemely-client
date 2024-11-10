@@ -14,7 +14,11 @@ interface VoucherItemProps {
   voucher: IVoucher;
 }
 
-const calculateDiscount = (voucher: IVoucher, cartSubTotal: number) => {
+const calculateDiscount = (voucher: IVoucher, cartSubTotal: number, shippingFee: number) => {
+  if (voucher.voucherType === "FREE_SHIPPING") {
+    return Math.min(voucher.discount, shippingFee);
+  }
+
   if (voucher.discountTypes === "percentage") {
     return (cartSubTotal * voucher.discount) / 100;
   } else {
@@ -33,11 +37,20 @@ const VoucherItem = ({ voucher }: VoucherItemProps) => {
   const isNotEligible = cartState.subTotal < voucher.minimumOrderPrice;
 
   const handleSelectVoucher = (voucher: IVoucher) => {
-    const discountAmount = calculateDiscount(voucher, cartState.subTotal);
-    checkoutDispatch(setVoucher({ ...voucher, discount: discountAmount }));
+    const discountAmount = calculateDiscount(voucher, cartState.subTotal, checkoutState.shipping_fee || 0);
+    checkoutDispatch(
+      setVoucher({
+        ...voucher,
+        discount: discountAmount,
+      }),
+    );
   };
 
-  const discountAmount = useMemo(() => calculateDiscount(voucher, cartState.subTotal), [voucher, cartState.subTotal]);
+  const discountAmount = useMemo(
+    () => calculateDiscount(voucher, cartState.subTotal, checkoutState.shipping_fee || 0),
+    [voucher, cartState.subTotal, checkoutState.shipping_fee],
+  );
+
   const isSelected = useMemo(() => checkoutState.voucher?.id === voucher.id, [checkoutState.voucher]);
 
   return (
@@ -65,6 +78,7 @@ const VoucherItem = ({ voucher }: VoucherItemProps) => {
             {!isNotEligible && (
               <p className="text-xs">
                 Số tiền có thể giảm: <strong className="text-orange-400">{formatPrice(discountAmount)}</strong>
+                {voucher.voucherType === "FREE_SHIPPING" && " (áp dụng cho phí vận chuyển)"}
               </p>
             )}
             <p className="text-xs">
