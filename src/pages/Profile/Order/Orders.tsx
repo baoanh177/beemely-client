@@ -1,16 +1,49 @@
 import Button from "@/components/common/Button";
 import StatusBadge from "@/components/common/StatusBadge";
+import ReviewModal from "@/components/product-information/ReviewModel";
 import { useArchive } from "@/hooks/useArchive";
 import { IOrderInitialState } from "@/services/store/order/order.slice";
 import { getAllOrderByUser } from "@/services/store/order/order.thunk";
-import { useEffect } from "react";
+import { IOrderItem } from "@/services/store/product/product.model";
+import { IReview } from "@/services/store/review/review.model";
+import { createReview } from "@/services/store/review/review.thunk";
+import { message } from "antd";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Orders = () => {
+  const navigate = useNavigate();
   const { state, dispatch } = useArchive<IOrderInitialState>("order");
+  const [reviewModalOpen, setReviewModalOpen] = useState(false);
+  const [selectedOrderItem, setSelectedOrderItem] = useState<IOrderItem | null>(null);
 
   useEffect(() => {
     dispatch(getAllOrderByUser({}));
   }, []);
+
+  const handleReviewSubmit = async (values: IReview) => {
+    if (!values.content || !values.rates) {
+      message.error("Vui lòng điền đầy đủ thông tin đánh giá.");
+      return;
+    }
+    console.log(values);
+    const payload = {
+      content: values.content,
+      rates: values.rates,
+      orderItemId: selectedOrderItem?.id || "",
+      images: values.images ?? [],
+    };
+    console.log("Payload sent to API: ", payload);
+    try {
+      await dispatch(createReview(payload));
+      message.success("Đánh giá của bạn đã được gửi thành công!");
+      setReviewModalOpen(false);
+      // navigate("/reviews");
+    } catch (error) {
+      console.log("Error: ", error);
+      message.error("Có lỗi xảy ra. Vui lòng thử lại.");
+    }
+  };
 
   return (
     <div className="flex flex-col gap-4">
@@ -41,12 +74,26 @@ const Orders = () => {
               </div>
               <div className="flex flex-col gap-2">
                 <Button text="View Order" size="full" variant="ghost" />
-                <Button text="Write A Review" size="full" />
+                <Button
+                  text="Write A Review"
+                  size="full"
+                  onClick={() => {
+                    setSelectedOrderItem(order);
+                    setReviewModalOpen(true);
+                  }}
+                />
               </div>
             </div>
           ))}
         </div>
       ))}
+
+      <ReviewModal
+        isOpen={reviewModalOpen}
+        onClose={() => setReviewModalOpen(false)}
+        onSubmit={handleReviewSubmit}
+        selectedOrderItem={selectedOrderItem}
+      />
     </div>
   );
 };

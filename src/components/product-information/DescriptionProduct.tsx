@@ -7,7 +7,7 @@ interface DescriptionProductProps {
 const DescriptionProduct: React.FC<DescriptionProductProps> = ({ description }) => {
   return (
     <div>
-      <p className="text-m-semibold">{description}</p>
+      <div dangerouslySetInnerHTML={{ __html: description }} />
     </div>
   );
 };

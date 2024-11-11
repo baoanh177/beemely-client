@@ -97,3 +97,11 @@ interface IProductType {
 }
 
 export type { IBrand, IColor, IGender, ILabel, IProduct, IProductColor, IProductType, ISize, IVariant };
+
+export interface IOrderItem {
+  id: string;
+  product: IProduct;
+  variant: IVariant;
+  quantity: number;
+  price: number;
+}
