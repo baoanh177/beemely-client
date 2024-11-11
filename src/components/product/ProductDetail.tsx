@@ -4,7 +4,6 @@ import { BsHeart } from "react-icons/bs";
 
 import { useArchive } from "@/hooks/useArchive";
 import { addToCart } from "@/services/store/cart/cart.thunk";
-import useFetchStatus from "@/hooks/useFetchStatus";
 import { IProduct, IVariant } from "@/services/store/product/product.model";
 import { ICartInitialState, resetStatus } from "@/services/store/cart/cart.slice";
 import Button from "@/components/common/Button";
@@ -20,7 +19,7 @@ import QuantityInput from "../common/QuantityInput";
 import { IWishListInitialState } from "@/services/store/wishlist/wishlist.slice";
 import { addWishList } from "@/services/store/wishlist/wishlist.thunk";
 import toast from "react-hot-toast";
-import ProductInformation from "../product-information";
+import useFetchStatus from "@/hooks/useFetchStatus";
 
 interface ProductDetailsProps {
   product: IProduct;
@@ -35,7 +34,7 @@ const ProductDetails = ({ product, selectedVariant, setSelectedVariant }: Produc
   const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   const { dispatch: cartDispatch, state: cartState } = useArchive<ICartInitialState>("cart");
-  const { dispatch: wishlistDispatch } = useArchive<IWishListInitialState>("wishlist");
+  const { dispatch: wishlistDispatch, state: wishListState } = useArchive<IWishListInitialState>("wishlist");
 
   const { isOpen, onClose } = useProductModal();
 
@@ -48,11 +47,20 @@ const ProductDetails = ({ product, selectedVariant, setSelectedVariant }: Produc
     }
   }, [product, selectedColor, selectedSize, setSelectedVariant]);
 
+  const [isInWishlist, setIsInWishlist] = useState(false);
+
+  useEffect(() => {
+    if (Array.isArray(wishListState.products)) {
+      setIsInWishlist(wishListState.products.some(item => item.id === product.id));
+    }
+  }, [wishListState.products, product.id]);
+
   const handleAddWishlist = () => {
     if (product?.id) {
       wishlistDispatch(addWishList({ param: product.id }))
         .then(() => {
           toast.success("Thêm vào Wishlist thành công!");
+          setIsInWishlist(true);
         })
         .catch(() => {
           toast.error("Thêm vào Wishlist thất bại");
@@ -125,7 +133,18 @@ const ProductDetails = ({ product, selectedVariant, setSelectedVariant }: Produc
             className="grow"
             text="Thêm sản phẩm vào giỏ hàng"
           />
-          <Button icon={<BsHeart className="h-5 w-5" />} variant="ghost" shape="rectangle" onClick={handleAddWishlist} />
+          <Button
+            icon={<BsHeart className="h-5 w-5" />}
+            variant={isInWishlist ? "secondary" : "ghost"} 
+            shape="rectangle"
+            onClick={() => {
+              if (!isInWishlist) {
+                handleAddWishlist();
+              } else {
+                toast.error("Sản phẩm đã có trong Wishlist");
+              }
+            }}
+          />
         </div>
       </div>
     </div>

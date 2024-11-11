@@ -15,8 +15,10 @@ const BestsellerSection = () => {
 
   const content = state.products.map((product, index) => {
     const sortVariants = [...product.variants].sort((a, b) => a.price - b.price);
+    
     return (
       <ProductCard
+        productId={product.id}
         key={index}
         slug={product.slug}
         image={product.thumbnail}

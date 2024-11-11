@@ -49,7 +49,9 @@ const Navbar = () => {
 
         <div className="hidden items-center space-x-4 lg:flex">
           <RiSearchLine className="text-lg" />
-          <FaRegHeart className="text-lg" />
+          <Link to="/profile/wishlists">
+            <FaRegHeart className="text-lg cursor-pointer" />
+          </Link>
           <CartPopover />
           {isLoggedIn ? (
             <UserDropdown isMobile={false} />
