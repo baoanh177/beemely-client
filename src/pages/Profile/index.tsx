@@ -14,7 +14,7 @@ const ProfilePage = () => {
   return (
     <div className="mx-auto flex max-w-[1272px] flex-col gap-8 p-4">
       <h1 className="text-3xl font-normal">My Profile</h1>
-      <div className="flex w-full gap-12">
+      <div className="flex w-full gap-12 pb-[120px]">
         <div className="max-h-[370px] w-full max-w-[250px] border border-gray-20%">
           <div className="flex items-center gap-4 border-b-gray-20% p-4">
             <img className="h-[60px] w-[60px] shrink-0 rounded-full object-cover" src={state.profile?.avatarUrl} alt={state.profile?.fullName} />

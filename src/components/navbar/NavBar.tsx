@@ -45,7 +45,9 @@ const Navbar = () => {
 
         <div className="hidden items-center space-x-4 lg:flex">
           <RiSearchLine className="text-lg" />
-          <FaRegHeart className="text-lg" />
+          <Link to="/profile/wishlists">
+            <FaRegHeart className="text-lg cursor-pointer" />
+          </Link>
           <CartPopover />
           {isLoggedIn ? (
             <UserDropdown isMobile />
@@ -78,9 +80,8 @@ const MobileMenu = ({
   isLoggedIn: boolean;
 }) => (
   <ul
-    className={`fixed bottom-0 top-0 z-40 w-full overflow-y-auto bg-white-500 py-24 pl-4 duration-500 lg:hidden ${
-      open ? "left-0" : "left-[-100%]"
-    }`}
+    className={`fixed bottom-0 top-0 z-40 w-full overflow-y-auto bg-white-500 py-24 pl-4 duration-500 lg:hidden ${open ? "left-0" : "left-[-100%]"
+      }`}
   >
     <MobileNavItem to="/" onClick={() => setOpen(false)}>
       Trang chủ

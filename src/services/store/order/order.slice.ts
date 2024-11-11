@@ -3,6 +3,7 @@ import { IInitialState, IResponse } from "@/shared/utils/shared-interfaces";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ICreateOrderResponse, IOrder } from "./order.model";
 import { createNewOrder, getOrderDetail, rePaymentOrder, updateOrder, getAllOrderByUser } from "./order.thunk";
+import { commonStaticReducers } from "@/services/shared";
 
 export interface IOrderInitialState extends IInitialState {
   orders: IOrder[] | [];
@@ -14,16 +15,14 @@ const initialState: IOrderInitialState = {
   message: "",
   orders: [],
   acctiveOrder: null,
+  filter: { order_status: "" }, 
 };
 
 const orderSlice = createSlice({
   name: "order",
   initialState,
   reducers: {
-    resetStatus(state) {
-      state.status = EFetchStatus.IDLE;
-      state.message = "";
-    },
+    ...commonStaticReducers<IOrderInitialState>(),
   },
   extraReducers(builder) {
     // Create new order
@@ -56,7 +55,7 @@ const orderSlice = createSlice({
         state.status = EFetchStatus.PENDING;
       })
       .addCase(updateOrder.fulfilled, (state, { payload }: PayloadAction<IResponse<IOrder>>) => {
-        state.acctiveOrder = payload.metaData;
+        state.orders = state.orders.map((order) => (order.id === payload.metaData.id ? payload.metaData : order));
         state.status = EFetchStatus.FULFILLED;
       })
       .addCase(updateOrder.rejected, (state) => {
@@ -89,5 +88,5 @@ const orderSlice = createSlice({
   },
 });
 
-export const { resetStatus } = orderSlice.actions;
+export const { resetStatus, setFilter } = orderSlice.actions;
 export { orderSlice };

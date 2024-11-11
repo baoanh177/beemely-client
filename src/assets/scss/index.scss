@@ -26,3 +26,15 @@
 :-webkit-autofill {
   box-shadow: 0 0 0 999px #eee inset;
 }
+
+.scrollbar::-webkit-scrollbar {
+  height: 4px; 
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.5); 
+}
+
+.scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1); 
+}

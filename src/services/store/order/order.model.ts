@@ -17,6 +17,7 @@ export interface IOrder {
   userName: string;
   shippingFee: number;
   userEmail: string;
+  uniqueId: string;
 }
 
 interface IOrderItem {

@@ -1,37 +1,56 @@
 import React from "react";
 import clsx from "clsx";
-export type StatusBadgeColors = "blue" | "green" | "orange" | "gray" | "red";
+import { EStatusOrder } from "@/shared/enums/order";
+
+export type StatusBadgeColors =
+  | "blue"
+  | "green"
+  | "orange"
+  | "gray"
+  | "red"
+  | "yellow"
+  | "green-capital"
+  | "black"
+  | "purple"
+  | "lightblue"
+  | "darkgreen";
+
 export interface StatusBadgeProps {
   text: string;
-  color: StatusBadgeColors;
+  color: StatusBadgeColors | EStatusOrder;
+  disabled?: boolean;
 }
 
-const StatusBadge: React.FC<StatusBadgeProps> = ({ text, color }) => {
-  let className = "";
+const StatusBadge: React.FC<StatusBadgeProps> = ({ text, color, disabled = false }) => {
+  // @ts-ignore
+  const colorMapping: Record<EStatusOrder | StatusBadgeColors, string> = {
+    [EStatusOrder.PENDING]: disabled ? "bg-orange-100 text-orange-300" : "bg-orange-50 text-orange-500",
+    [EStatusOrder.PROCESSING]: disabled ? "bg-blue-100 text-blue-300" : "bg-cyan-50 text-cyan-500",
+    [EStatusOrder.DELIVERING]: disabled ? "bg-yellow-100 text-yellow-300" : "bg-yellow-50 text-yellow-500",
+    [EStatusOrder.DELIVERED]: disabled ? "bg-green-100 text-green-300" : "bg-green-50 text-green-600",
+    [EStatusOrder.SUCCESS]: disabled ? "bg-green-200 text-green-700 capitalize" : "bg-green-100 text-green-900 capitalize",
+    [EStatusOrder.CANCELLED]: disabled ? "bg-red-100 text-red-300" : "bg-red-50 text-red-500",
+    [EStatusOrder.REQUEST_RETURN]: disabled ? "bg-purple-100 text-purple-300 capitalize" : "bg-[#F4ECFB] text-[#883DCF] capitalize",
+    [EStatusOrder.RETURNING]: disabled ? "bg-purple-100 text-purple-300 capitalize" : "bg-[#F4ECFB] text-[#883DCF] capitalize",
+    [EStatusOrder.RETURNED]: disabled ? "bg-gray-100 text-gray-300" : "bg-gray-50 text-gray-500",
+    blue: disabled ? "bg-cyan-100 text-cyan-300" : "bg-cyan-50 text-cyan-500",
+    green: disabled ? "bg-green-100 text-green-300" : "bg-green-50 text-green-600",
+    orange: disabled ? "bg-orange-100 text-orange-300" : "bg-orange-50 text-orange-500",
+    gray: disabled ? "bg-gray-100 text-gray-300" : "bg-gray-50 text-gray-500",
+    red: disabled ? "bg-red-100 text-red-300" : "bg-red-50 text-red-500",
+    yellow: disabled ? "bg-yellow-100 text-yellow-300 capitalize" : "bg-yellow-50 text-yellow-500 capitalize",
+    black: disabled ? "bg-black-100 text-black-300 capitalize" : "bg-black-50 text-black-500 capitalize",
+    purple: disabled ? "bg-[#E0D4F5] text-[#B08EDC] capitalize" : "bg-[#F4ECFB] text-[#883DCF] capitalize",
+    lightblue: disabled ? "bg-blue-100 text-blue-300" : "bg-blue-50 text-blue-500",
+    darkgreen: "bg-green-700 text-green-100",
+  };
 
-  switch (color) {
-    case "orange":
-      className = "bg-orange-50 text-orange-400";
-      break;
-    case "blue":
-      className = "bg-cyan-50 text-cyan-500";
-      break;
-    case "green":
-      className = "bg-green-50 text-green-400";
-      break;
-    case "gray":
-      className = "bg-gray-50 text-gray-500";
-      break;
-    case "red":
-      className = "bg-red-50 text-red-500";
-      break;
-    default:
-      className = "";
-      break;
-  }
+  const className = colorMapping[color] || "bg-gray-50 text-gray-500";
 
   return (
-    <div className={clsx(className, "text-m-semibold inline-block text-nowrap rounded-lg border-none px-[12px] py-2 text-center")}>{text}</div>
+    <div className={clsx(className, "text-m-semibold inline-block text-nowrap rounded-lg border-none px-[10px] py-1 text-center")}>
+      {text}
+    </div>
   );
 };
 

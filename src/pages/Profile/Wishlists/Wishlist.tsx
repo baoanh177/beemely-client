@@ -15,11 +15,14 @@ const Wishlist = () => {
     dispatch(deleteWishlist({ param: productId }));
   };
 
+  const products = Array.isArray(state.products) ? state.products : [];
+
   return (
     <div className="flex w-full flex-wrap gap-8">
-      {state.products.map((p) => (
+      {products.map((p) => (
         <div className="w-[calc((100%-64px)/3)]" key={p.id}>
           <ProductCard
+            slug={p.slug}
             productId={p.id}
             image={p.thumbnail}
             description={p.description}
@@ -27,7 +30,7 @@ const Wishlist = () => {
             name={p.name}
             regularPrice={p.variants[0]?.price}
             discountPrice={p.variants[0]?.discountPrice}
-            onRemove={handleRemove}
+            onRemove={() => handleRemove(p.id)}
           />
         </div>
       ))}
