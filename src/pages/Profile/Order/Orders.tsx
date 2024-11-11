@@ -120,7 +120,7 @@ const Orders = () => {
                     onClick={() => handleSuccessOrder(item.id)}
                   />
                 )}
-                {item.orderStatus === EStatusOrder.SUCCESS && (
+                {item.orderStatus === EStatusOrder.DELIVERED && (
                   <Button
                     className="h-[45px]"
                     text="Yêu cầu hoàn trả"
