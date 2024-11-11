@@ -1,38 +1,11 @@
 import { useState, useEffect } from "react";
 import { Button } from "antd";
-import mylover from "@/assets/images/mylover.png";
 import { FaArrowRight } from "react-icons/fa";
 import { useArchive } from "@/hooks/useArchive";
 import { IBannerInitialState } from "@/services/store/banner/banner.slice";
 import useAsyncEffect from "@/hooks/useAsyncEffect";
 import { getAllBanners } from "@/services/store/banner/banner.thunk";
-
-const bannerData = [
-  {
-    title: "Độc Quyền Cổ Điển",
-    subtitle: "Bộ Sưu Tập Nữ",
-    discount: "GIẢM ĐẾN 40%",
-    imageUrl: mylover,
-  },
-  {
-    title: "Giảm Giá Mùa Hè",
-    subtitle: "Bộ Sưu Tập Nam",
-    discount: "GIẢM ĐẾN 50%",
-    imageUrl: mylover,
-  },
-  {
-    title: "Hàng Mới Về",
-    subtitle: "Bộ Sưu Tập Trẻ Em",
-    discount: "GIẢM ĐẾN 30%",
-    imageUrl: mylover,
-  },
-  {
-    title: "Đặc Biệt Mùa Đông",
-    subtitle: "Phụ Kiện",
-    discount: "GIẢM ĐẾN 20%",
-    imageUrl: mylover,
-  },
-];
+import { Link } from "react-router-dom";
 
 const BannerSlider = () => {
   const [currentSlide, setCurrentSlide] = useState<number>(0);
@@ -47,8 +20,6 @@ const BannerSlider = () => {
   useEffect(() => {
     if (length > 0) {
       const timer = setInterval(() => {
-        // setCurrentSlide((prevSlide) => (prevSlide + 1) % length);
-
         setCurrentSlide((prevSlide) => (prevSlide + 1) % length);
       }, 5000);
 
@@ -57,7 +28,7 @@ const BannerSlider = () => {
   }, [length]);
 
   return (
-    <div className="relative h-96 w-full overflow-hidden rounded-sm bg-gray-10% px-5 md:h-[500px] lg:h-[600px]">
+    <div className="relative h-96 w-full overflow-hidden rounded-sm bg-gray-10% md:h-[500px] lg:h-[600px]">
       {state.banners.map((slide, index) => (
         <div
           key={index}
@@ -65,21 +36,20 @@ const BannerSlider = () => {
             index === currentSlide ? "opacity-100" : "opacity-0"
           }`}
         >
-          <div className="relative h-full items-center justify-center px-4 md:flex-row md:justify-between md:px-0">
-            <div className="text-white absolute z-10 flex w-full justify-end space-y-4 text-center md:space-y-6 md:text-left">
-              {/* <h3 className="text-white text-lg font-medium md:text-2xl">{slide.title}</h3>
-              <h2 className="text-white text-3xl font-bold md:text-6xl">{slide.description}</h2> */}
-              {/* <Button type="default" className="h-auto bg-dark-500 px-4 py-2 text-sm text-white-500 md:px-6 md:py-2 md:text-lg"> */}
-              {/* <a href={slide.path}>Mua ngay</a> */}
-              {/* <span className="ml-2">
-                  <FaArrowRight />
-                </span> */}
-              {/* </Button> */}
+          <div className="relative h-full">
+            <div className="absolute bottom-8 left-0 right-0 z-10 flex flex-col items-center justify-center px-4 md:bottom-12 md:items-start md:px-12 lg:bottom-16 lg:px-16">
+              <Button
+                type="default"
+                className="group flex items-center space-x-2 rounded-md bg-dark-500 px-10 py-8 text-base font-medium text-tertiary-5% transition-all hover:bg-gray-500 md:text-lg"
+              >
+                <Link to={slide.path} className="flex items-center">
+                  <span>Mua ngay</span>
+                  <FaArrowRight className="ml-2 transition-transform group-hover:translate-x-1" />
+                </Link>
+              </Button>
             </div>
-            <div className="relative h-48 w-full md:h-full">
-              <a href={slide.path}>
-                <img src={slide.imageUrl} alt="Banner" className="h-full w-full" />
-              </a>
+            <div className="block h-full">
+              <img src={slide.imageUrl} alt="Banner" className="h-full w-full object-cover" />
             </div>
           </div>
         </div>

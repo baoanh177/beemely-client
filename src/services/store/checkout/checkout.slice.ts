@@ -5,6 +5,7 @@ import VnPayLogo from "@/assets/images/vnpay-logo.svg";
 import { getShipingFeeFromGhn } from "./checkout.thunk";
 import { EFetchStatus } from "@/shared/enums/fetchStatus";
 import { IGHNApiRegsponse } from "@/shared/utils/shared-interfaces";
+import { IVoucher } from "../voucher/voucher.model";
 
 export const PAYMENT_METHODS: IPaymentMethodLabel[] = [
   { label: "Thanh toán Bằng PayOs", value: "payos", image: PayOsLogo },
@@ -32,6 +33,7 @@ const initialState: ICheckoutState = {
   shipping_fee: 0,
   paymentType: "payos",
   discount_price: 0,
+  voucher: undefined,
 };
 
 const checkoutSlice = createSlice({
@@ -46,6 +48,11 @@ const checkoutSlice = createSlice({
     },
     setPaymentMethod: (state, action: PayloadAction<TPaymentMethod>) => {
       state.paymentType = action.payload;
+    },
+    setVoucher: (state, action: PayloadAction<IVoucher & { discount: number }>) => {
+      const voucher = action.payload;
+      state.voucher = voucher;
+      state.discount_price = voucher.discount;
     },
     resetCheckout: () => initialState,
     resetShippingFee: (state, action: PayloadAction<number>) => {
@@ -69,5 +76,5 @@ const checkoutSlice = createSlice({
   },
 });
 
-export const { setCurrentStep, setShippingAddress, setPaymentMethod, resetCheckout, resetShippingFee } = checkoutSlice.actions;
+export const { setCurrentStep, setShippingAddress, setPaymentMethod, resetCheckout, resetShippingFee, setVoucher } = checkoutSlice.actions;
 export { checkoutSlice };
