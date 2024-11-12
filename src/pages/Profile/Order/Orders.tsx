@@ -7,6 +7,7 @@ import { getAllOrderByUser } from "@/services/store/order/order.thunk";
 import { IOrderItem } from "@/services/store/product/product.model";
 import { IReview } from "@/services/store/review/review.model";
 import { createReview } from "@/services/store/review/review.thunk";
+import { EStatusOrder } from "@/shared/enums/order";
 import { message } from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -74,14 +75,17 @@ const Orders = () => {
               </div>
               <div className="flex flex-col gap-2">
                 <Button text="View Order" size="full" variant="ghost" />
-                <Button
-                  text="Write A Review"
-                  size="full"
-                  onClick={() => {
-                    setSelectedOrderItem(order);
-                    setReviewModalOpen(true);
-                  }}
-                />
+                {item.orderStatus == EStatusOrder.SUCCESS && (
+                  <Button
+                    isDisabled={order.hasFeedback}
+                    text="Viết đánh giá"
+                    size="full"
+                    onClick={() => {
+                      setSelectedOrderItem(order);
+                      setReviewModalOpen(true);
+                    }}
+                  />
+                )}
               </div>
             </div>
           ))}

@@ -4,4 +4,5 @@ export enum EStatusOrder {
   SHIPPED = "shipped",
   DELIVERED = "delivered",
   CANCELLED = "cancelled",
+  SUCCESS = "success",
 }
