@@ -2,7 +2,7 @@ import { IInitialState, IResponse } from "@/shared/utils/shared-interfaces";
 import { IProduct } from "./product.model";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { EFetchStatus } from "@/shared/enums/fetchStatus";
-import { getAllProducts, getProductBySlug } from "./product.thunk";
+import { getAllProducts, getProductBySlug, getReviewByProduct } from "./product.thunk";
 
 export interface IProductInitialState extends IInitialState {
   products: IProduct[];
@@ -18,6 +18,7 @@ const initialState: IProductInitialState = {
   },
   totalRecords: 0,
   message: "",
+  reviews: [],
   status: EFetchStatus.IDLE,
 };
 
@@ -60,6 +61,21 @@ const productSlice = createSlice({
       .addCase(getProductBySlug.rejected, (state) => {
         state.status = EFetchStatus.REJECTED;
         state.message = "Failed to fetch product by slug";
+      });
+
+    //get review by prod
+    builder
+      .addCase(getReviewByProduct.pending, (state) => {
+        state.status = EFetchStatus.PENDING;
+        state.message = "";
+      })
+      .addCase(getReviewByProduct.fulfilled, (state, { payload }: PayloadAction<IResponse<IProduct>>) => {
+        state.reviews = payload.metaData;
+        state.status = EFetchStatus.FULFILLED;
+      })
+      .addCase(getReviewByProduct.rejected, (state) => {
+        state.status = EFetchStatus.REJECTED;
+        state.message = "Failed to fetch product by product";
       });
   },
 });

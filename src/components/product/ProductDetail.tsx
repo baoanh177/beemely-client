@@ -20,6 +20,8 @@ import QuantityInput from "../common/QuantityInput";
 import { IWishListInitialState } from "@/services/store/wishlist/wishlist.slice";
 import { addWishList } from "@/services/store/wishlist/wishlist.thunk";
 import toast from "react-hot-toast";
+import { getReviewByProduct } from "@/services/store/product/product.thunk";
+import { IProductInitialState } from "@/services/store/product/product.slice";
 
 interface ProductDetailsProps {
   product: IProduct;
@@ -38,6 +40,12 @@ const ProductDetails = ({ product, selectedVariant, setSelectedVariant }: Produc
 
   const { isOpen, onClose } = useProductModal();
 
+  const { state: productee, dispatch: e } = useArchive<IProductInitialState>("products");
+
+  useEffect(() => {
+    e(getReviewByProduct({ param: product.id }));
+  }, []);
+  console.log(productee);
   useEffect(() => {
     if (product && selectedColor && selectedSize) {
       const variant = product.variants.find((v) => v.color.id === selectedColor && v.size.id === selectedSize);

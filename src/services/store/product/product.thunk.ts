@@ -22,3 +22,12 @@ export const getProductBySlug = createAsyncThunk("product/getProductByIdSlug", a
     return rejectWithValue(error.response.data);
   }
 });
+
+export const getReviewByProduct = createAsyncThunk("product/getReviewByProduct", async (payload: IThunkPayload, { rejectWithValue }) => {
+  try {
+    const { response, data } = await client.get<IProduct>(`${productPrefix}/products/${payload.param}/reviews`);
+    return response.status >= 400 ? rejectWithValue(data) : data;
+  } catch (error: any) {
+    return rejectWithValue(error.response.data);
+  }
+});

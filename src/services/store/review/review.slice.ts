@@ -30,6 +30,7 @@ const reviewSlice = createSlice({
         state.status = EFetchStatus.PENDING;
       })
       .addCase(getAllReviews.fulfilled, (state, { payload }: PayloadAction<IResponse<IReview[]>>) => {
+        console.log(payload);
         state.reviews = payload.metaData;
         state.status = EFetchStatus.FULFILLED;
       })
