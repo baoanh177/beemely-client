@@ -90,7 +90,7 @@ const OrderSummary = () => {
       discount_price: discountPrice,
       regular_total_price: cartState.subTotal,
       note: checkoutState.shippingAddress.note || "",
-      voucher: checkoutState.voucher?.id || "",
+      voucher: checkoutState.voucher?.id || null,
     };
 
     try {
