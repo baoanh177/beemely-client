@@ -10,6 +10,7 @@ const BestsellerSection = () => {
   const { state, dispatch } = useArchive<IProductInitialState>("products");
   useAsyncEffect((async) => async(dispatch(getAllProducts({ query: { _pagination: false, ...state.filter } })), "getAllProductsLoading"), []);
 
+  console.log(state);
   const content = state.products.map((product, index) => {
     const sortVariants = [...product.variants].sort((a, b) => a.price - b.price);
     return (

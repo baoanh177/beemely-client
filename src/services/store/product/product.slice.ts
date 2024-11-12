@@ -39,6 +39,7 @@ const productSlice = createSlice({
         state.message = "";
       })
       .addCase(getAllProducts.fulfilled, (state, { payload }: PayloadAction<IResponse<IProduct[]>>) => {
+        console.log(payload);
         state.products = payload.metaData;
         state.totalRecords = payload.totalDocs ?? 0;
         state.status = EFetchStatus.FULFILLED;
