@@ -60,7 +60,6 @@ const cartSlice = createSlice({
       .addCase(updateCartItem.rejected, (state) => {
         state.status = EFetchStatus.REJECTED;
       })
-      //@ts-ignore
       .addCase(updateCartItem.fulfilled, (state, { payload }: PayloadAction<IResponse<ICart>>) => {
         state.cart = payload.metaData;
         state.subTotal = calculateCartTotal(payload.metaData);
