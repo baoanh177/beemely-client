@@ -16,10 +16,22 @@ export type StatusBadgeColors =
   | "darkgreen";
 
 export interface StatusBadgeProps {
-  text: string;
+  text: EStatusOrder;
   color: StatusBadgeColors | EStatusOrder;
   disabled?: boolean;
 }
+
+const CONVERT_STATUS = {
+  pending: "Chờ xác nhận",
+  processing: "Đang chuẩn bị hàng",
+  delivering: "Đang giao hàng",
+  delivered: "Đã giao hàng",
+  success: "Đơn hàng đã hoàn thành",
+  cancelled: "Đã hủy",
+  request_return: "Yêu cầu đổi trả",
+  returning: "Đang đổi trả",
+  returned: "Đã đổi trả",
+};
 
 const StatusBadge: React.FC<StatusBadgeProps> = ({ text, color, disabled = false }) => {
   // @ts-ignore
@@ -49,7 +61,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ text, color, disabled = false
 
   return (
     <div className={clsx(className, "text-m-semibold inline-block text-nowrap rounded-lg border-none px-[10px] py-1 text-center")}>
-      {text}
+      {CONVERT_STATUS[text]}
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { RiSearchLine } from "react-icons/ri";
@@ -7,10 +7,26 @@ import Logo from "@/assets/images/logo.png";
 import CartPopover from "../cart/CartPopover";
 import ButtonLogin from "./ButtonLogin";
 import UserDropdown from "./UserDropdown";
+import clsx from "clsx";
+import { Container } from "@/styles/common-styles";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
   const isLoggedIn = !!localStorage.getItem("accessToken");
+
+  const handleScroll = useCallback(() => {
+    const currentScrollY = window.scrollY;
+    setIsVisible(currentScrollY <= lastScrollY || currentScrollY <= 100);
+    setLastScrollY(currentScrollY);
+  }, [lastScrollY]);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [handleScroll]);
 
   useEffect(() => {
     if (open) {
@@ -24,8 +40,13 @@ const Navbar = () => {
   }, [open]);
 
   return (
-    <nav className="w-full bg-white-500">
-      <div className="flex items-center justify-between font-medium">
+    <nav
+      className={clsx(
+        "fixed left-0 right-0 top-0 z-50 flex items-center bg-white-500 transition-all duration-300",
+        isVisible ? "translate-y-0" : "-translate-y-full",
+      )}
+    >
+      <Container className="flex h-full w-full justify-between font-medium">
         <div className="z-50 flex w-full justify-between p-5 lg:w-auto">
           <Link to="/">
             <img src={Logo} alt="logo" className="h-9 cursor-pointer" />
@@ -39,10 +60,9 @@ const Navbar = () => {
             </button>
           </div>
         </div>
-        <ul className="hidden items-center justify-between gap-8 font-[Poppins] uppercase lg:flex">
+        <ul className="hidden items-center justify-between gap-8 text-sm uppercase lg:flex">
           <NavItem to="/">Trang chủ</NavItem>
           <NavItem to="/products">Cửa hàng</NavItem>
-          <NavItem to="/about">Câu chuyện của chúng tôi</NavItem>
           <NavItem to="/blog">Blog</NavItem>
           <NavItem to="/contact">Liên hệ</NavItem>
         </ul>
@@ -50,7 +70,7 @@ const Navbar = () => {
         <div className="hidden items-center space-x-4 lg:flex">
           <RiSearchLine className="text-lg" />
           <Link to="/profile/wishlists">
-            <FaRegHeart className="text-lg cursor-pointer" />
+            <FaRegHeart className="cursor-pointer text-lg" />
           </Link>
           <CartPopover />
           {isLoggedIn ? (
@@ -63,7 +83,7 @@ const Navbar = () => {
         </div>
 
         <MobileMenu open={open} setOpen={setOpen} isLoggedIn={isLoggedIn} />
-      </div>
+      </Container>
     </nav>
   );
 };
@@ -90,7 +110,7 @@ const MobileMenu = ({
     />
 
     <div
-      className={`absolute bottom-0 left-0 top-0 flex w-full max-w-sm flex-col bg-white-500 transition-transform duration-300 ${
+      className={`absolute inset-y-0 left-0 flex h-screen w-full max-w-sm flex-col bg-white-500 transition-transform duration-300 ${
         open ? "translate-x-0" : "-translate-x-full"
       }`}
     >
