@@ -1,5 +1,6 @@
 import { EActiveStatus } from "@/shared/enums/fetchStatus";
 import { EGender } from "@/shared/enums/genders";
+import { IWishList } from "../wishlist/wishlist.model";
 
 export interface IUserData {
   [key: string]: any;
@@ -18,6 +19,7 @@ export interface IUserProfile {
   vouchers: unknown[];
   isVerified: boolean;
   isNewUser: boolean;
+  wishlist: IWishList[];
 }
 
 export interface IAddress {

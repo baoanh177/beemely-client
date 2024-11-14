@@ -89,10 +89,10 @@ const Orders = () => {
                         <div className="flex flex-col gap-2">
                           <div className="font-semibold">{order.product.name}</div>
                           <div>
-                            Size: <span>{order.variant.size.name}</span>
+                            Kích cỡ: <span>{order.variant.size.name}</span>
                           </div>
                           <div>
-                            Qty: <span>{order.quantity}</span>
+                            Số lượng: <span>{order.quantity}</span>
                           </div>
                         </div>
                       </div>
