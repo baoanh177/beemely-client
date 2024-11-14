@@ -6,11 +6,10 @@ import { useProductModal } from "@/hooks/useProductModal";
 import { formatPrice } from "@/utils/curency";
 import { Link } from "react-router-dom";
 import { BsCartCheck } from "react-icons/bs";
-import { IWishListInitialState } from "@/services/store/wishlist/wishlist.slice";
 import { useArchive } from "@/hooks/useArchive";
 import { addWishList } from "@/services/store/wishlist/wishlist.thunk";
 import toast from "react-hot-toast";
-
+import { IAuthInitialState } from "@/services/store/auth/auth.slice";
 export interface IProductCardProps {
   productId?: string;
   slug: string;
@@ -34,8 +33,7 @@ const ProductCard = ({
   onRemove,
 }: IProductCardProps & { onRemove?: (id: string) => void }) => {
   const [imageSrc, setImageSrc] = useState<string>(image || "src/assets/images/errorbgcategory.jpg");
-  const { dispatch: wishlistDispatch, state: wishListState } = useArchive<IWishListInitialState>("wishlist");
-
+  const { dispatch: wishlistDispatch, state: wishListState } = useArchive<IAuthInitialState>("auth");
   const handleAddWishlist = () => {
     
     if (productId) {
@@ -51,7 +49,7 @@ const ProductCard = ({
     }
   };
   
-  const isInWishlist = Array.isArray(wishListState.products) && wishListState.products.some((item) => item.id === productId);
+  const isInWishlist =wishListState.profile?.wishlist.some((item) => item.id === productId);
 
   const { onOpen } = useProductModal();
 
@@ -85,6 +83,7 @@ const ProductCard = ({
                   toast.error("Sản phẩm đã có trong Wishlist");
                 }
               }}
+              isDisabled={!isInWishlist}
               className="transition-transform duration-300 ease-in-out hover:scale-110"
             />
           ) : (
