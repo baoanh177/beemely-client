@@ -9,7 +9,9 @@ import { BsCartCheck } from "react-icons/bs";
 import { useArchive } from "@/hooks/useArchive";
 import { addWishList } from "@/services/store/wishlist/wishlist.thunk";
 import toast from "react-hot-toast";
-import { IAuthInitialState } from "@/services/store/auth/auth.slice";
+import { addProductToWishlist, IAuthInitialState } from "@/services/store/auth/auth.slice";
+import { useDispatch } from "react-redux";
+import clsx from "clsx";
 export interface IProductCardProps {
   productId?: string;
   slug: string;
@@ -34,22 +36,23 @@ const ProductCard = ({
 }: IProductCardProps & { onRemove?: (id: string) => void }) => {
   const [imageSrc, setImageSrc] = useState<string>(image || "src/assets/images/errorbgcategory.jpg");
   const { dispatch: wishlistDispatch, state: wishListState } = useArchive<IAuthInitialState>("auth");
+  const dispatch = useDispatch();
   const handleAddWishlist = () => {
-    
     if (productId) {
       wishlistDispatch(addWishList({ param: productId }))
         .then(() => {
           toast.success("Thêm vào Wishlist thành công!");
+          if (wishListState.profile) {
+            const updatedWishlist = [...wishListState.profile.wishlist, productId];
+            dispatch(addProductToWishlist(updatedWishlist));
+          }
         })
-        .catch(() => {
-          toast.error("Thêm vào Wishlist thất bại");
-        });
-    } else {
-      toast.error("Sản phẩm không hợp lệ");
     }
   };
-  
-  const isInWishlist =wishListState.profile?.wishlist.some((item) => item.id === productId);
+
+
+
+  const isInWishlist = wishListState.profile?.wishlist.some((id) => id === productId);
 
   const { onOpen } = useProductModal();
 
@@ -75,7 +78,7 @@ const ProductCard = ({
               shape="rounded"
               icon={<CiHeart size={24} />}
               type="button"
-              variant="default"
+              variant={isInWishlist ? "danger" : "default"}
               onClick={() => {
                 if (!isInWishlist) {
                   handleAddWishlist();
@@ -83,8 +86,7 @@ const ProductCard = ({
                   toast.error("Sản phẩm đã có trong Wishlist");
                 }
               }}
-              isDisabled={!isInWishlist}
-              className="transition-transform duration-300 ease-in-out hover:scale-110"
+              className={clsx("transition-transform duration-300 ease-in-out hover:scale-110")}
             />
           ) : (
             <Button
