@@ -11,7 +11,6 @@ import CartProduct from "./CartProduct";
 
 const CartTable = () => {
   const { state, dispatch } = useArchive<ICartInitialState>("cart");
-
   const handleRemoveItem = (itemId: string) => {
     dispatch(deleteCartItem({ param: itemId }));
   };
