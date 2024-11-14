@@ -14,7 +14,9 @@ export const OrderConfirmation = () => {
 
   const formatedAddress = useMemo(
     () =>
-      `${checkoutState.shippingAddress.detail_address}, ${locationState.location.ward?.WardName}, ${locationState.location.district?.DistrictName}, ${locationState.location.province?.ProvinceName}`,
+      checkoutState.isUseUserAddress
+        ? `${checkoutState.shippingAddress.detail_address} - ${checkoutState.shippingAddress.commune} - ${checkoutState.shippingAddress.district} - ${checkoutState.shippingAddress.city}`
+        : `${checkoutState.shippingAddress.detail_address}, ${locationState.location.ward?.WardName}, ${locationState.location.district?.DistrictName}, ${locationState.location.province?.ProvinceName}`,
     [checkoutState.shippingAddress, locationState.location],
   );
   const curentPaymentMethod = PAYMENT_METHODS.find((item) => item.value === checkoutState.paymentType);
