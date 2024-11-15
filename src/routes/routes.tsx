@@ -33,6 +33,7 @@ import Personal from "@/pages/Profile/Personal/Personal";
 import Orders from "@/pages/Profile/Order/Orders";
 import ProfilePage from "@/pages/Profile";
 import OrderDetail from "@/pages/Profile/Order/OrderDetail";
+import ProductReviewList from "@/components/product-information/ProductReviewList";
 
 export interface IRoute {
   path: string;
@@ -79,6 +80,10 @@ export const routes: IRoute[] = [
           {
             path: "product/:id",
             element: () => <ProductPage />,
+          },
+          {
+            path: "products/:productId/reviews",
+            element: () => <ProductReviewList />,
           },
         ],
       },
