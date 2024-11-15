@@ -7,7 +7,7 @@ import { formatPrice } from "@/utils/curency";
 import { Link } from "react-router-dom";
 import { BsCartCheck } from "react-icons/bs";
 import { useArchive } from "@/hooks/useArchive";
-import { addWishList } from "@/services/store/wishlist/wishlist.thunk";
+import { addWishList, moveWishlist } from "@/services/store/wishlist/wishlist.thunk";
 import toast from "react-hot-toast";
 import { addProductToWishlist, IAuthInitialState } from "@/services/store/auth/auth.slice";
 import { useDispatch } from "react-redux";
@@ -37,21 +37,29 @@ const ProductCard = ({
   const [imageSrc, setImageSrc] = useState<string>(image || "src/assets/images/errorbgcategory.jpg");
   const { dispatch: wishlistDispatch, state: wishListState } = useArchive<IAuthInitialState>("auth");
   const dispatch = useDispatch();
-  const handleAddWishlist = () => {
+  const handleWishlistToggle = () => {
     if (productId) {
-      wishlistDispatch(addWishList({ param: productId }))
-        .then(() => {
-          toast.success("Thêm vào Wishlist thành công!");
-          if (wishListState.profile) {
-            const updatedWishlist = [...wishListState.profile.wishlist, productId];
-            dispatch(addProductToWishlist(updatedWishlist));
-          }
-        })
+      if (isInWishlist) {
+        wishlistDispatch(moveWishlist({ param: productId }))
+          .then(() => {
+            toast.success("Bỏ Wishlist thành công!");
+            if (wishListState.profile) {
+              const updatedWishlist = wishListState.profile.wishlist.filter((id) => id !== productId);
+              dispatch(addProductToWishlist(updatedWishlist));
+            }
+          });
+      } else {
+        wishlistDispatch(addWishList({ param: productId }))
+          .then(() => {
+            toast.success("Thêm vào Wishlist thành công!");
+            if (wishListState.profile) {
+              const updatedWishlist = [...wishListState.profile.wishlist, productId];
+              dispatch(addProductToWishlist(updatedWishlist));
+            }
+          });
+      }
     }
   };
-
-
-
   const isInWishlist = wishListState.profile?.wishlist.some((id) => id === productId);
 
   const { onOpen } = useProductModal();
@@ -79,15 +87,10 @@ const ProductCard = ({
               icon={<CiHeart size={24} />}
               type="button"
               variant={isInWishlist ? "danger" : "default"}
-              onClick={() => {
-                if (!isInWishlist) {
-                  handleAddWishlist();
-                } else {
-                  toast.error("Sản phẩm đã có trong Wishlist");
-                }
-              }}
+              onClick={handleWishlistToggle}
               className={clsx("transition-transform duration-300 ease-in-out hover:scale-110")}
             />
+
           ) : (
             <Button
               shape="rounded"

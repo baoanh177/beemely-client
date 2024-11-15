@@ -31,8 +31,6 @@ const authSlice = createSlice({
     addProductToWishlist(state, action: PayloadAction<string[]>) {
       if (state.profile) {
         state.profile.wishlist = action.payload;
-      } else {
-        console.warn("Profile is not available, cannot update wishlist");
       }
     },
   },
