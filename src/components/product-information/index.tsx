@@ -2,6 +2,7 @@ import { useState } from "react";
 import DescriptionProduct from "./DescriptionProduct";
 import InfomationProduct from "./InfomationProduct";
 import { IProductColor, ISize } from "@/services/store/product/product.model";
+import ProductReviewList from "./ProductReviewList";
 
 interface ProductInformationProps {
   product: {
@@ -41,7 +42,7 @@ const ProductInformation = ({ product }: ProductInformationProps) => {
       <div className="mt-4 flex w-full">
         {activeTab === "descriptions" && <DescriptionProduct description={product.description} />}
         {activeTab === "additional" && <InfomationProduct colors={colorNames} sizes={sizeNames} />}
-        {/* {activeTab === "reviews" && <ReviewProduct reviews={product.reviews} currentUser={currentUser} />} */}
+        {activeTab === "reviews" && <ProductReviewList />}
       </div>
     </div>
   );

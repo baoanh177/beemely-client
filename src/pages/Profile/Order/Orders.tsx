@@ -85,7 +85,7 @@ const Orders = () => {
     };
 
     try {
-      await dispatch(createReview(payload));
+      await dispatch(createReview({ body: payload }));
       message.success("Đánh giá của bạn đã được gửi thành công!");
 
       await dispatch(getAllOrderByUser({ query: { ...state.filter } }));

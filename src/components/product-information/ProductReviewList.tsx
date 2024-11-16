@@ -36,22 +36,31 @@ const ProductReviewList = () => {
     setReplyText(e.target.value);
   };
 
-  const handleReplySubmit = async (reviewId: string) => {
+  const handleReplySubmit = async (reviewId: string, orderItemId: string) => {
     if (!replyText.trim()) {
       message.error("Vui lòng nhập phản hồi trước khi gửi.");
       return;
     }
-    try {
-      await dispatch(createReview({ id: reviewId, reply: replyText, isReply: true }));
-      setReplies((prev) => ({
-        ...prev,
-        [reviewId]: replyText,
-      }));
-      setReplyText("");
-      message.success("Phản hồi đã được gửi thành công.");
-    } catch {
-      message.error("Có lỗi xảy ra khi gửi phản hồi.");
-    }
+    await dispatch(
+      createReview({
+        body: {
+          reply: reviewId,
+          orderItemId: orderItemId,
+          content: replyText,
+          rates: 2,
+        },
+      }),
+    );
+    setReplies((prev) => ({
+      ...prev,
+      [reviewId]: replyText,
+    }));
+    setReplyText("");
+    message.success("Phản hồi đã được gửi thành công.");
+    // try {
+    // } catch (error) {
+    //   message.error("Có lỗi xảy ra khi gửi phản hồi.");
+    // }
   };
 
   if (status === EFetchStatus.REJECTED) {
@@ -71,7 +80,7 @@ const ProductReviewList = () => {
           size="large"
           dataSource={reviewList}
           renderItem={(review: any) => (
-            <List.Item key={review._id}>
+            <List.Item key={review.id}>
               <Card style={{ marginBottom: "20px", borderRadius: "10px" }}>
                 <List.Item.Meta
                   avatar={<Avatar className="h-[55px] w-[55px]" src={review.user?.avatarUrl || "https://placehold.co/50x50"} />}
@@ -109,16 +118,16 @@ const ProductReviewList = () => {
                   </div>
                 )}
 
-                {replies[review._id] && (
+                {replies[review.id] && (
                   <div style={{ marginTop: "15px", padding: "10px", backgroundColor: "#fafafa", borderRadius: "5px" }}>
                     <Text type="secondary">
-                      <strong>Phản hồi từ cửa hàng:</strong> {replies[review._id]}
+                      <strong>Phản hồi từ cửa hàng:</strong> {replies[review.id]}
                     </Text>
                   </div>
                 )}
 
                 <div className="mt-4">
-                  <Form onFinish={() => handleReplySubmit(review._id)}>
+                  <Form onFinish={() => handleReplySubmit(review.id, review.orderItem.id)}>
                     <Form.Item name="reply" rules={[{ required: true, message: "Vui lòng nhập phản hồi!" }]}>
                       <Input.TextArea value={replyText} onChange={handleReplyChange} placeholder="Phản hồi đánh giá..." rows={2} />
                     </Form.Item>

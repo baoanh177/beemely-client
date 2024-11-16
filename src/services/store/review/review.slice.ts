@@ -1,9 +1,10 @@
+import { IInitialState, IResponse } from "./../../../shared/utils/shared-interfaces";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IReview } from "./review.model";
 import { createReview, getAllReviews } from "./review.thunk";
 import { EFetchStatus } from "@/shared/enums/fetchStatus";
 
-export interface IReviewInitialState {
+export interface IReviewInitialState extends IInitialState {
   status: EFetchStatus;
   message: string;
   reviews: IReview[];
@@ -29,19 +30,21 @@ const reviewSlice = createSlice({
       .addCase(getAllReviews.pending, (state) => {
         state.status = EFetchStatus.PENDING;
       })
-      .addCase(getAllReviews.fulfilled, (state, { payload }: PayloadAction<IReview[]>) => {
+      .addCase(getAllReviews.fulfilled, (state, { payload }: any) => {
         state.reviews = payload;
         state.status = EFetchStatus.FULFILLED;
       })
       .addCase(getAllReviews.rejected, (state, { payload }: PayloadAction<any>) => {
         state.status = EFetchStatus.REJECTED;
         state.message = payload?.message ?? "Có lỗi xảy ra khi lấy danh sách đánh giá";
-      })
+      });
+
+    builder
       .addCase(createReview.pending, (state) => {
         state.status = EFetchStatus.PENDING;
       })
-      .addCase(createReview.fulfilled, (state, { payload }: PayloadAction<IReview>) => {
-        state.reviews.push(payload);
+      .addCase(createReview.fulfilled, (state, { payload }: PayloadAction<IResponse<IReview>>) => {
+        // state.reviews.push(payload.metaData);
         state.status = EFetchStatus.FULFILLED;
         state.message = "Gửi đánh giá thành công";
       })

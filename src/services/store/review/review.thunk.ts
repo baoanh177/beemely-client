@@ -1,6 +1,7 @@
 import { client } from "@/services/config/client";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { IReview } from "./review.model";
+import { IThunkPayload } from "@/shared/utils/shared-interfaces";
 
 const prefix = "/api/client/reviews";
 
@@ -13,28 +14,11 @@ export const getAllReviews = createAsyncThunk("review/get-all-reviews", async (p
   }
 });
 
-export const createReview = createAsyncThunk(
-  "review/create-review",
-  async (payload: Partial<IReview> & { isReply?: boolean }, { rejectWithValue }) => {
-    try {
-      const url = prefix;
-      const requestData: Record<string, any> = payload.isReply
-        ? {
-            id: payload.id,
-            reply: payload.reply,
-            content: "",
-            rates: 0,
-          }
-        : {
-            content: payload.content,
-            rates: payload.rates,
-            orderItemId: payload.orderItemId,
-          };
-
-      const { response, data } = await client.post(url, requestData);
-      return response.status >= 400 ? rejectWithValue(data) : data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data ?? { message: "Có lỗi xảy ra khi gửi yêu cầu" });
-    }
-  },
-);
+export const createReview = createAsyncThunk("review/create-review", async (payload: IThunkPayload, { rejectWithValue }) => {
+  try {
+    const { response, data } = await client.post<IReview>(prefix, payload);
+    return response.status >= 400 ? rejectWithValue(data) : data;
+  } catch (error: any) {
+    return rejectWithValue(error.response?.data ?? { message: "Có lỗi xảy ra khi gửi yêu cầu" });
+  }
+});

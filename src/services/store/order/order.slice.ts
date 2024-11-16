@@ -15,7 +15,7 @@ const initialState: IOrderInitialState = {
   message: "",
   orders: [],
   acctiveOrder: null,
-  filter: { order_status: "" }, 
+  filter: { order_status: "" },
 };
 
 const orderSlice = createSlice({
