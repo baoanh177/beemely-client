@@ -47,28 +47,24 @@ const ProductDetails = ({ product, selectedVariant, setSelectedVariant }: Produc
     }
   }, [product, selectedColor, selectedSize, setSelectedVariant]);
 
-
-
   const handleWishlistToggle = () => {
     if (product.id) {
       if (isInWishlist) {
-        wishlistDispatch(moveWishlist({ param: product.id }))
-          .then(() => {
-            toast.success("Bỏ Wishlist thành công!");
-            if (wishListState.profile) {
-              const updatedWishlist = wishListState.profile.wishlist.filter((id) => id !== product.id);
-              dispatch(addProductToWishlist(updatedWishlist));
-            }
-          });
+        wishlistDispatch(moveWishlist({ param: product.id })).then(() => {
+          toast.success("Bỏ Wishlist thành công!");
+          if (wishListState.profile) {
+            const updatedWishlist = wishListState.profile.wishlist.filter((id) => id !== product.id);
+            dispatch(addProductToWishlist(updatedWishlist));
+          }
+        });
       } else {
-        wishlistDispatch(addWishList({ param: product.id }))
-          .then(() => {
-            toast.success("Thêm vào Wishlist thành công!");
-            if (wishListState.profile) {
-              const updatedWishlist = [...wishListState.profile.wishlist, product.id];
-              dispatch(addProductToWishlist(updatedWishlist));
-            }
-          });
+        wishlistDispatch(addWishList({ param: product.id })).then(() => {
+          toast.success("Thêm vào Wishlist thành công!");
+          if (wishListState.profile) {
+            const updatedWishlist = [...wishListState.profile.wishlist, product.id];
+            dispatch(addProductToWishlist(updatedWishlist));
+          }
+        });
       }
     }
   };
@@ -96,14 +92,14 @@ const ProductDetails = ({ product, selectedVariant, setSelectedVariant }: Produc
     reset: resetStatus,
     actions: isAddingToCart
       ? {
-        success: {
-          message: "Thêm giỏ hàng thành công!",
-          onFinish: isOpen ? onClose : undefined,
-        },
-        error: {
-          message: cartState.message,
-        },
-      }
+          success: {
+            message: "Thêm giỏ hàng thành công!",
+            onFinish: isOpen ? onClose : undefined,
+          },
+          error: {
+            message: cartState.message,
+          },
+        }
       : undefined,
   });
 
@@ -133,20 +129,20 @@ const ProductDetails = ({ product, selectedVariant, setSelectedVariant }: Produc
         </div>
         <div className="flex w-full gap-4">
           <Button
-            isDisabled={!selectedSize || !selectedColor || cartState.status === EFetchStatus.PENDING || !authState.isLogin}
+            isDisabled={!selectedSize || !selectedColor || cartState.status === EFetchStatus.PENDING || !wishListState.isLogin}
             icon={<FaShoppingCart className="mr-2" />}
             onClick={handleAddCart}
             className="grow"
             text="Thêm sản phẩm vào giỏ hàng"
           />
 
-           <Button
-              shape="rectangle"
-              icon={<BsHeart size={24} className="h-5 w-5" />}
-              type="button"
-              variant={isInWishlist ? "danger" : "secondary"}
-              onClick={handleWishlistToggle}
-            />
+          <Button
+            shape="rectangle"
+            icon={<BsHeart size={24} className="h-5 w-5" />}
+            type="button"
+            variant={isInWishlist ? "danger" : "secondary"}
+            onClick={handleWishlistToggle}
+          />
         </div>
       </div>
     </div>
