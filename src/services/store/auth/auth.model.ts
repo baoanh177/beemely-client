@@ -18,6 +18,7 @@ export interface IUserProfile {
   vouchers: unknown[];
   isVerified: boolean;
   isNewUser: boolean;
+  wishlist: string[];
 }
 
 export interface IAddress {

@@ -1,5 +1,5 @@
-import { ReactNode, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { ReactNode } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import { CiHeart, CiUser } from "react-icons/ci";
 import { PiCodesandboxLogoThin, PiMapPinLight } from "react-icons/pi";
@@ -44,9 +44,15 @@ const profileItems: ProfileItem[] = [
     icon: <IoIosNotificationsOutline size={24} />,
   },
 ];
+
 const Menu = () => {
   const navigate = useNavigate();
-  const [selectedKey, setSelectedKey] = useState("personal");
+  const location = useLocation();
+    const currentPath = location.pathname.replace("/profile/", "");
+  const mainPath = currentPath.split('/')[0];
+  
+  const selectedKey = profileItems.find(item => item.key === mainPath)?.key || "personal";
+  
   return (
     <nav>
       <ul className="flex flex-col gap-2">
@@ -59,7 +65,6 @@ const Menu = () => {
             )}
             onClick={() => {
               if (item.path) {
-                setSelectedKey(item.key);
                 navigate(item.path);
               }
             }}
