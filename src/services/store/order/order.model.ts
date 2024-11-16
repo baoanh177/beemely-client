@@ -20,7 +20,7 @@ export interface IOrder {
   uniqueId: string;
 }
 
-interface IOrderItem {
+export interface IOrderItem {
   id: string;
   product: IProduct;
   quantity: number;

@@ -15,7 +15,7 @@ const BestsellerSection = () => {
 
   const content = state.products.map((product, index) => {
     const sortVariants = [...product.variants].sort((a, b) => a.price - b.price);
-    
+
     return (
       <ProductCard
         productId={product.id}
@@ -32,8 +32,8 @@ const BestsellerSection = () => {
   });
 
   return (
-    <Container className="space-y-10">
-      <Title text="Sản phẩm bán chạy nhất" isCenter className="text-3xl font-normal" />
+    <Container className="space-y-4">
+      <Title text="Sản phẩm bán chạy nhất" isCenter className="text-xl md:text-3xl" />
       <div className="grid grid-cols-2 gap-4 gap-y-6 pb-10 pt-6 md:grid-cols-3 md:gap-6 lg:grid-cols-4">{content}</div>
     </Container>
   );

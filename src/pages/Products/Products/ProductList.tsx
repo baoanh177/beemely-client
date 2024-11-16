@@ -13,11 +13,12 @@ const ProductList: React.FC<ProductProps> = ({ products }) => {
         key={index}
         slug={product?.slug}
         image={product?.thumbnail}
-        description={product?.description}
+        description={product?.sortDescription}
         type="wishlist"
         regularPrice={product?.maxPrice ?? 0}
         discountPrice={product?.minPrice}
         name={product.name}
+        productId={product.id}
       />
     );
   });

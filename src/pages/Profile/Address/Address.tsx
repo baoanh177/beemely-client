@@ -170,10 +170,18 @@ const Address = () => {
             <div className="flex flex-col gap-2">
               <div className="text-lg font-semibold">{address.detailAddress}</div>
               <div>{`${address.city}, ${address.district}`}</div>
-              <div className="flex items-center gap-2">
-                <FiPhoneCall size={20} /> <span>( {state.profile?.phone} )</span>
-              </div>
-              <FormCheck label="Địa chỉ mặc định" checked={address.default} onChange={() => handleDefaultChange(index)} type="checkbox" />{" "}
+              {state.profile?.phone && (
+                <div className="flex items-center gap-2">
+                  <FiPhoneCall size={20} /> <span>( {state.profile?.phone} )</span>
+                </div>
+              )}
+              <FormCheck
+                label="Địa chỉ mặc định"
+                id={address.id}
+                checked={address.default}
+                onChange={() => handleDefaultChange(index)}
+                type="checkbox"
+              />
             </div>
             <div className="flex w-[100px] flex-col gap-4">
               <Button
@@ -194,7 +202,7 @@ const Address = () => {
         }}
         width={500}
         title={currentAddressIndex !== null ? "Cập nhật địa chỉ" : "Thêm địa chỉ"}
-        visible={isModalVisible}
+        open={isModalVisible}
         onOk={handleEditProfile}
         onCancel={handleCancel}
       >

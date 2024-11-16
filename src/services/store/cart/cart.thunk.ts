@@ -34,7 +34,7 @@ export const deleteCartItem = createAsyncThunk("cart/delete-cart-item", async (p
 
 export const updateCartItem = createAsyncThunk("cart/update-cart-item", async (payload: IThunkPayload, { rejectWithValue }) => {
   try {
-    const { response, data } = await client.patch(`${prefix}/${payload.param}`, payload);
+    const { response, data } = await client.patch<ICart>(prefix, payload);
     return response.status >= 400 ? rejectWithValue(data) : data;
   } catch (error: any) {
     return rejectWithValue(error.response.data);

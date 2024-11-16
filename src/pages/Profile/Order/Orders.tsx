@@ -14,7 +14,10 @@ import { useState } from "react";
 import { IReview } from "@/services/store/review/review.model";
 import { message } from "antd";
 import { createReview } from "@/services/store/review/review.thunk";
+import { Card, Empty, Modal } from "antd";
+import { formatPrice } from "@/utils/curency";
 
+const { confirm } = Modal;
 const Orders = () => {
   const navigate = useNavigate();
   const { state, dispatch } = useArchive<IOrderInitialState>("order");
@@ -26,15 +29,21 @@ const Orders = () => {
     [JSON.stringify(state.filter)],
   );
 
-  const Skeleton: React.FC = () => <div className="h-72 w-full animate-pulse rounded-md bg-gray-20%"></div>;
+  const Skeleton: React.FC = () => (
+    <div className="flex flex-col gap-4">
+      <div className="h-14 w-full animate-pulse rounded-md bg-gray-20%" />
+      <div className="h-14 w-full animate-pulse rounded-md bg-gray-20%" />
+      <div className="h-14 w-full animate-pulse rounded-md bg-gray-20%" />
+    </div>
+  );
 
   const EStatusOrderLabels: { [key in EStatusOrder]: string } = {
-    [EStatusOrder.PENDING]: "Đang chờ",
-    [EStatusOrder.PROCESSING]: "Đang tiến hành",
+    [EStatusOrder.PENDING]: "Đang chờ xác nhận",
+    [EStatusOrder.PROCESSING]: "Đang chuẩn bị hàng",
     [EStatusOrder.DELIVERING]: "Đang giao hàng",
     [EStatusOrder.DELIVERED]: "Giao thành công",
     [EStatusOrder.SUCCESS]: "Đã hoàn thành",
-    [EStatusOrder.CANCELLED]: "Thất bại",
+    [EStatusOrder.CANCELLED]: "Đã hủy",
     [EStatusOrder.REQUEST_RETURN]: "Yêu cầu hoàn trả",
     [EStatusOrder.RETURNING]: "Đang hoàn trả",
     [EStatusOrder.RETURNED]: "Đã hoàn trả",
@@ -67,24 +76,23 @@ const Orders = () => {
       message.error("Vui lòng điền đầy đủ thông tin đánh giá.");
       return;
     }
+
     const payload = {
       content: values.content,
       rates: values.rates,
       orderItemId: selectedOrderItem?.id || "",
       images: values.images ?? [],
     };
+
     try {
       await dispatch(createReview(payload));
       message.success("Đánh giá của bạn đã được gửi thành công!");
+
+      await dispatch(getAllOrderByUser({ query: { ...state.filter } }));
       if (selectedOrderItem) {
-        await dispatch(
-          updateOrder({
-            param: selectedOrderItem.id,
-            body: { hasFeedback: true },
-          }),
-        );
         navigate(`/products/${selectedOrderItem.product.id}/reviews`);
       }
+
       setReviewModalOpen(false);
     } catch (error) {
       console.log("Error: ", error);
@@ -98,86 +106,119 @@ const Orders = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-6">
       <DefaultSearch {...defaultSearch} />
-      {getAllOrderLoading && <Skeleton />}
-      {!getAllOrderLoading &&
-        state.orders.map((item) => (
-          <div key={item.id} className="flex flex-col gap-4 border-b border-gray-80% pb-6">
-            {item.items.map((order) => (
-              <div key={order.id} className="flex items-center justify-between">
-                <div className="flex w-[400px] flex-col gap-4">
-                  <div className="flex gap-4">
-                    <img className="w-[100px]" src={order.product.thumbnail} alt={order.product.name} />
-                    <div className="flex flex-col gap-2">
-                      <div className="font-semibold">{order.product.name}</div>
-                      <div>
-                        Size: <span>{order.variant.size.name}</span>
-                      </div>
-                      <div>
-                        Qty: <span>{order.quantity}</span>
+      {getAllOrderLoading ? (
+        <Skeleton />
+      ) : (
+        <>
+          {state.orders.length ? (
+            state.orders.map((item) => (
+              <Card key={item.id} className="flex flex-col gap-4 border-b border-gray-80% pb-6">
+                {item.items.map((order) => (
+                  <div key={order.id} className="mt-2 flex items-center justify-between">
+                    <div className="flex w-[400px] flex-col gap-4">
+                      <div className="flex gap-4">
+                        <img className="aspect-square h-20 w-20" src={order.product.thumbnail} alt={order.product.name} />
+                        <div className="flex flex-col gap-2">
+                          <div className="font-semibold">{order.product.name}</div>
+                          <div>
+                            Kích cỡ: <span>{order.variant.size.name}</span>
+                          </div>
+                          <div>
+                            Số lượng: <span>{order.quantity}</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
+                    <div className="flex items-center gap-4">
+                      <div className="font-bold">{formatPrice(order.price)}</div>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-4">
-                    <StatusBadge color={item.orderStatus} text={item.orderStatus} />
-                    <div>Your product has been delivered</div>
+                ))}
+                <div className="mt-2 flex w-full justify-between gap-2">
+                  <div>
+                    <StatusBadge text={item.orderStatus} color={item.orderStatus} />
                   </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="font-bold">${order.price}</div>
-                </div>
-                <div className="flex flex-col gap-2">
-                  <Link to={`/profile/orders/detail/${item.id}`}>
-                    <Button className="h-[45px]" text="Chi tiết đơn hàng" size="full" />
-                  </Link>
-                  {item.orderStatus === EStatusOrder.SUCCESS &&
-                    (order.hasFeedback ? (
+                  <div className="flex flex-col gap-2">
+                    <Link to={`/profile/orders/detail/${item.id}`}>
+                      <Button size="full" className="h-[45px]" text="Chi tiết đơn hàng" />
+                    </Link>
+                    {item.orderStatus === EStatusOrder.SUCCESS &&
+                      item.items.map((orderItem) =>
+                        orderItem.hasFeedback ? (
+                          <Button
+                            key={`feedback-${orderItem.id}`}
+                            className="h-[45px]"
+                            text="Xem đánh giá"
+                            size="full"
+                            variant="ghost"
+                            onClick={() => navigate(`/products/${orderItem.product.id}/reviews`)}
+                          />
+                        ) : (
+                          <Button
+                            key={`review-${orderItem.id}`}
+                            className="h-[45px]"
+                            text="Đánh giá"
+                            size="full"
+                            variant="ghost"
+                            onClick={() => {
+                              setSelectedOrderItem(orderItem);
+                              setReviewModalOpen(true);
+                            }}
+                          />
+                        ),
+                      )}
+                    {item.orderStatus === EStatusOrder.PENDING && (
                       <Button
-                        className="h-[45px]"
-                        text="Xem đánh giá"
                         size="full"
-                        variant="ghost"
-                        onClick={() => navigate(`/products/${order.product.id}/reviews`)}
-                      />
-                    ) : (
-                      <Button
                         className="h-[45px]"
-                        text="Đánh giá"
-                        size="full"
-                        variant="ghost"
+                        text="Hủy đơn hàng"
+                        variant="danger"
                         onClick={() => {
-                          setSelectedOrderItem(order);
-                          setReviewModalOpen(true);
+                          confirm({
+                            title: "Hủy đơn hàng",
+                            content: "Bạn có chắc chắn muốn hủy đơn hàng này không?",
+                            onOk: () => handleCancelOrder(item.id),
+                            okText: "Hủy đơn hàng",
+                            cancelText: "Không",
+                          });
                         }}
                       />
-                    ))}
-                  {item.orderStatus === EStatusOrder.PENDING && (
-                    <Button className="h-[45px]" text="Hủy đơn hàng" size="full" variant="danger" onClick={() => handleCancelOrder(item.id)} />
-                  )}
-                  {item.orderStatus === EStatusOrder.DELIVERED && (
-                    <Button className="h-[45px]" text="Đã nhận hàng" size="full" variant="danger" onClick={() => handleSuccessOrder(item.id)} />
-                  )}
-                  {item.orderStatus === EStatusOrder.DELIVERED && (
-                    <Button
-                      className="h-[45px]"
-                      text="Yêu cầu hoàn trả"
-                      size="full"
-                      variant="danger"
-                      onClick={() => handleRequestReturnOrder(item.id)}
-                    />
-                  )}
+                    )}
+                    {item.orderStatus === EStatusOrder.DELIVERED && (
+                      <Button
+                        size="full"
+                        className="h-[45px]"
+                        text="Đã nhận hàng"
+                        variant="danger"
+                        onClick={() => handleSuccessOrder(item.id)}
+                      />
+                    )}
+                    {item.orderStatus === EStatusOrder.DELIVERED && (
+                      <Button
+                        size="full"
+                        className="h-[45px]"
+                        text="Yêu cầu hoàn trả"
+                        variant="danger"
+                        onClick={() => handleRequestReturnOrder(item.id)}
+                      />
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        ))}
-      <ReviewModal
-        isOpen={reviewModalOpen}
-        onClose={() => setReviewModalOpen(false)}
-        onSubmit={handleReviewSubmit}
-        selectedOrderItem={selectedOrderItem}
-      />
+              </Card>
+            ))
+          ) : (
+            <Empty description={<span className="font-semibold">Không tìm thấy đơn hàng nào</span>} />
+          )}
+          <ReviewModal
+            isOpen={reviewModalOpen}
+            onClose={() => setReviewModalOpen(false)}
+            onSubmit={handleReviewSubmit}
+            selectedOrderItem={selectedOrderItem}
+          />
+        </>
+      )}
     </div>
   );
 };

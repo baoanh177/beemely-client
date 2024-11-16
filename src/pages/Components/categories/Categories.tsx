@@ -12,33 +12,6 @@ import { ICategoryInitialState } from "@/services/store/category/category.slice"
 import useAsyncEffect from "@/hooks/useAsyncEffect";
 import { getAllCategories } from "@/services/store/category/category.thunk";
 
-const categoriesData = [
-  {
-    name: "Ethnic Wear",
-    imageUrl: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    name: "Western Wear",
-    imageUrl: "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    name: "Formal Wear",
-    imageUrl: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    name: "Casual Wear",
-    imageUrl: "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    name: "Sports Wear",
-    imageUrl: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    name: "Accessories",
-    imageUrl: "https://images.unsplash.com/photo-1523779917675-b6ed3a42a561?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-  },
-];
-
 const Categories: React.FC = () => {
   const carouselRef = React.useRef<CarouselRef>(null);
 
@@ -58,19 +31,19 @@ const Categories: React.FC = () => {
   return (
     <div className="relative">
       <div className="mb-6 flex items-center justify-between">
-        <Title text="Danh mục sản phẩm" className="text-4xl" />
+        <Title text="Danh mục sản phẩm" className="text-xl md:text-3xl" />
         <div className="flex gap-2">
           <Button
             variant="secondary"
             shape="rectangle"
-            icon={<IoMdArrowBack className="h-6 w-6" />}
+            icon={<IoMdArrowBack className="h-4 w-4" />}
             onClick={handlePrev}
             aria-label="Previous slide"
           />
           <Button
             variant="primary"
             shape="rectangle"
-            icon={<IoMdArrowForward className="h-6 w-6" />}
+            icon={<IoMdArrowForward className="h-4 w-4" />}
             onClick={handleNext}
             aria-label="Next slide"
           />
