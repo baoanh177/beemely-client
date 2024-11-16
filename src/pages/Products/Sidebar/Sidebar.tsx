@@ -9,8 +9,8 @@ import { getAllSize } from "@/services/store/size/size.thunk";
 interface SidebarProps {
   filters: {
     gender: string;
-    color: string[];
-    size: string[];
+    color: string;
+    size: string;
   };
   onFilterChange: (type: string, value: string | string[]) => void;
 }
@@ -27,11 +27,7 @@ const Sidebar: React.FC<SidebarProps> = ({ filters, onFilterChange }) => {
   }, [dispatchColors]);
 
   const handleCheckboxChange = (type: string, value: string) => {
-    if (type === "size" || type === "color") {
-      const currentValues = filters[type];
-      const newValues = currentValues.includes(value) ? currentValues.filter((v) => v !== value) : [...currentValues, value];
-      onFilterChange(type, newValues);
-    } else {
+    if (type === "size" || type === "color" || type === "gender") {
       onFilterChange(type, value);
     }
   };

@@ -11,8 +11,8 @@ export interface IProductInitialState extends IInitialState {
     _page: number;
     _limit: number;
     gender?: string;
-    color?: string[];
-    size?: string[];
+    color?: string;
+    size?: string;
   };
 }
 
@@ -23,8 +23,8 @@ const initialState: IProductInitialState = {
     _page: 1,
     _limit: 10,
     gender: "",
-    color: [],
-    size: [],
+    color: "",
+    size: "",
   },
   totalRecords: 0,
   message: "",

@@ -12,8 +12,8 @@ function Products() {
   const { products } = state;
   const [filters, setFilters] = useState({
     gender: "",
-    color: [] as string[],
-    size: [] as string[],
+    color: "",
+    size: "",
   });
 
   useEffect(() => {

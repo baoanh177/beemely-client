@@ -6,8 +6,8 @@ interface ProductListProps {
   products: IProduct[];
   filters: {
     gender: string;
-    size: string[];
-    color: string[];
+    size: string;
+    color: string;
   };
 }
 
