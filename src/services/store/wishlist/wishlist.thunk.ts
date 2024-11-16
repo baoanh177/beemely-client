@@ -21,6 +21,14 @@ export const deleteWishlist = createAsyncThunk("wishlist/delete-item-wishlish", 
     return rejectWithValue(error.response.data);
   }
 });
+export const moveWishlist = createAsyncThunk("wishlist/move-item-wishlish", async (payload: IThunkPayload, { rejectWithValue }) => {
+  try {
+    const { response, data } = await client.patch(`${prefix}/wishlist/${payload.param}/remove`);
+    return response.status >= 400 ? rejectWithValue(data) : payload.param;
+  } catch (error: any) {
+    return rejectWithValue(error.response.data);
+  }
+});
 export const addWishList = createAsyncThunk("wishlist/add-item-wishlish", async (payload: IThunkPayload, { rejectWithValue }) => {
   try {
     const { response, data } = await client.patch(`${prefix}/wishlist/${payload.param}/add`);

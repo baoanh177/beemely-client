@@ -23,6 +23,7 @@ const ProductList: React.FC<ProductListProps> = ({ products }) => {
         regularPrice={product.minPrice || 0}
         discountPrice={product.maxPrice || 0}
         name={product.name}
+        productId={product.id}
       />
     );
   });

@@ -28,6 +28,11 @@ const authSlice = createSlice({
       state.status = EFetchStatus.IDLE;
       state.message = "";
     },
+    addProductToWishlist(state, action: PayloadAction<string[]>) {
+      if (state.profile) {
+        state.profile.wishlist = action.payload;
+      }
+    },
   },
 
   extraReducers(builder) {
@@ -149,5 +154,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { resetStatus } = authSlice.actions;
+export const { resetStatus, addProductToWishlist } = authSlice.actions;
 export { authSlice };
