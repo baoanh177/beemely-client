@@ -58,6 +58,10 @@ const checkoutSlice = createSlice({
     resetShippingFee: (state, action: PayloadAction<number>) => {
       state.shipping_fee = action.payload;
     },
+    resetVoucher: (state) => {
+      state.voucher = undefined;
+      state.discount_price = 0;
+    },
   },
   extraReducers(builder) {
     builder
@@ -76,5 +80,6 @@ const checkoutSlice = createSlice({
   },
 });
 
-export const { setCurrentStep, setShippingAddress, setPaymentMethod, resetCheckout, resetShippingFee, setVoucher } = checkoutSlice.actions;
+export const { setCurrentStep, setShippingAddress, setPaymentMethod, resetCheckout, resetShippingFee, setVoucher, resetVoucher } =
+  checkoutSlice.actions;
 export { checkoutSlice };

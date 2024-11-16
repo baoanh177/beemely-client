@@ -17,7 +17,6 @@ const Personal = () => {
   const [phone, setPhone] = useState<string>(state.profile?.phone || "");
   const [email, setEmail] = useState<string>(state.profile?.email || "");
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [avatar, setAvatar] = useState<string>(state.profile?.avatarUrl || "");
   const handleOpenModal = () => {
     setIsModalVisible(true);
   };
@@ -27,7 +26,7 @@ const Personal = () => {
   };
 
   const handleUploadImage = (imageUrl: string | string[]) => {
-    setAvatar(Array.isArray(imageUrl) ? imageUrl[0] : imageUrl);
+    dispatch(editProfile({ body: { avatar_url: Array.isArray(imageUrl) ? imageUrl[0] : imageUrl } }));
     handleCloseModal();
   };
 
@@ -35,14 +34,13 @@ const Personal = () => {
     setFullName(state.profile?.fullName || "");
     setPhone(state.profile?.phone || "");
     setEmail(state.profile?.email || "");
-    setAvatar(state.profile?.avatarUrl || "");
   }, [state.profile]);
 
   const handleEditProfile = () => {
     const updatedProfile = {
       full_name: fullName,
       gender: state.profile?.gender,
-      avatar_url: avatar,
+      phone: phone,
     };
     dispatch(editProfile({ body: updatedProfile }));
   };
@@ -59,7 +57,7 @@ const Personal = () => {
             <MdOutlineSaveAlt size={16} />
           </div>
         </div>
-        <Modal title="Tải lên hình ảnh" visible={isModalVisible} onCancel={handleCloseModal} footer={null}>
+        <Modal title="Tải lên hình ảnh" open={isModalVisible} onCancel={handleCloseModal} footer={null}>
           <UploadImage currentImageUrl={state.profile?.avatarUrl} onImageUpload={handleUploadImage} />
         </Modal>
         <Button icon={<MdOutlineSaveAlt />} className="h-[50px]" text="Cập nhật" onClick={handleEditProfile} />
@@ -72,12 +70,13 @@ const Personal = () => {
           </div>
           <div className="flex w-full flex-col gap-1">
             <Label text="Giới tính" />
-            <div className="flex gap-4">
+            <div className="flex gap-6">
               {(Object.keys(EGender) as Array<keyof typeof EGender>).map((key, index) => (
                 <FormCheck
                   key={index}
                   type="radio"
                   label={EGender[key]}
+                  id={EGender[key]}
                   name="gender"
                   checked={state.profile?.gender === EGender[key]}
                   value={EGender[key]}

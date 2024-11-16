@@ -19,7 +19,7 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children }) => {
           </Container>
         </section>
       </header>
-      <main>
+      <main className="pt-[100px]">
         {children}
         <Outlet />
       </main>

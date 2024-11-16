@@ -9,12 +9,12 @@ import PaymentStatusBadge from "@/components/common/PaymentStatusBadge";
 import imgPayos from "@/assets/images/payos-logo.svg";
 import imgVnPay from "@/assets/images/vnpay.png";
 import { Image } from "antd";
+import { formatPrice } from "@/utils/curency";
 
 const OrderDetail = () => {
   const { state, dispatch } = useArchive<IOrderInitialState>("order");
   const { id } = useParams();
   const activeOrder = state.acctiveOrder;
-
 
   useEffect(() => {
     dispatch(getOrderDetail({ param: id }));
@@ -22,30 +22,30 @@ const OrderDetail = () => {
 
   if (!activeOrder) {
     return (
-      <div className="min-h-screen flex justify-center items-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-t-2 border-blue-500"></div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto pb-6 space-y-8">
+    <div className="mx-auto max-w-4xl space-y-8 pb-6">
       {/* Order Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Order #{activeOrder.uniqueId}</h1>
+          <h1 className="text-gray-900 text-2xl font-bold">Đơn hàng #{activeOrder.uniqueId}</h1>
           <p className="text-sm text-gray-500"></p>
         </div>
         <StatusBadge color={activeOrder.orderStatus} text={activeOrder.orderStatus} />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 gap-8 ">
         {/* Customer Information */}
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-lg font-semibold mb-4">Customer Information</h2>
+        <div className="bg-white rounded-lg p-6 shadow">
+          <h2 className="mb-4 text-lg font-semibold">Thông tin người nhận</h2>
           <div className="space-y-3">
             <div className="flex justify-between">
-              <span className="text-gray-600">Name:</span>
+              <span className="text-gray-600">Tên:</span>
               <span className="font-medium">{activeOrder.userName}</span>
             </div>
             <div className="flex justify-between">
@@ -53,46 +53,31 @@ const OrderDetail = () => {
               <span className="font-medium">{activeOrder.userEmail}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">Phone:</span>
+              <span className="text-gray-600">Số điện thoại:</span>
               <span className="font-medium">{activeOrder.phoneNumber}</span>
             </div>
-          </div>
-        </div>
-
-        {/* Shipping Information */}
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-lg font-semibold mb-4">Shipping Details</h2>
-          <div className="space-y-3">
             <div className="flex justify-between">
-              <span className="text-gray-600">Address:</span>
-              <span className="font-medium text-right flex-1 ml-4">{activeOrder.shippingAddress}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">Shipping Fee:</span>
-              <span className="font-medium">₫{activeOrder.shippingFee.toLocaleString()}</span>
+              <span className="text-gray-600">Địa chỉ:</span>
+              <span className="ml-4 flex-1 text-right font-medium">{activeOrder.shippingAddress}</span>
             </div>
           </div>
-        </div>
+        </div>      
       </div>
 
       {/* Order Items */}
-      <div className="bg-white p-6 rounded-lg shadow">
-        <h2 className="text-lg font-semibold mb-4">Order Items</h2>
+      <div className="bg-white rounded-lg p-6 shadow">
+        <h2 className="mb-4 text-lg font-semibold">Mặt hàng</h2>
         <div className="space-y-4">
           {activeOrder.items.map((item) => (
             <div key={item.id} className="flex items-center border-b pb-4">
-              <img
-                src={item.product.thumbnail}
-                alt={item.product.name}
-                className="w-20 h-20 object-cover rounded"
-              />
+              <img src={item.product.thumbnail} alt={item.product.name} className="h-20 w-20 rounded object-cover" />
               <div className="ml-4 flex-1">
                 <h3 className="font-medium">{item.product.name}</h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-gray-600 text-sm">
                   Size: {item.variant.size.name} | Color: {item.variant.color.name}
                 </p>
-                <div className="flex justify-between mt-2">
-                  <span className="text-sm">Quantity: {item.quantity}</span>
+                <div className="mt-2 flex justify-between">
+                  <span className="text-sm">Số lượng: {item.quantity}</span>
                   <span className="font-medium">₫{item.price.toLocaleString()}</span>
                 </div>
               </div>
@@ -102,33 +87,36 @@ const OrderDetail = () => {
       </div>
 
       {/* Order Summary */}
-      <div className="bg-white p-6 rounded-lg shadow">
-        <h2 className="text-lg font-semibold mb-4">Order Summary</h2>
+      <div className="bg-white rounded-lg p-6 shadow">
+        <h2 className="mb-4 text-lg font-semibold">Chi tiết thanh toán</h2>
         <div className="space-y-3">
           <div className="flex justify-between">
-            <span className="text-gray-600">Subtotal:</span>
-            <span>₫{activeOrder.regularTotalPrice.toLocaleString()}</span>
+            <span className="text-gray-600">Giá gốc:</span>
+            <span>{formatPrice(activeOrder.regularTotalPrice)}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-gray-600">Shipping Fee:</span>
-            <span>₫{activeOrder.shippingFee.toLocaleString()}</span>
+            <span className="text-gray-600">Phí vẫn chuyển:</span>
+            <span>{formatPrice(activeOrder.shippingFee)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-600">Giảm giá:</span>
+            <span>-{formatPrice(activeOrder.regularTotalPrice + activeOrder.shippingFee - activeOrder.totalPrice)}</span>
           </div>
           <div className="flex justify-between text-lg font-semibold">
-            <span>Total:</span>
-            <span>₫{activeOrder.totalPrice.toLocaleString()}</span>
+            <span>Tổng:</span>
+            <span>{formatPrice(activeOrder.totalPrice)}</span>
           </div>
-          <div className="pt-4 border-t">
+          <div className="border-t pt-4">
             <div className="flex justify-between">
-              <span className="text-gray-600">Payment Method:</span>
-              <span className="font-medium uppercase">{activeOrder.paymentType}</span>
+              <span className="text-gray-600">Phương thức thanh toán:</span>
               {activeOrder.paymentType === "payos" ? (
                 <Image width={100} height={40} preview={false} src={imgPayos} />
               ) : (
                 <Image width={90} height={20} preview={false} src={imgVnPay} />
               )}
             </div>
-            <div className="flex justify-between mt-2">
-              <span className="text-gray-600">Payment Status:</span>
+            <div className="mt-2 flex justify-between">
+              <span className="text-gray-600">Trạng thái:</span>
               <PaymentStatusBadge status={activeOrder.paymentStatus} text={activeOrder.paymentStatus} />
             </div>
           </div>

@@ -13,7 +13,7 @@ import { HiOutlineTicket } from "react-icons/hi2";
 import { MdNavigateNext } from "react-icons/md";
 import { ILocationInitialState } from "@/services/store/location/location.slice";
 import { getShipingFeeFromGhn } from "@/services/store/checkout/checkout.thunk";
-import { resetShippingFee } from "@/services/store/checkout/checkout.slice";
+import { resetShippingFee, resetVoucher } from "@/services/store/checkout/checkout.slice";
 import { useVoucherModal } from "@/hooks/useVoucherModal";
 
 const OrderSummary = () => {
@@ -90,7 +90,7 @@ const OrderSummary = () => {
       discount_price: discountPrice,
       regular_total_price: cartState.subTotal,
       note: checkoutState.shippingAddress.note || "",
-      voucher: checkoutState.voucher?.id || "",
+      voucher: checkoutState.voucher?.id || null,
     };
 
     try {
@@ -137,6 +137,10 @@ const OrderSummary = () => {
       checkoutDispatch(resetShippingFee(0));
     }
   }, [locationState.location.province, locationState.location.district, locationState.location.ward, checkoutDispatch, dispatch]);
+
+  useEffect(() => {
+    checkoutDispatch(resetVoucher());
+  }, [cartState.cart?.cartItems]);
 
   return (
     <Card title="Thông tin đơn hàng" className="rounded-xl border border-primary-10% px-4 py-5 shadow-md" bordered={false}>

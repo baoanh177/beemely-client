@@ -19,7 +19,7 @@ const OrderStatusTag: React.FC<OrderStatusTagProps> = ({ status }) => {
       color = "blue";
       label = "Đang xử lý";
       break;
-    case EStatusOrder.SHIPPED:
+    case EStatusOrder.DELIVERING:
       color = "purple";
       label = "Đã gửi hàng";
       break;

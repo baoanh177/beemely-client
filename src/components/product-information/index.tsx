@@ -20,7 +20,7 @@ const ProductInformation = ({ product }: ProductInformationProps) => {
   ];
 
   if (!product) return <div>Loading...</div>;
-  const colorNames = product.productColors.map((color: IProductColor) => color.id);
+  const colorNames = product.productColors.map((color: IProductColor) => color.colorId.name);
   const sizeNames = product.productSizes.map((size: ISize) => size.name);
 
   return (
