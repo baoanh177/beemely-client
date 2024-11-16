@@ -20,6 +20,7 @@ import { IWishListInitialState } from "@/services/store/wishlist/wishlist.slice"
 import { addWishList } from "@/services/store/wishlist/wishlist.thunk";
 import toast from "react-hot-toast";
 import useFetchStatus from "@/hooks/useFetchStatus";
+import { IAuthInitialState } from "@/services/store/auth/auth.slice";
 
 interface ProductDetailsProps {
   product: IProduct;
@@ -35,6 +36,8 @@ const ProductDetails = ({ product, selectedVariant, setSelectedVariant }: Produc
 
   const { dispatch: cartDispatch, state: cartState } = useArchive<ICartInitialState>("cart");
   const { dispatch: wishlistDispatch, state: wishListState } = useArchive<IWishListInitialState>("wishlist");
+  const {state: authState} = useArchive<IAuthInitialState>("auth")
+
 
   const { isOpen, onClose } = useProductModal();
 
@@ -127,7 +130,7 @@ const ProductDetails = ({ product, selectedVariant, setSelectedVariant }: Produc
         </div>
         <div className="flex w-full gap-4">
           <Button
-            isDisabled={!selectedSize || !selectedColor || cartState.status === EFetchStatus.PENDING}
+            isDisabled={!selectedSize || !selectedColor || cartState.status === EFetchStatus.PENDING || !authState.isLogin}
             icon={<FaShoppingCart className="mr-2" />}
             onClick={handleAddCart}
             className="grow"
@@ -135,7 +138,7 @@ const ProductDetails = ({ product, selectedVariant, setSelectedVariant }: Produc
           />
           <Button
             icon={<BsHeart className="h-5 w-5" />}
-            variant={isInWishlist ? "secondary" : "ghost"} 
+            variant={isInWishlist ? "secondary" : "ghost"}
             shape="rectangle"
             onClick={() => {
               if (!isInWishlist) {

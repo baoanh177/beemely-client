@@ -1,259 +1,29 @@
 import Button from "@/components/common/Button";
-import FormSelect from "@/components/common/Input/FormSelect";
-import FormCheck from "@/components/form/FormCheck";
-import { Modal } from "antd";
-import { useEffect, useState, useCallback } from "react";
-import { BsTrash3 } from "react-icons/bs";
-import { FiPhoneCall } from "react-icons/fi";
 import { LuPlus } from "react-icons/lu";
-import { MdOutlineSaveAlt } from "react-icons/md";
 import { useArchive } from "@/hooks/useArchive";
 import { IAuthInitialState } from "@/services/store/auth/auth.slice";
-import FormInput from "@/components/form/FormInput";
-import { editProfile } from "@/services/store/auth/auth.thunk";
-import toast from "react-hot-toast";
-import { ICommune, IDistrict, IProvince, provinces } from "@/data/provinces";
+import AddressItem from "./components/AddressItem";
+import { useAddressModal } from "@/hooks/useAddressModal";
+import { useEffect, useState } from "react";
+import { IAddress } from "@/services/store/auth/auth.model";
 
 const Address = () => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const { state, dispatch } = useArchive<IAuthInitialState>("auth");
-  const [addresses, setAddresses] = useState(state.profile?.addresses || []);
-  const [currentAddressIndex, setCurrentAddressIndex] = useState<number | null>(null);
-  const [selectedCity, setSelectedCity] = useState<string | null>(null);
-  const [selectedDistrict, setSelectedDistrict] = useState<string | null>(null);
-  const [newAddress, setNewAddress] = useState({
-    city: "",
-    district: "",
-    commune: "",
-    detailAddress: "",
-    default: false,
-  });
+  const [userAddresses, setUserAddress] = useState<IAddress[]>(state.profile?.addresses || []);
+  const { onOpen } = useAddressModal();
 
   useEffect(() => {
-    setAddresses(state.profile?.addresses || []);
-  }, [state.profile]);
+    setUserAddress(state?.profile?.addresses || []);
+  }, [[dispatch, state.profile?.addresses]]);
 
-  const handleDeleteAddress = (index: any) => {
-    const updatedAddresses = addresses
-      .filter((_, i) => i !== index)
-      .map((address) => {
-        const { city, district, commune } = getAddressName(address.city, address.district, address.commune);
-        return {
-          commune,
-          district,
-          city,
-          detail_address: address.detailAddress,
-          default: address.default,
-        };
-      });
-
-    const updatedProfile = {
-      addresses: updatedAddresses,
-    };
-
-    dispatch(editProfile({ body: updatedProfile }))
-      .then(() => {
-        toast.success("Xóa thành công!", {});
-      })
-      .catch(() => {
-        toast.error("Xóa thất bại!", {});
-      });
-  };
-
-  useEffect(() => {
-    if (currentAddressIndex !== null) {
-      const address = addresses[currentAddressIndex];
-      setSelectedCity(address.city);
-      setSelectedDistrict(address.district);
-      setNewAddress({ ...address, detailAddress: address.detailAddress });
-    } else {
-      resetNewAddress();
-    }
-  }, [currentAddressIndex, addresses]);
-
-  const resetNewAddress = useCallback(() => {
-    setNewAddress({ city: "", district: "", commune: "", detailAddress: "", default: false });
-    setSelectedCity(null);
-    setSelectedDistrict(null);
-  }, []);
-
-  const getAddressName = (cityInput: string, districtInput: string, communeInput: string) => {
-    const province = provinces.find((p: IProvince) => p.idProvince === cityInput);
-    const district = province?.districts.find((d: IDistrict) => d.idDistrict === districtInput);
-    const commune = district?.communes.find((c: ICommune) => c.idCommune === communeInput);
-
-    return {
-      city: province?.name || cityInput,
-      district: district?.name || districtInput,
-      commune: commune?.name || communeInput,
-    };
-  };
-
-  const handleEditProfile = useCallback(() => {
-    const updatedAddresses =
-      currentAddressIndex !== null
-        ? addresses.map((address, index) => (index === currentAddressIndex ? { ...address, ...newAddress } : address))
-        : [...addresses, newAddress];
-
-    const updatedProfile = {
-      addresses: updatedAddresses.map((address) => {
-        const { city, district, commune } = getAddressName(address.city, address.district, address.commune);
-        return {
-          commune,
-          district,
-          city,
-          detail_address: address.detailAddress,
-          default: address.default,
-        };
-      }),
-      gender: state.profile?.gender,
-    };
-
-    dispatch(editProfile({ body: updatedProfile }))
-      .then(() => {
-        toast.success(currentAddressIndex !== null ? "Cập nhật địa chỉ thành công!" : "Thêm địa chỉ thành công!");
-        handleCancel();
-      })
-      .catch(() => {
-        toast.error("Cập nhật địa chỉ thất bại!");
-      });
-  }, [addresses, currentAddressIndex, newAddress, state.profile?.gender]);
-  const handleAddAddress = () => {
-    resetNewAddress();
-    setIsModalVisible(true);
-  };
-
-  const handleEditAddress = (index: number) => {
-    setCurrentAddressIndex(index);
-    setIsModalVisible(true);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-    setCurrentAddressIndex(null);
-  };
-  const handleDefaultChange = (index: number) => {
-    const updatedAddresses = addresses.map((addr, i) => ({
-      ...addr,
-      default: i === index,
-    }));
-
-    setAddresses(updatedAddresses);
-    const updatedProfile = {
-      addresses: updatedAddresses.map((address) => {
-        const { city, district, commune } = getAddressName(address.city, address.district, address.commune);
-        return {
-          commune,
-          district,
-          city,
-          detail_address: address.detailAddress,
-          default: address.default,
-        };
-      }),
-      gender: state.profile?.gender,
-    };
-
-    dispatch(editProfile({ body: updatedProfile }))
-      .then(() => {
-        toast.success("Cập nhật địa chỉ mặc định thành công!");
-      })
-      .catch(() => {
-        toast.error("Cập nhật địa chỉ mặc định thất bại!");
-      });
-  };
   return (
     <div>
-      <Button className="mb-6 w-[300px] px-14" icon={<LuPlus />} text="Thêm địa chỉ" onClick={handleAddAddress} />
+      <Button className="mb-6 w-[300px] px-14" icon={<LuPlus />} text="Thêm địa chỉ" onClick={() => onOpen(null)} />
       <div className="flex flex-col gap-4">
-        {addresses.map((address, index) => (
-          <div key={index} className="border-gray-200 flex justify-between border-b pb-6 pt-4">
-            <div className="flex flex-col gap-2">
-              <div className="text-lg font-semibold">{address.detailAddress}</div>
-              <div>{`${address.city}, ${address.district}`}</div>
-              {state.profile?.phone && (
-                <div className="flex items-center gap-2">
-                  <FiPhoneCall size={20} /> <span>( {state.profile?.phone} )</span>
-                </div>
-              )}
-              <FormCheck
-                label="Địa chỉ mặc định"
-                id={address.id}
-                checked={address.default}
-                onChange={() => handleDefaultChange(index)}
-                type="checkbox"
-              />
-            </div>
-            <div className="flex w-[100px] flex-col gap-4">
-              <Button
-                icon={<MdOutlineSaveAlt />}
-                variant="secondary"
-                className="w-[125px]"
-                text="Cập nhật"
-                onClick={() => handleEditAddress(index)}
-              />
-              <Button icon={<BsTrash3 />} variant="danger" text="Xóa" className="w-[125px]" onClick={() => handleDeleteAddress(index)} />
-            </div>
-          </div>
+        {userAddresses.map((address, index) => (
+          <AddressItem item={address} key={index} index={index} />
         ))}
       </div>
-      <Modal
-        okButtonProps={{
-          style: { backgroundColor: "black", color: "white" },
-        }}
-        width={500}
-        title={currentAddressIndex !== null ? "Cập nhật địa chỉ" : "Thêm địa chỉ"}
-        open={isModalVisible}
-        onOk={handleEditProfile}
-        onCancel={handleCancel}
-      >
-        <div className="flex flex-col gap-4 pt-6">
-          <div className="flex flex-col gap-6">
-            <FormSelect
-              placeholder="Chọn tỉnh/thành phố"
-              options={provinces.map((p) => ({ value: p.idProvince, label: p.name }))}
-              value={newAddress.city === "" ? "Chọn tỉnh/thành phố" : newAddress.city}
-              onChange={(value) => {
-                const cityValue = value as string;
-                setSelectedCity(cityValue);
-                setNewAddress((prev) => ({ ...prev, city: cityValue, district: "", commune: "" }));
-                setSelectedDistrict(null);
-              }}
-            />
-            <FormSelect
-              placeholder="Chọn quận/huyện"
-              options={
-                selectedCity
-                  ? provinces.find((p) => p.idProvince === selectedCity)?.districts.map((d) => ({ value: d.idDistrict, label: d.name })) || []
-                  : []
-              }
-              value={newAddress.district === "" ? "Chọn quận/huyện" : newAddress.district}
-              onChange={(value) => {
-                const districtValue = value as string;
-                setSelectedDistrict(districtValue);
-                setNewAddress((prev) => ({ ...prev, district: districtValue, commune: "" }));
-              }}
-            />
-            <FormSelect
-              placeholder="Chọn phường/xã"
-              options={
-                selectedDistrict
-                  ? provinces
-                      .find((p) => p.idProvince === selectedCity)
-                      ?.districts.find((d) => d.idDistrict === selectedDistrict)
-                      ?.communes.map((c) => ({ value: c.idCommune, label: c.name })) || []
-                  : []
-              }
-              value={newAddress.commune === "" ? "Chọn phường/xã" : newAddress.commune}
-              onChange={(value) => setNewAddress((prev) => ({ ...prev, commune: value as string }))}
-            />
-          </div>
-          <FormInput
-            label="Địa chỉ chi tiết"
-            value={newAddress.detailAddress}
-            onChange={(e) => setNewAddress((prev) => ({ ...prev, detailAddress: e as string }))}
-          />
-        </div>
-      </Modal>
     </div>
   );
 };
