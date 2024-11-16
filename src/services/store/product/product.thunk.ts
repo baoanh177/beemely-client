@@ -5,9 +5,11 @@ import { IProduct } from "./product.model";
 
 const productPrefix = "/api/client";
 
-export const getAllProducts = createAsyncThunk("product/getAllProducts", async (payload: IThunkPayload, { rejectWithValue }) => {
+export const getAllProducts = createAsyncThunk("product/getAllProducts", async ({ query }: IThunkPayload, { rejectWithValue }) => {
   try {
-    const { response, data } = await client.get<IProduct[]>(`${productPrefix}/products`, payload);
+    const { response, data } = await client.get<IProduct[]>(`${productPrefix}/products`, {
+      query,
+    });
     return response.status >= 400 ? rejectWithValue(data) : data;
   } catch (error: any) {
     return rejectWithValue(error.response.data);

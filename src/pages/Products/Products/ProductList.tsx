@@ -2,21 +2,26 @@ import React from "react";
 import ProductCard from "@/components/common/ProductCard";
 import { IProduct } from "@/services/store/product/product.model";
 
-interface ProductProps {
+interface ProductListProps {
   products: IProduct[];
+  filters: {
+    gender: string;
+    size: string[];
+    color: string[];
+  };
 }
 
-const ProductList: React.FC<ProductProps> = ({ products }) => {
-  const content = products.map((product: IProduct, index) => {
+const ProductList: React.FC<ProductListProps> = ({ products }) => {
+  const content = products.map((product) => {
     return (
       <ProductCard
-        key={index}
-        slug={product?.slug}
-        image={product?.thumbnail}
-        description={product?.description}
+        key={product.id}
+        slug={product.slug}
+        image={product.thumbnail}
+        description={product.sortDescription}
         type="wishlist"
-        regularPrice={product?.maxPrice ?? 0}
-        discountPrice={product?.minPrice}
+        regularPrice={product.minPrice || 0}
+        discountPrice={product.maxPrice || 0}
         name={product.name}
       />
     );

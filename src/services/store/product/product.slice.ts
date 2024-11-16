@@ -7,6 +7,13 @@ import { getAllProducts, getProductBySlug } from "./product.thunk";
 export interface IProductInitialState extends IInitialState {
   products: IProduct[];
   activeProduct: IProduct | undefined;
+  filter: {
+    _page: number;
+    _limit: number;
+    gender?: string;
+    color?: string[];
+    size?: string[];
+  };
 }
 
 const initialState: IProductInitialState = {
@@ -15,6 +22,9 @@ const initialState: IProductInitialState = {
   filter: {
     _page: 1,
     _limit: 10,
+    gender: "",
+    color: [],
+    size: [],
   },
   totalRecords: 0,
   message: "",
