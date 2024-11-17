@@ -18,6 +18,7 @@ export interface IOrder {
   shippingFee: number;
   userEmail: string;
   uniqueId: string;
+  note?: string;
 }
 
 export interface IOrderItem {

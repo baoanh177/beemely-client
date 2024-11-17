@@ -35,7 +35,16 @@ export const updateOrder = createAsyncThunk("order/update-order", async (payload
 
 export const rePaymentOrder = createAsyncThunk("order/re-payment-order", async (payload: IThunkPayload, { rejectWithValue }) => {
   try {
-    const { response, data } = await client.post<IOrder>(`${prefix}/re-payment/${payload.param}`);
+    const { response, data } = await client.post<ICreateOrderResponse>(`${prefix}/re-payment/${payload.param}`);
+    return response.status >= 400 ? rejectWithValue(data) : data;
+  } catch (error: any) {
+    return rejectWithValue(error.response.data);
+  }
+});
+
+export const reOrder = createAsyncThunk("order/re-order", async (payload: IThunkPayload, { rejectWithValue }) => {
+  try {
+    const { response, data } = await client.post<ICreateOrderResponse>(`${prefix}/re-order/${payload.param}`);
     return response.status >= 400 ? rejectWithValue(data) : data;
   } catch (error: any) {
     return rejectWithValue(error.response.data);

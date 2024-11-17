@@ -15,12 +15,15 @@ import { ILocationInitialState } from "@/services/store/location/location.slice"
 import { getShipingFeeFromGhn } from "@/services/store/checkout/checkout.thunk";
 import { resetShippingFee, resetVoucher } from "@/services/store/checkout/checkout.slice";
 import { useVoucherModal } from "@/hooks/useVoucherModal";
+import { useShippingFee } from "@/hooks/useShipping";
 
 const OrderSummary = () => {
   const { state: cartState } = useArchive<ICartInitialState>("cart");
   const { state: checkoutState, dispatch: checkoutDispatch } = useArchive<ICheckoutState>("checkout");
   const { dispatch, state: orderState } = useArchive<IOrderInitialState>("order");
   const { state: locationState } = useArchive<ILocationInitialState>("location");
+
+  const { shippingFee, isLoading, refetch } = useShippingFee();
 
   const { onOpen } = useVoucherModal();
 
@@ -33,6 +36,19 @@ const OrderSummary = () => {
   const isValidAddress = useMemo(() => {
     const { user_name, phone_number, user_email, city, district, commune, detail_address } = checkoutState.shippingAddress;
     const { location: dataLocation } = locationState;
+
+    if (checkoutState.isUseUserAddress) {
+      return (
+        user_name.trim() !== "" &&
+        phone_number.trim() !== "" &&
+        user_email.trim() !== "" &&
+        city.trim() !== "" &&
+        district.trim() !== "" &&
+        commune.trim() !== "" &&
+        detail_address.trim() !== ""
+      );
+    }
+
     return (
       user_name.trim() !== "" &&
       phone_number.trim() !== "" &&
@@ -63,14 +79,16 @@ const OrderSummary = () => {
       return;
     }
 
-    if (checkoutState.status === EFetchStatus.PENDING || !checkoutState.shipping_fee) {
+    if (!checkoutState.shipping_fee) {
       message.error("Đang tính phí vận chuyển. Vui lòng đợi!");
       return;
     }
 
     const { detail_address } = checkoutState.shippingAddress;
     const { location: dataLocation } = locationState;
-    const formatedAddress = `${detail_address}, ${dataLocation.ward?.WardName}, ${dataLocation.district?.DistrictName}, ${dataLocation.province?.ProvinceName}`;
+    const formatedAddress = checkoutState.isUseUserAddress
+      ? `${checkoutState.shippingAddress.detail_address} - ${checkoutState.shippingAddress.commune} - ${checkoutState.shippingAddress.district} - ${checkoutState.shippingAddress.city}`
+      : `${detail_address}, ${dataLocation.ward?.WardName}, ${dataLocation.district?.DistrictName}, ${dataLocation.province?.ProvinceName}`;
 
     const cartItemsFormated = cartState.cart?.cartItems.map((item) => ({
       product_id: item.product.id,
@@ -142,6 +160,18 @@ const OrderSummary = () => {
     checkoutDispatch(resetVoucher());
   }, [cartState.cart?.cartItems]);
 
+  useEffect(() => {
+    if (checkoutState.isUseUserAddress) {
+      refetch();
+    }
+  }, [checkoutState.isUseUserAddress]);
+
+  useEffect(() => {
+    if (shippingFee) {
+      checkoutDispatch(resetShippingFee(shippingFee));
+    }
+  }, [shippingFee]);
+
   return (
     <Card title="Thông tin đơn hàng" className="rounded-xl border border-primary-10% px-4 py-5 shadow-md" bordered={false}>
       {checkoutState.currentStep < 2 && <CartList />}
@@ -160,16 +190,23 @@ const OrderSummary = () => {
             </p>
           </div>
 
-          <div className="flex justify-between text-sm text-primary-200">
-            <p>Phí vận chuyển</p>
-            {checkoutState.status === EFetchStatus.PENDING ? (
-              <p>Đang tính...</p>
-            ) : checkoutState.shipping_fee === 0 ? (
-              <p className="text-orange-200">Vui lòng nhập địa chỉ giao hàng</p>
-            ) : (
-              <p>{formatPrice(checkoutState.shipping_fee || 0)}</p>
-            )}
-          </div>
+          {!checkoutState.isUseUserAddress ? (
+            <div className="flex justify-between text-sm text-primary-200">
+              <p>Phí vận chuyển</p>
+              {checkoutState.status === EFetchStatus.PENDING ? (
+                <p>Đang tính...</p>
+              ) : checkoutState.shipping_fee === 0 ? (
+                <p className="text-orange-200">Vui lòng nhập địa chỉ giao hàng</p>
+              ) : (
+                <p>{formatPrice(checkoutState.shipping_fee || 0)}</p>
+              )}
+            </div>
+          ) : (
+            <div className="flex justify-between text-sm text-primary-200">
+              <p>Phí vận chuyển</p>
+              {isLoading ? <p>Đang tính...</p> : <p>{formatPrice(shippingFee || 0)}</p>}
+            </div>
+          )}
 
           <div className="flex justify-between text-sm text-primary-200">
             <p>Giảm giá</p>

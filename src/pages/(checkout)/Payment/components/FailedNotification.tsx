@@ -2,10 +2,11 @@ import { IoWarningOutline } from "react-icons/io5";
 import { Container } from "@/styles/common-styles";
 import Button from "@/components/common/Button";
 import { Link } from "react-router-dom";
+import Services from "@/components/service/Services";
 
 const FailedNotification = () => {
   return (
-    <Container className="py-20">
+    <Container className="space-y-20 py-28">
       <div className="mx-auto max-w-xl">
         <div className="relative flex flex-col items-center space-y-3">
           <IoWarningOutline size={50} />
@@ -22,6 +23,7 @@ const FailedNotification = () => {
           </div>
         </div>
       </div>
+      <Services />
     </Container>
   );
 };
