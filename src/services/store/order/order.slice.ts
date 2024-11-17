@@ -1,7 +1,7 @@
 import { EFetchStatus } from "@/shared/enums/fetchStatus";
 import { IInitialState, IResponse } from "@/shared/utils/shared-interfaces";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ICreateOrderResponse, IOrder } from "./order.model";
+import { IOrder } from "./order.model";
 import { createNewOrder, getOrderDetail, rePaymentOrder, updateOrder, getAllOrderByUser } from "./order.thunk";
 import { commonStaticReducers } from "@/services/shared";
 
@@ -15,7 +15,7 @@ const initialState: IOrderInitialState = {
   message: "",
   orders: [],
   acctiveOrder: null,
-  filter: { order_status: "" }, 
+  filter: { order_status: "" },
 };
 
 const orderSlice = createSlice({
@@ -30,8 +30,7 @@ const orderSlice = createSlice({
       .addCase(createNewOrder.pending, (state) => {
         state.status = EFetchStatus.PENDING;
       })
-      .addCase(createNewOrder.fulfilled, (state, { payload }: PayloadAction<IResponse<ICreateOrderResponse>>) => {
-        state.order = payload.metaData;
+      .addCase(createNewOrder.fulfilled, (state) => {
         state.status = EFetchStatus.FULFILLED;
       })
       .addCase(createNewOrder.rejected, (state) => {
@@ -66,8 +65,7 @@ const orderSlice = createSlice({
       .addCase(rePaymentOrder.pending, (state) => {
         state.status = EFetchStatus.PENDING;
       })
-      .addCase(rePaymentOrder.fulfilled, (state, { payload }: PayloadAction<IResponse<IOrder>>) => {
-        state.acctiveOrder = payload.metaData;
+      .addCase(rePaymentOrder.fulfilled, (state) => {
         state.status = EFetchStatus.FULFILLED;
       })
       .addCase(rePaymentOrder.rejected, (state) => {

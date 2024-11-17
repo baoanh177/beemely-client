@@ -1,0 +1,151 @@
+import { useArchive } from "@/hooks/useArchive";
+import { EPaymentStatus, IOrder } from "@/services/store/order/order.model";
+import { IOrderInitialState } from "@/services/store/order/order.slice";
+import { reOrder, rePaymentOrder, updateOrder } from "@/services/store/order/order.thunk";
+import { EStatusOrder } from "@/shared/enums/order";
+import { Dropdown, MenuProps, Modal } from "antd";
+import toast from "react-hot-toast";
+import { IoIosArrowDown } from "react-icons/io";
+import { IoBanSharp } from "react-icons/io5";
+import { IoCheckmarkCircleOutline } from "react-icons/io5";
+import { FiCreditCard } from "react-icons/fi";
+
+interface OrderActionsProps {
+  order: IOrder;
+}
+
+const { confirm } = Modal;
+
+const OrderActions = ({ order }: OrderActionsProps) => {
+  const { dispatch } = useArchive<IOrderInitialState>("order");
+
+  const items: MenuProps["items"] = [
+    {
+      label: "Xác nhận đã nhận hàng",
+      key: "1",
+      icon: <IoCheckmarkCircleOutline />,
+      onClick: () => handleSuccessOrder(order.id),
+      disabled:
+        order.orderStatus !== EStatusOrder.DELIVERED ||
+        [EStatusOrder.SUCCESS, EStatusOrder.CANCELLED, EStatusOrder.REQUEST_RETURN, EStatusOrder.RETURNING, EStatusOrder.RETURNED].includes(
+          order.orderStatus,
+        ),
+    },
+    {
+      label: "Mua lại",
+      key: "2",
+      icon: <IoCheckmarkCircleOutline />,
+      onClick: () => {
+        confirm({
+          okButtonProps: { style: { backgroundColor: "#2B292F", borderColor: "#2B292F" } },
+          title: "Mua lại sản phẩm",
+          content: "Bạn có chắc chắn muốn mua lại đơn hàng này không?",
+          onOk: () => handleReOrder(order.id),
+          okText: "Xác nhận",
+          cancelText: "Hủy",
+        });
+      },
+      disabled: order.orderStatus !== EStatusOrder.SUCCESS,
+    },
+    {
+      label: "Yêu cầu trả hàng",
+      key: "3",
+      icon: <IoCheckmarkCircleOutline />,
+      onClick: () => handleRequestReturnOrder(order.id),
+      disabled:
+        order.orderStatus !== EStatusOrder.DELIVERED ||
+        [EStatusOrder.SUCCESS, EStatusOrder.CANCELLED, EStatusOrder.REQUEST_RETURN, EStatusOrder.RETURNING, EStatusOrder.RETURNED].includes(
+          order.orderStatus,
+        ),
+    },
+    {
+      label: "Thanh toán lại",
+      key: "4",
+      icon: <FiCreditCard />,
+      onClick: () => {
+        confirm({
+          okButtonProps: { style: { backgroundColor: "#2B292F", borderColor: "#2B292F" } },
+          title: "Thanh toán lại",
+          content: "Bạn có chắc chắn muốn thanh toán lại đơn hàng này không?",
+          onOk: () => handleRePaymentOrder(order.id),
+          okText: "Xác nhận",
+          cancelText: "Hủy",
+        });
+      },
+      disabled: ![EPaymentStatus.FAILED, EPaymentStatus.PENDING].includes(order.paymentStatus),
+    },
+    {
+      label: "Hủy đơn hàng",
+      key: "5",
+      icon: <IoBanSharp />,
+      danger: true,
+      disabled: order.orderStatus !== EStatusOrder.PENDING,
+      onClick: () => {
+        confirm({
+          okButtonProps: { style: { backgroundColor: "#2B292F", borderColor: "#2B292F" } },
+          title: "Hủy đơn hàng",
+          content: "Bạn có chắc chắn muốn hủy đơn hàng này không?",
+          onOk: () => handleCancelOrder(order.id),
+          okText: "Hủy đơn hàng",
+          cancelText: "Không",
+        });
+      },
+    },
+  ];
+
+  const handleCancelOrder = async (orderId: string) => {
+    dispatch(updateOrder({ param: orderId, body: { order_status: EStatusOrder.CANCELLED } })).then(() => {
+      toast.success("Hủy đơn hàng thành công");
+    });
+  };
+
+  const handleSuccessOrder = async (orderId: string) => {
+    dispatch(updateOrder({ param: orderId, body: { order_status: EStatusOrder.SUCCESS } }));
+    toast.success("Đã nhận hàng thành công");
+  };
+
+  const handleRequestReturnOrder = async (orderId: string) => {
+    dispatch(updateOrder({ param: orderId, body: { order_status: EStatusOrder.REQUEST_RETURN } }));
+    toast.success("Đã gửi yêu cầu trả hàng");
+  };
+
+  const handleRePaymentOrder = async (orderId: string) => {
+    try {
+      const { metaData } = await dispatch(rePaymentOrder({ param: orderId })).unwrap();
+
+      if (metaData.checkoutUrl) {
+        window.location.href = metaData.checkoutUrl;
+      }
+    } catch (err) {
+      toast.error("Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại!");
+    }
+  };
+
+  const handleReOrder = async (orderId: string) => {
+    try {
+      const { metaData } = await dispatch(reOrder({ param: orderId })).unwrap();
+
+      if (metaData.checkoutUrl) {
+        window.location.href = metaData.checkoutUrl;
+      }
+    } catch (err) {
+      toast.error("Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại!");
+    }
+  };
+
+  const menuProps = {
+    items,
+  };
+  return (
+    <div>
+      <Dropdown menu={menuProps}>
+        <div className="text-white hover:bg-primary-30% flex cursor-pointer items-center gap-2 rounded-md bg-primary-10% px-3 py-1 text-sm">
+          Hành động
+          <IoIosArrowDown />
+        </div>
+      </Dropdown>
+    </div>
+  );
+};
+
+export default OrderActions;

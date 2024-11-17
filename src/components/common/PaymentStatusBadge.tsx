@@ -8,7 +8,7 @@ export interface PaymentStatusBadgeProps {
 }
 
 const CONVERT_STATUS = {
-  pending: "Chờ xác nhận" as const,
+  pending: "Chưa thanh toán" as const,
   completed: "Đã thanh toán" as const,
   failed: "Thanh toán thất bại" as const,
 };
@@ -24,7 +24,7 @@ const PaymentStatusBadge: React.FC<PaymentStatusBadgeProps> = ({ text, status, d
   const className = colorMapping[status] || "bg-gray-50 text-gray-500";
 
   return (
-    <div className={clsx(className, "text-m-semibold inline-block text-nowrap rounded-lg border-none px-[10px] py-1 text-center")}>
+    <div className={clsx(className, "inline-block text-nowrap rounded-lg border-none px-[10px] py-1 text-center text-sm font-normal")}>
       {CONVERT_STATUS[text]}
     </div>
   );
