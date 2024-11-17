@@ -10,9 +10,17 @@ export interface IProductInitialState extends IInitialState {
   filter: {
     _page: number;
     _limit: number;
-    gender?: string;
-    color?: string;
-    size?: string;
+    orderBy: number;
+    sort: string;
+    gender?: string[];
+    color?: string[];
+    size?: string[];
+    brand?: string[];
+    productType?: string[];
+    minPrice: string;
+    maxPrice: string;
+    label: string;
+    tag: string;
   };
 }
 
@@ -22,9 +30,17 @@ const initialState: IProductInitialState = {
   filter: {
     _page: 1,
     _limit: 10,
-    gender: "",
-    color: "",
-    size: "",
+    orderBy: 0,
+    sort: "",
+    gender: [],
+    color: [],
+    size: [],
+    brand: [],
+    productType: [],
+    minPrice: "",
+    maxPrice: "",
+    label: "",
+    tag: "",
   },
   totalRecords: 0,
   message: "",
@@ -38,6 +54,9 @@ const productSlice = createSlice({
     resetStatus(state) {
       state.status = EFetchStatus.IDLE;
       state.message = "";
+    },
+    updateFilters(state, action: PayloadAction<Partial<IProductInitialState["filter"]>>) {
+      state.filter = { ...state.filter, ...action.payload };
     },
   },
   extraReducers: (builder) => {
@@ -74,5 +93,5 @@ const productSlice = createSlice({
   },
 });
 
-export const { resetStatus } = productSlice.actions;
+export const { resetStatus, updateFilters } = productSlice.actions;
 export { productSlice };

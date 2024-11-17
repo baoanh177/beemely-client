@@ -1,5 +1,24 @@
 import { EActiveStatus } from "@/shared/enums/fetchStatus";
 
+interface Filter {
+  gender: string[];
+  productType: string[];
+  color: string[];
+  size: string[];
+  brand: string[];
+  orderBy: string;
+  sort: string;
+  minPrice: string;
+  maxPrice: string;
+  label: string;
+  tag: string;
+}
+
+interface FilterChangeHandler {
+  type: string;
+  value: string | string[];
+}
+
 interface IProduct {
   id: string;
   name: string;
@@ -96,4 +115,4 @@ interface IProductType {
   slug: string;
 }
 
-export type { IBrand, IColor, IGender, ILabel, IProduct, IProductColor, IProductType, ISize, IVariant };
+export type { IBrand, IColor, IGender, ILabel, IProduct, IProductColor, IProductType, ISize, IVariant, Filter, FilterChangeHandler };

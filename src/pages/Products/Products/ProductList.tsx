@@ -4,11 +4,6 @@ import { IProduct } from "@/services/store/product/product.model";
 
 interface ProductListProps {
   products: IProduct[];
-  filters: {
-    gender: string;
-    size: string;
-    color: string;
-  };
 }
 
 const ProductList: React.FC<ProductListProps> = ({ products }) => {
