@@ -7,7 +7,9 @@ interface ProductListProps {
 }
 
 const ProductList: React.FC<ProductListProps> = ({ products }) => {
+  console.log("2343333", products);
   const content = products.map((product) => {
+    const sortVariants = [...product.variants].sort((a, b) => a.price - b.price);
     return (
       <ProductCard
         key={product.id}
@@ -15,8 +17,8 @@ const ProductList: React.FC<ProductListProps> = ({ products }) => {
         image={product.thumbnail}
         description={product.sortDescription}
         type="wishlist"
-        regularPrice={product.minPrice || 0}
-        discountPrice={product.maxPrice || 0}
+        regularPrice={sortVariants[0].price}
+        discountPrice={sortVariants[0].discountPrice}
         name={product.name}
         productId={product.id}
       />

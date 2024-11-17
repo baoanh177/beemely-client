@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import Recommended from "./Recommended/Recommended";
 import Sidebar from "./Sidebar/Sidebar";
 import SortControls from "./components/SortControls";
@@ -26,9 +26,9 @@ function Products() {
     tag: "",
   });
 
-  const cleanQueryParams = (query: { [key: string]: any }) => {
+  const cleanQueryParams = useCallback((query: { [key: string]: any }) => {
     return Object.fromEntries(Object.entries(query).filter(([_, v]) => v !== undefined && v !== "" && v !== "0" && v !== "10000000"));
-  };
+  }, []);
 
   useEffect(() => {
     const query = cleanQueryParams({
@@ -46,38 +46,45 @@ function Products() {
     });
 
     dispatch(getAllProducts({ query }));
-  }, [filters, dispatch, state.filter]);
+  }, [filters, dispatch, state.filter, cleanQueryParams]);
 
-  const handleFilterChange = (type: string, value: string | string[]) => {
-    setFilters((prev) => ({
-      ...prev,
-      [type]: value,
-    }));
-    dispatch(updateFilters({ [type]: value }));
-  };
+  const handleFilterChange = useCallback(
+    (type: string, value: string | string[]) => {
+      setFilters((prev) => ({
+        ...prev,
+        [type]: value,
+      }));
+      dispatch(updateFilters({ [type]: value }));
+    },
+    [dispatch],
+  );
 
-  const handleGenderSelect = (selectedGenders: string[]) => {
-    handleFilterChange("gender", selectedGenders);
-  };
+  const handleGenderSelect = useCallback(
+    (selectedGenders: string[]) => {
+      handleFilterChange("gender", selectedGenders);
+    },
+    [handleFilterChange],
+  );
 
-  const handleSortChange = (orderBy: string, sort: string) => {
-    handleFilterChange("orderBy", orderBy);
-    handleFilterChange("sort", sort);
-  };
+  const handleSortChange = useCallback(
+    (orderBy: string, sort: string) => {
+      handleFilterChange("orderBy", orderBy);
+      handleFilterChange("sort", sort);
+    },
+    [handleFilterChange],
+  );
 
-  const toggleFilters = () => {
-    setShowFilters(!showFilters);
-  };
+  const toggleFilters = useCallback(() => {
+    setShowFilters((prev) => !prev);
+  }, []);
 
   return (
     <div className="products-page">
       <Container>
         <div className="mb-8 flex">
-          {showFilters && (
-            <div className="mr-4 w-3/12">
-              <Sidebar filters={filters} onFilterChange={handleFilterChange} />
-            </div>
-          )}
+          <div className={`transition-all duration-300 ease-in-out ${showFilters ? "w-3/12 opacity-100" : "w-0 overflow-hidden opacity-0"}`}>
+            <Sidebar filters={filters} onFilterChange={handleFilterChange} />
+          </div>
           <div className={`${showFilters ? "w-9/12" : "w-full"}`}>
             <div className="flex items-center justify-between">
               <Recommended onSelectGender={handleGenderSelect} />
@@ -90,7 +97,13 @@ function Products() {
               />
             </div>
 
-            <ProductList products={products} />
+            {products.length > 0 ? (
+              <ProductList products={products} />
+            ) : (
+              <div className="flex h-full justify-center">
+                <p className="text-gray-500">Không có sản phẩm nào được tìm thấy.</p>
+              </div>
+            )}
           </div>
         </div>
       </Container>

@@ -2,7 +2,7 @@ import Title from "antd/es/typography/Title";
 import FormCheck from "@/components/form/FormCheck";
 import { formatPrice } from "@/utils/curency";
 import { useEffect, useState } from "react";
-import { Space, Slider } from "antd";
+import { Space, Slider, ConfigProvider } from "antd";
 import { getAllColor } from "@/services/store/color/color.thunk";
 import { useArchive } from "@/hooks/useArchive";
 import { IColorInitialState } from "@/services/store/color/color.slice";
@@ -53,19 +53,10 @@ const Sidebar: React.FC<SidebarProps> = ({ filters, onFilterChange }) => {
 
   useEffect(() => {
     dispatchSizes(getAllSize());
-  }, [dispatchSizes]);
-
-  useEffect(() => {
     dispatchColors(getAllColor());
-  }, [dispatchColors]);
-
-  useEffect(() => {
     dispatchProductTypes(getAllProductTypes());
-  }, [dispatchProductTypes]);
-
-  useEffect(() => {
     dispatchBrands(getAllBrand());
-  }, [dispatchBrands]);
+  }, [dispatchSizes, dispatchColors, dispatchProductTypes, dispatchBrands]);
 
   useEffect(() => {
     setPriceRange([Number(filters.minPrice) || 0, Number(filters.maxPrice) || 10000000]);
@@ -116,7 +107,7 @@ const Sidebar: React.FC<SidebarProps> = ({ filters, onFilterChange }) => {
           <div className="flex items-center gap-2">
             <PawPrint className="text-lg text-options-7" />
             <Title level={5} className="text-gray-800 m-0">
-              Giới tính
+              Thương hiệu
             </Title>
           </div>
           <span>{expandedSections.brand ? <ChevronDown size={16} /> : <ChevronUp size={16} />}</span>
@@ -153,15 +144,23 @@ const Sidebar: React.FC<SidebarProps> = ({ filters, onFilterChange }) => {
               <span>{formatPrice(priceRange[0])}</span>
               <span>{formatPrice(priceRange[1])}</span>
             </div>
-            <Slider
-              range
-              min={0}
-              max={10000000}
-              step={100000}
-              value={priceRange}
-              onChange={(value) => handlePriceChange(value as number[])}
-              className="w-full"
-            />
+            <ConfigProvider
+              theme={{
+                token: {
+                  colorPrimary: "#000000",
+                },
+              }}
+            >
+              <Slider
+                range
+                min={0}
+                max={10000000}
+                step={100000}
+                value={priceRange}
+                onChange={(value) => handlePriceChange(value as number[])}
+                className="w-full"
+              />
+            </ConfigProvider>
           </Space>
         )}
       </div>
