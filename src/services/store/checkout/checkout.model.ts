@@ -29,6 +29,7 @@ export interface ICheckoutState {
   discount_price: number;
   voucher?: IVoucher;
   shipping_fee: number;
+  isUseUserAddress: boolean;
 }
 
 export interface IGhnShippingFee {

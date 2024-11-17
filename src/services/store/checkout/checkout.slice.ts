@@ -34,6 +34,7 @@ const initialState: ICheckoutState = {
   paymentType: "payos",
   discount_price: 0,
   voucher: undefined,
+  isUseUserAddress: true,
 };
 
 const checkoutSlice = createSlice({
@@ -53,6 +54,12 @@ const checkoutSlice = createSlice({
       const voucher = action.payload;
       state.voucher = voucher;
       state.discount_price = voucher.discount;
+    },
+    setUseUserAddress: (state, action: PayloadAction<boolean>) => {
+      state.isUseUserAddress = action.payload;
+      if (!action.payload) {
+        state.shippingAddress = initialState.shippingAddress;
+      }
     },
     resetCheckout: () => initialState,
     resetShippingFee: (state, action: PayloadAction<number>) => {
@@ -80,6 +87,14 @@ const checkoutSlice = createSlice({
   },
 });
 
-export const { setCurrentStep, setShippingAddress, setPaymentMethod, resetCheckout, resetShippingFee, setVoucher, resetVoucher } =
-  checkoutSlice.actions;
+export const {
+  setCurrentStep,
+  setShippingAddress,
+  setPaymentMethod,
+  resetCheckout,
+  resetShippingFee,
+  setVoucher,
+  resetVoucher,
+  setUseUserAddress,
+} = checkoutSlice.actions;
 export { checkoutSlice };
