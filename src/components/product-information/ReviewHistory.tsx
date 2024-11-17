@@ -11,6 +11,7 @@ import { IAuthInitialState } from "@/services/store/auth/auth.slice";
 import { useEffect } from "react";
 import { getProfile } from "@/services/store/auth/auth.thunk";
 import { Link } from "react-router-dom";
+import { getMyReviews } from "@/services/store/review/review.thunk";
 
 interface ReviewCardProps {
   review: IReviewHistory;
@@ -151,7 +152,3 @@ const Skeleton = () => (
 );
 
 export default ReviewHistory;
-function getMyReviews(): any {
-    throw new Error("Function not implemented.");
-}
-
