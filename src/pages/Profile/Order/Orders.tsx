@@ -8,10 +8,11 @@ import useAsyncEffect from "@/hooks/useAsyncEffect";
 import { EStatusOrder } from "@/shared/enums/order";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
-import { Card, Empty, Modal } from "antd";
+import { Empty } from "antd";
 import { formatPrice } from "@/utils/curency";
+import PaymentStatusBadge from "@/components/common/PaymentStatusBadge";
+import OrderActions from "./OrderActions";
 
-const { confirm } = Modal;
 const Orders = () => {
   const { state, dispatch } = useArchive<IOrderInitialState>("order");
 
@@ -54,21 +55,9 @@ const Orders = () => {
     },
   };
 
-  const handleCancelOrder = (orderId: string) => {
-    dispatch(updateOrder({ param: orderId, body: { order_status: EStatusOrder.CANCELLED } }));
-    toast.success("Hủy đơn hàng thành công");
-  };
-  const handleSuccessOrder = (orderId: string) => {
+  const handleFeedbackOrder = async (orderId: string) => {
     dispatch(updateOrder({ param: orderId, body: { order_status: EStatusOrder.SUCCESS } }));
     toast.success("Đã nhận hàng thành công");
-  };
-  const handleFeedbackOrder = (orderId: string) => {
-    dispatch(updateOrder({ param: orderId, body: { order_status: EStatusOrder.SUCCESS } }));
-    toast.success("Đã nhận hàng thành công");
-  };
-  const handleRequestReturnOrder = (orderId: string) => {
-    dispatch(updateOrder({ param: orderId, body: { order_status: EStatusOrder.REQUEST_RETURN } }));
-    toast.success("Đã gửi yêu cầu trả hàng");
   };
 
   return (
@@ -80,77 +69,44 @@ const Orders = () => {
         <>
           {state.orders.length ? (
             state.orders.map((item) => (
-              <Card key={item.id} className="flex flex-col gap-4 border-b border-gray-80% pb-6">
-                {item.items.map((order) => (
-                  <div key={order.id} className="mt-2 flex items-center justify-between">
-                    <div className="flex w-[400px] flex-col gap-4">
-                      <div className="flex gap-4">
-                        <img className="aspect-square h-20 w-20" src={order.product.thumbnail} alt={order.product.name} />
-                        <div className="flex flex-col gap-2">
-                          <div className="font-semibold">{order.product.name}</div>
-                          <div>
-                            Kích cỡ: <span>{order.variant.size.name}</span>
-                          </div>
-                          <div>
-                            Số lượng: <span>{order.quantity}</span>
+              <div key={item.id} className="flex flex-col gap-4 rounded-lg border border-primary-5% shadow-md">
+                <div className="flex justify-between rounded-t-lg border-b border-primary-5% px-8 py-3">
+                  <Link to={`/profile/orders/detail/${item.id}`} className="text-base font-semibold">
+                    Đơn hàng: <span className="hover:underline">#{item.uniqueId}</span>
+                  </Link>
+                  <div className="flex flex-nowrap items-center gap-4">
+                    <StatusBadge text={item.orderStatus} color={item.orderStatus} />
+                    <PaymentStatusBadge text={item.paymentStatus} status={item.paymentStatus} />
+                    <OrderActions order={item} />
+                  </div>
+                </div>
+                <div className="px-8 py-4">
+                  {item.items.map((order) => (
+                    <div key={order.id} className="mt-2 flex items-center justify-between">
+                      <div className="flex w-[400px] flex-col gap-4">
+                        <div className="flex gap-4">
+                          <img className="aspect-square h-16 w-16 rounded-md" src={order.product.thumbnail} alt={order.product.name} />
+                          <div className="flex flex-col gap-[2px] text-sm">
+                            <div className="font-semibold">{order.product.name}</div>
+                            <p>
+                              Kích cỡ: <span>{order.variant.size.name}</span>
+                            </p>
+                            <p>
+                              Số lượng: <span>{order.quantity}</span>
+                            </p>
                           </div>
                         </div>
                       </div>
+                      <div className="flex items-center gap-4">
+                        <div className="text-base font-semibold">{formatPrice(order.price)}</div>
+                      </div>
+                      {item.orderStatus === EStatusOrder.SUCCESS && order.hasFeedback && (
+                        <Button className="h-[45px]" text="Đánh giá" variant="ghost" onClick={() => handleFeedbackOrder(item.id)} />
+                      )}
                     </div>
-                    <div className="flex items-center gap-4">
-                      <div className="font-bold">{formatPrice(order.price)}</div>
-                    </div>
-                  </div>
-                ))}
-                <div className="mt-2 flex w-full justify-between gap-2">
-                  <div>
-                    <StatusBadge text={item.orderStatus} color={item.orderStatus} />
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <Link to={`/profile/orders/detail/${item.id}`}>
-                      <Button size="full" className="h-[45px]" text="Chi tiết đơn hàng" />
-                    </Link>
-                    {item.orderStatus === EStatusOrder.SUCCESS && (
-                      <Button size="full" className="h-[45px]" text="Đánh giá" variant="ghost" onClick={() => handleFeedbackOrder(item.id)} />
-                    )}
-                    {item.orderStatus === EStatusOrder.PENDING && (
-                      <Button
-                        size="full"
-                        className="h-[45px]"
-                        text="Hủy đơn hàng"
-                        variant="danger"
-                        onClick={() => {
-                          confirm({
-                            title: "Hủy đơn hàng",
-                            content: "Bạn có chắc chắn muốn hủy đơn hàng này không?",
-                            onOk: () => handleCancelOrder(item.id),
-                            okText: "Hủy đơn hàng",
-                            cancelText: "Không",
-                          });
-                        }}
-                      />
-                    )}
-                    {item.orderStatus === EStatusOrder.DELIVERED && (
-                      <Button
-                        size="full"
-                        className="h-[45px]"
-                        text="Đã nhận hàng"
-                        variant="danger"
-                        onClick={() => handleSuccessOrder(item.id)}
-                      />
-                    )}
-                    {item.orderStatus === EStatusOrder.DELIVERED && (
-                      <Button
-                        size="full"
-                        className="h-[45px]"
-                        text="Yêu cầu hoàn trả"
-                        variant="danger"
-                        onClick={() => handleRequestReturnOrder(item.id)}
-                      />
-                    )}
-                  </div>
+                  ))}
                 </div>
-              </Card>
+              </div>
             ))
           ) : (
             <Empty description={<span className="font-semibold">Không tìm thấy đơn hàng nào</span>} />
