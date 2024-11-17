@@ -13,7 +13,7 @@ import { IOrderItem } from "@/services/store/product/product.model";
 import { useState } from "react";
 import { IReview } from "@/services/store/review/review.model";
 import { message } from "antd";
-import { createReview } from "@/services/store/review/review.thunk";
+import { createReview, getAllReviews } from "@/services/store/review/review.thunk";
 import { Card, Empty, Modal } from "antd";
 import { formatPrice } from "@/utils/curency";
 
@@ -71,6 +71,7 @@ const Orders = () => {
     dispatch(updateOrder({ param: orderId, body: { order_status: EStatusOrder.SUCCESS } }));
     toast.success("Đã nhận hàng thành công");
   };
+
   const handleReviewSubmit = async (values: IReview) => {
     if (!values.content || !values.rates) {
       message.error("Vui lòng điền đầy đủ thông tin đánh giá.");
@@ -85,18 +86,19 @@ const Orders = () => {
     };
 
     try {
-      await dispatch(createReview({ body: payload }));
-      message.success("Đánh giá của bạn đã được gửi thành công!");
+      const result = await dispatch(createReview({ body: payload })).unwrap();
 
+      message.success("Đánh giá của bạn đã được gửi thành công!");
       await dispatch(getAllOrderByUser({ query: { ...state.filter } }));
       if (selectedOrderItem) {
-        navigate(`/products/${selectedOrderItem.product.id}/reviews`);
+        await dispatch(getAllReviews(selectedOrderItem.product.id));
       }
-
       setReviewModalOpen(false);
-    } catch (error) {
-      console.log("Error: ", error);
-      message.error("Có lỗi xảy ra. Vui lòng thử lại.");
+      setSelectedOrderItem(null);
+      navigate(`/profile/review-history`);
+    } catch (error: any) {
+      console.error("Error submitting review:", error);
+      message.error(error?.message || "Có lỗi xảy ra khi gửi đánh giá. Vui lòng thử lại.");
     }
   };
 
@@ -122,9 +124,11 @@ const Orders = () => {
                         <img className="aspect-square h-20 w-20" src={order.product.thumbnail} alt={order.product.name} />
                         <div className="flex flex-col gap-2">
                           <div className="font-semibold">{order.product.name}</div>
-                          <div>
-                            Kích cỡ: <span>{order.variant.size.name}</span>
-                          </div>
+                          {order.variant?.size && (
+                            <div>
+                              Kích cỡ: <span>{order.variant.size.name}</span>
+                            </div>
+                          )}
                           <div>
                             Số lượng: <span>{order.quantity}</span>
                           </div>
@@ -144,31 +148,27 @@ const Orders = () => {
                     <Link to={`/profile/orders/detail/${item.id}`}>
                       <Button size="full" className="h-[45px]" text="Chi tiết đơn hàng" />
                     </Link>
-                    {item.orderStatus === EStatusOrder.SUCCESS &&
-                      item.items.map((orderItem) =>
-                        orderItem.hasFeedback ? (
+                    {item.orderStatus === EStatusOrder.SUCCESS && (
+                      <div className="flex flex-col gap-2">
+                        {item.items.map((orderItem) => (
                           <Button
-                            key={`feedback-${orderItem.id}`}
+                            key={orderItem.id}
                             className="h-[45px]"
-                            text="Xem đánh giá"
-                            size="full"
-                            variant="ghost"
-                            onClick={() => navigate(`/products/${orderItem.product.id}/reviews`)}
-                          />
-                        ) : (
-                          <Button
-                            key={`review-${orderItem.id}`}
-                            className="h-[45px]"
-                            text="Đánh giá"
+                            text={orderItem.hasFeedback ? "Xem đánh giá" : "Đánh giá"}
                             size="full"
                             variant="ghost"
                             onClick={() => {
-                              setSelectedOrderItem(orderItem);
-                              setReviewModalOpen(true);
+                              if (orderItem.hasFeedback) {
+                                navigate(`/profile/review-history`);
+                              } else {
+                                setSelectedOrderItem(orderItem);
+                                setReviewModalOpen(true);
+                              }
                             }}
                           />
-                        ),
-                      )}
+                        ))}
+                      </div>
+                    )}
                     {item.orderStatus === EStatusOrder.PENDING && (
                       <Button
                         size="full"

@@ -7,14 +7,17 @@ interface InfomationProductProps {
 
 const InfomationProduct: React.FC<InfomationProductProps> = ({ colors, sizes }) => {
   return (
-    <div className="">
+    <div className="w-full">
       <div className="mb-4 flex">
-        <div className="w-1/4 font-bold">Màu sắc</div>
-        <div className="w-3/4">{colors.join(", ")}</div>
+        <div className="w-1/4">
+          <span className="mr-2 font-bold">Màu sắc:</span> <span>{colors.join(", ")}</span>
+        </div>
       </div>
       <div className="flex">
-        <div className="w-1/4 font-bold">Kích cỡ</div>
-        <div className="w-3/4">{sizes.join(", ")}</div>
+        <div className="w-1/4">
+          <span className="mr-4 font-bold">Kích cỡ:</span>
+          <span>{sizes.join(", ")} </span>
+        </div>
       </div>
     </div>
   );

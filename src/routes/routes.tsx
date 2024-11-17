@@ -34,6 +34,8 @@ import Orders from "@/pages/Profile/Order/Orders";
 import ProfilePage from "@/pages/Profile";
 import OrderDetail from "@/pages/Profile/Order/OrderDetail";
 import ProductReviewList from "@/components/product-information/ProductReviewList";
+import ReviewHistory from "@/components/product-information/ReviewHistory";
+import ReviewProduct from "@/components/product-information/ReviewProducts";
 
 export interface IRoute {
   path: string;
@@ -83,7 +85,7 @@ export const routes: IRoute[] = [
           },
           {
             path: "products/:productId/reviews",
-            element: () => <ProductReviewList />,
+            element: () => <ReviewProduct />,
           },
         ],
       },
@@ -119,6 +121,10 @@ export const routes: IRoute[] = [
               {
                 path: "/notification",
                 element: Notifications,
+              },
+              {
+                path: "/review-history",
+                element: () => <ReviewHistory />,
               },
             ],
           },
