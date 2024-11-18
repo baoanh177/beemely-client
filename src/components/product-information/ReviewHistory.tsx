@@ -1,17 +1,17 @@
 import { useArchive } from "@/hooks/useArchive";
-import { IReviewInitialState } from "@/services/store/review/review.slice";
 import useAsyncEffect from "@/hooks/useAsyncEffect";
-
-import { Rate, Empty, Image } from "antd";
-import { IReviewHistory } from "@/services/store/review/review.model";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import "dayjs/locale/vi";
 import { IAuthInitialState } from "@/services/store/auth/auth.slice";
-import { useEffect } from "react";
 import { getProfile } from "@/services/store/auth/auth.thunk";
+import { IReviewHistory } from "@/services/store/review/review.model";
+import { IReviewInitialState } from "@/services/store/review/review.slice";
+import { deleteReview, getMyReviews } from "@/services/store/review/review.thunk";
+import { Empty, Image, Modal, Rate, message } from "antd";
+import dayjs from "dayjs";
+import "dayjs/locale/vi";
+import relativeTime from "dayjs/plugin/relativeTime";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { getMyReviews } from "@/services/store/review/review.thunk";
+import Button from "../common/Button";
 
 interface ReviewCardProps {
   review: IReviewHistory;
@@ -23,10 +23,29 @@ dayjs.locale("vi");
 const ReviewCard = ({ review }: ReviewCardProps) => {
   const formattedDate = dayjs(review.createdAt).fromNow();
   const { state, dispatch } = useArchive<IAuthInitialState>("auth");
+  const reviewDispatch = useArchive<IReviewInitialState>("review").dispatch;
 
   useEffect(() => {
     dispatch(getProfile());
   }, []);
+  //   const handleDeleteReview = () => {
+  //     Modal.confirm({
+  //       title: "Xác nhận xóa",
+  //       content: "Bạn có chắc chắn muốn xóa đánh giá này không?",
+  //       okText: "Xóa",
+  //       cancelText: "Hủy",
+  //       okButtonProps: { danger: true },
+  //       onOk: async () => {
+  //         try {
+  //           await reviewDispatch(deleteReview(review.id));
+  //           message.success("Xóa đánh giá thành công");
+  //           await dispatch(getMyReviews());
+  //         } catch (error) {
+  //           message.error("Có lỗi xảy ra khi xóa đánh giá");
+  //         }
+  //       },
+  //     });
+  //   };
 
   return (
     <div className="border-gray-200 bg-white mb-4 rounded-lg shadow-sm transition-shadow duration-300">
@@ -76,11 +95,14 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
               </p>
             </div>
           </div>
-          <div className="mt-4 flex items-center gap-2 text-sm text-gray-500">
-            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            Đánh giá {formattedDate}
+          <div className="flex items-center justify-between">
+            <div className="mt-4 flex items-center gap-2 text-sm text-gray-500">
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Đánh giá {formattedDate}
+            </div>
+            {/* <Button onClick={handleDeleteReview} variant="danger" text="Xóa" className="mt-4" /> */}
           </div>
         </div>
 

@@ -77,7 +77,6 @@ const Orders = () => {
 
     try {
       const result = await dispatch(createReview({ body: payload })).unwrap();
-
       message.success("Đánh giá của bạn đã được gửi thành công!");
       await dispatch(getAllOrderByUser({ query: { ...state.filter } }));
       if (selectedOrderItem) {
@@ -134,23 +133,20 @@ const Orders = () => {
                       </div>
                       {item.orderStatus === EStatusOrder.SUCCESS && (
                         <div className="flex flex-col gap-2">
-                          {item.items.map((orderItem) => (
-                            <Button
-                              key={orderItem.id}
-                              className="h-[45px]"
-                              text={orderItem.hasFeedback ? "Xem đánh giá" : "Đánh giá"}
-                              size="full"
-                              variant="ghost"
-                              onClick={() => {
-                                if (orderItem.hasFeedback) {
-                                  navigate(`/profile/review-history`);
-                                } else {
-                                  setSelectedOrderItem(orderItem);
-                                  setReviewModalOpen(true);
-                                }
-                              }}
-                            />
-                          ))}
+                          <Button
+                            className="h-[45px]"
+                            text={order.hasFeedback ? "Xem đánh giá" : "Đánh giá"}
+                            size="full"
+                            variant="ghost"
+                            onClick={() => {
+                              if (order.hasFeedback) {
+                                navigate(`/profile/review-history`);
+                              } else {
+                                setSelectedOrderItem(order);
+                                setReviewModalOpen(true);
+                              }
+                            }}
+                          />
                         </div>
                       )}
                     </div>

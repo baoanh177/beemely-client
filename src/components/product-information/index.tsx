@@ -7,6 +7,7 @@ import ReviewProduct from "./ReviewProducts";
 
 interface ProductInformationProps {
   product: {
+    id: string;
     description: string;
     productColors: IProductColor[];
     productSizes: ISize[];
@@ -43,8 +44,7 @@ const ProductInformation = ({ product }: ProductInformationProps) => {
       <div className="py-4">
         {activeTab === "descriptions" && <DescriptionProduct description={product.description} />}
         {activeTab === "additional" && <InfomationProduct colors={colorNames} sizes={sizeNames} />}
-
-        {activeTab === "reviews" && <ReviewProduct />}
+        {activeTab === "reviews" && <ReviewProduct productId={product.id} />}
       </div>
     </div>
   );

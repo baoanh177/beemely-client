@@ -1,26 +1,20 @@
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { EFetchStatus } from "@/shared/enums/fetchStatus";
-import { getAllReviews } from "@/services/store/review/review.thunk";
 import { AppDispatch } from "@/services/store";
-import { useParams } from "react-router-dom";
-import { List, Card, Avatar, Rate, Typography, Image, Spin } from "antd";
+import { getAllReviews } from "@/services/store/review/review.thunk";
+import { EFetchStatus } from "@/shared/enums/fetchStatus";
+import { Avatar, Card, Image, List, Rate, Spin, Typography } from "antd";
 import dayjs from "dayjs";
 import "dayjs/locale/vi";
+import { MessageCircle, Package, ThumbsUp } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-const { Text } = Typography;
+const { Text, Title } = Typography;
 
-interface Review {
-  id: number;
-  name: string;
-  rating: number;
-  content: string;
-  date: string;
-  image: string;
+interface ReviewProductProps {
+  productId: string;
 }
 
-const ReviewProduct: React.FC = () => {
-  const { productId } = useParams();
+const ReviewProduct: React.FC<ReviewProductProps> = ({ productId }) => {
   const dispatch = useDispatch<AppDispatch>();
   const [isLoading, setIsLoading] = useState(true);
   const { reviews, status } = useSelector((state: any) => state.review);
@@ -31,138 +25,130 @@ const ReviewProduct: React.FC = () => {
       setIsLoading(true);
       if (typeof productId === "string") {
         await dispatch(getAllReviews(productId));
-      } else {
-        console.error("productId is undefined");
       }
       setIsLoading(false);
     };
     fetchReviews();
   }, [dispatch, productId]);
 
+  const renderReviewItem = (review: any) => (
+    <Card className="mb-4 overflow-hidden rounded-xl shadow-sm">
+      <div className="flex gap-4">
+        <Avatar src={review.user?.avatarUrl || "/api/placeholder/32/32"} size={32} className="ring-gray-100 ring-2" />
+        <div className="flex-1">
+          <div className="flex items-start justify-between">
+            <div>
+              <Text strong className="text-base">
+                {review.user?.fullName || "Người dùng ẩn danh"}
+              </Text>
+              <div className="mb-4 mt-1 flex items-center gap-4">
+                <Rate disabled value={review.rates} className="text-xs" />
+                <Text className="text-sm text-gray-500">{dayjs(review.createdAt).locale("vi").format("DD MMMM, YYYY")}</Text>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Package className="h-4 w-4 text-green-500" />
+              <Text className="text-xs text-green-600">Đã mua hàng</Text>
+            </div>
+          </div>
+
+          {review.title && (
+            <Title level={5} className="mb-2 mt-3 text-base">
+              {review.title}
+            </Title>
+          )}
+
+          <Text className="text-gray-700 mt-4 text-sm">
+            <span className="mb-3 text-gray-80%">Nội dung đánh giá: </span>
+            <span className="text-[14px] font-bold">{review.content}</span>
+          </Text>
+          {review.images && review.images.length > 0 && (
+            <div className="mt-3 grid grid-cols-5 gap-2">
+              {review.images.map((image: string, index: number) => (
+                <div key={index} className="relative aspect-square h-20 w-20 overflow-hidden rounded-lg">
+                  <Image
+                    src={image}
+                    alt={`Ảnh đánh giá ${index + 1}`}
+                    className="h-6 w-6 object-cover"
+                    preview={{
+                      mask: (
+                        <div className="text-white flex items-center justify-center text-xs">
+                          <span>Xem</span>
+                        </div>
+                      ),
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="mt-3 flex items-center justify-end gap-4">
+            <button className="border-gray-200 text-gray-600 hover:bg-gray-50 flex items-center gap-1 rounded-lg border px-2 py-1 text-xs">
+              <ThumbsUp className="h-3 w-3" />
+              Hữu ích
+            </button>
+            <button className="border-gray-200 text-gray-600 hover:bg-gray-50 flex items-center gap-1 rounded-lg border px-2 py-1 text-xs">
+              <MessageCircle className="h-3 w-3" />
+              Bình luận
+            </button>
+          </div>
+
+          {review.reply && (
+            <div className="mt-3 rounded-lg border-l-4 border-blue-500 bg-blue-50 p-3">
+              <div className="flex items-center gap-2">
+                <Avatar src="/api/placeholder/24/24" size={24} />
+                <div>
+                  <Text strong className="text-sm text-blue-700">
+                    Phản hồi từ Cửa hàng
+                  </Text>
+                  <Text className="block text-xs text-gray-500">
+                    {dayjs(review.replyDate || review.createdAt)
+                      .locale("vi")
+                      .format("DD MMMM, YYYY")}
+                  </Text>
+                </div>
+              </div>
+              <Text className="mt-2 text-sm text-blue-800">{review.reply}</Text>
+            </div>
+          )}
+        </div>
+      </div>
+    </Card>
+  );
+
   if (status === EFetchStatus.REJECTED) {
     return (
-      <div className="flex items-center justify-center rounded-lg bg-red-50 p-8">
-        <Text type="danger" className="text-lg">
-          <span className="mr-2">⚠️</span>
-          Có lỗi xảy ra khi tải đánh giá.
+      <div className="flex items-center justify-center rounded-lg bg-red-50 p-6">
+        <Text type="danger" className="text-base font-semibold">
+          ⚠️ Có lỗi xảy ra khi tải đánh giá.
         </Text>
       </div>
     );
   }
 
-  const renderReviewStats = (review: any) => (
-    <div className="mb-2 mt-2 flex items-center gap-4">
-      <div className="text-gray-600 flex items-center gap-2">
-        <Rate disabled value={review.rates} className="text-sm text-yellow-400" />
-        <span className="text-sm">({review.rates}/5)</span>
-      </div>
-      <div className="text-sm text-gray-500">
-        <span className="mr-1">•</span>
-        {review.orderItem?.quantity || 1} sản phẩm đã mua
-      </div>
-    </div>
-  );
-
-  const renderReviewImages = (images: string[]) => (
-    <div className="mt-4 flex flex-wrap gap-3">
-      {images.map((image: string, index: number) => (
-        <div key={index} className="group relative">
-          <Image
-            src={image}
-            alt={`Review Image ${index + 1}`}
-            width={100}
-            height={100}
-            className="rounded-lg object-cover shadow-sm transition-shadow duration-200"
-            preview={{
-              mask: (
-                <div className="flex items-center justify-center">
-                  <span className="text-white">🔍 Xem</span>
-                </div>
-              ),
-            }}
-          />
-        </div>
-      ))}
-    </div>
-  );
-
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8">
-      <div className="mb-8 flex items-center justify-between">
-        <h2 className="text-gray-800 text-2xl font-bold">
-          Đánh Giá Sản Phẩm
-          <span className="ml-3 text-lg font-normal text-gray-500">({reviewList.length} đánh giá)</span>
-        </h2>
-      </div>
+    <div className="mx-auto w-full px-4 py-4">
+      <Title level={3} className="mb-4">
+        Đánh giá sản phẩm
+        <Text className="ml-2 text-base font-normal text-gray-500">({reviewList.length} đánh giá)</Text>
+      </Title>
 
       {isLoading ? (
-        <div className="flex items-center justify-center p-12">
-          <Spin tip="Đang tải đánh giá..." size="large" className="text-primary-500" />
+        <div className="flex items-center justify-center py-8">
+          <Spin size="large" tip="Đang tải đánh giá..." />
         </div>
       ) : reviewList.length === 0 ? (
-        <div className="bg-gray-50 rounded-lg py-12 text-center">
-          <Text className="text-lg text-gray-500">Chưa có đánh giá nào cho sản phẩm này</Text>
-        </div>
+        <Card className="text-center">
+          <div className="py-8">
+            <Title level={4} className="text-gray-500">
+              Chưa có đánh giá nào cho sản phẩm này
+            </Title>
+            <Text className="text-gray-400">Hãy là người đầu tiên đánh giá sản phẩm</Text>
+          </div>
+        </Card>
       ) : (
-        <List
-          itemLayout="vertical"
-          size="large"
-          dataSource={reviewList}
-          renderItem={(review: any) => (
-            <List.Item key={review._id}>
-              <Card className="overflow-hidden p-4 transition-shadow duration-300">
-                <div className="flex items-start gap-4">
-                  <Avatar
-                    src={review.user?.avatarUrl || "https://placehold.co/50x50"}
-                    size={56}
-                    className="ring-gray-100 ring-2 ring-offset-2"
-                  />
-                  <div className="flex-1">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <Text strong className="text-lg">
-                          {review.user?.fullName || "Người dùng ẩn danh"}
-                        </Text>
-                        {renderReviewStats(review)}
-                      </div>
-                      <Text className="text-sm text-gray-500">{dayjs(review.createdAt).locale("vi").format("DD MMMM, YYYY")}</Text>
-                    </div>
-
-                    <div className="mt-4">
-                      {review.title && (
-                        <Text strong className="mb-2 block text-lg">
-                          {review.title}
-                        </Text>
-                      )}
-                      <Text className="text-gray-700 text-[14px] leading-relaxed">
-                        <span className="mb-2 mr-1 text-sm text-gray-500">Nội dung đánh giá</span>
-                        {review.content}
-                      </Text>
-                    </div>
-                    <div className="mt-4">
-                      <span className="mb-2 mr-1 text-sm text-gray-500">Ảnh đánh giá:</span>
-                      {review.images && review.images.length > 0 && renderReviewImages(review.images)}
-                    </div>
-
-                    {review.reply && (
-                      <div className="mt-6 rounded-lg border border-blue-100 bg-blue-50 p-4">
-                        <div className="mb-2 flex items-center gap-2">
-                          <svg className="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
-                          </svg>
-                          <Text strong className="text-blue-700">
-                            Phản hồi từ cửa hàng
-                          </Text>
-                        </div>
-                        <Text className="text-blue-800">{review.reply}</Text>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </Card>
-            </List.Item>
-          )}
-        />
+        <div>{reviewList.map(renderReviewItem)}</div>
       )}
     </div>
   );
