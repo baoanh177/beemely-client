@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Recommended from "./Recommended/Recommended";
 import Sidebar from "./Sidebar/Sidebar";
 import SortControls from "./components/SortControls";
@@ -7,11 +7,15 @@ import { useArchive } from "@/hooks/useArchive";
 import { IProductInitialState, updateFilters } from "@/services/store/product/product.slice";
 import { Container } from "@/styles/common-styles";
 import { getAllProducts } from "@/services/store/product/product.thunk";
+import { useMediaQuery } from "react-responsive";
+import { X } from "lucide-react";
 
 function Products() {
   const { state, dispatch } = useArchive<IProductInitialState>("products");
   const { products } = state;
   const [showFilters, setShowFilters] = useState(true);
+  const [showMobileSidebar, setShowMobileSidebar] = useState(false);
+  const isMobile = useMediaQuery({ maxWidth: 767 });
   const [filters, setFilters] = useState({
     gender: [] as string[],
     productType: [] as string[],
@@ -78,14 +82,30 @@ function Products() {
     setShowFilters((prev) => !prev);
   }, []);
 
+  const toggleMobileSidebar = () => {
+    setShowMobileSidebar(!showMobileSidebar);
+  };
+
+  const closeMobileSidebar = () => {
+    setShowMobileSidebar(false);
+  };
+
   return (
     <div className="products-page">
       <Container>
-        <div className="mb-8 flex">
-          <div className={`transition-all duration-300 ease-in-out ${showFilters ? "w-3/12 opacity-100" : "w-0 overflow-hidden opacity-0"}`}>
-            <Sidebar filters={filters} onFilterChange={handleFilterChange} />
-          </div>
-          <div className={`${showFilters ? "w-9/12" : "w-full"}`}>
+        <div className="mb-8 flex flex-col md:flex-row">
+          {!isMobile && (
+            <div className={`transition-all duration-300 ease-in-out ${showFilters ? "w-3/12 opacity-100" : "w-0 overflow-hidden opacity-0"}`}>
+              <Sidebar
+                filters={filters}
+                onFilterChange={handleFilterChange}
+                showMobileSidebar={showMobileSidebar}
+                onCloseMobileSidebar={closeMobileSidebar}
+                showWidthFull={showFilters}
+              />
+            </div>
+          )}
+          <div className={`${showFilters && !isMobile ? "w-9/12" : "w-full"}`}>
             <div className="flex items-center justify-between">
               <Recommended onSelectGender={handleGenderSelect} />
               <SortControls
@@ -93,7 +113,8 @@ function Products() {
                 currentSort={filters.sort}
                 currentOrderBy={filters.orderBy}
                 showFilters={showFilters}
-                onToggleFilters={toggleFilters}
+                onToggleFiltersDesktop={toggleFilters}
+                onToggleFilters={toggleMobileSidebar}
               />
             </div>
 
@@ -107,6 +128,40 @@ function Products() {
           </div>
         </div>
       </Container>
+      {isMobile && (
+        <>
+          <div
+            className={`fixed inset-0 z-50 bg-dark-90%/50 transition-opacity duration-300 ${showMobileSidebar ? "opacity-100" : "pointer-events-none opacity-0"}`}
+            onClick={closeMobileSidebar}
+          />
+          <div
+            className={`fixed inset-y-0 left-0 z-50 w-80 transform bg-white-500 shadow-lg transition-transform duration-500 ease-in-out ${showMobileSidebar ? "translate-x-0" : "-translate-x-full"}`}
+          >
+            <div className="flex items-center justify-between border-b p-4">
+              <h2 className="text-lg font-semibold">Filters</h2>
+              <button onClick={closeMobileSidebar} className="hover:bg-gray-100 rounded-full p-2" aria-label="Close filters">
+                <X size={24} />
+              </button>
+            </div>
+
+            <div className="h-[calc(100vh-64px)] overflow-y-auto p-4">
+              <Sidebar
+                filters={filters}
+                onFilterChange={handleFilterChange}
+                showMobileSidebar={showMobileSidebar}
+                onCloseMobileSidebar={closeMobileSidebar}
+                showWidthFull={true}
+              />
+            </div>
+
+            <div className="border-t p-4">
+              <button onClick={closeMobileSidebar} className="bg-black text-white hover:bg-gray-800 w-full rounded-md py-2">
+                Apply Filters
+              </button>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

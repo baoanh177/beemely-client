@@ -7,27 +7,27 @@ interface ProductListProps {
 }
 
 const ProductList: React.FC<ProductListProps> = ({ products }) => {
-  console.log("2343333", products);
-  const content = products.map((product) => {
-    const sortVariants = [...product.variants].sort((a, b) => a.price - b.price);
-    return (
-      <ProductCard
-        key={product.id}
-        slug={product.slug}
-        image={product.thumbnail}
-        description={product.sortDescription}
-        type="wishlist"
-        regularPrice={sortVariants[0].price}
-        discountPrice={sortVariants[0].discountPrice}
-        name={product.name}
-        productId={product.id}
-      />
-    );
-  });
-
   return (
-    <div className="container mx-auto px-4">
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">{content}</div>
+    <div className="w-full">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {products.map((product) => {
+          const sortVariants = [...product.variants].sort((a, b) => a.price - b.price);
+          return (
+            <div key={product.id} className="transform transition-transform duration-200 hover:-translate-y-1">
+              <ProductCard
+                slug={product.slug}
+                image={product.thumbnail}
+                description={product.sortDescription}
+                type="wishlist"
+                regularPrice={sortVariants[0].price}
+                discountPrice={sortVariants[0].discountPrice}
+                name={product.name}
+                productId={product.id}
+              />
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };

@@ -6,6 +6,7 @@ interface SortControlsProps {
   currentSort: string;
   currentOrderBy: string;
   showFilters: boolean;
+  onToggleFiltersDesktop: () => void;
   onToggleFilters: () => void;
 }
 
@@ -14,13 +15,20 @@ interface SortOption {
   label: string;
 }
 
-const SortControls: React.FC<SortControlsProps> = ({ onSortChange, currentSort, currentOrderBy, showFilters, onToggleFilters }) => {
+const SortControls: React.FC<SortControlsProps> = ({
+  onSortChange,
+  currentSort,
+  currentOrderBy,
+  showFilters,
+  onToggleFilters,
+  onToggleFiltersDesktop,
+}) => {
   const sortOptions: SortOption[] = useMemo(
     () => [
-      { value: "createdAt", label: "Newest" },
-      { value: "price", label: "Price: High-Low" },
-      { value: "price", label: "Price: Low-High" },
-      { value: "featured", label: "Featured" },
+      { value: "createdAt", label: "Mới nhất" },
+      { value: "price", label: "Giá: Cao-Thấp" },
+      { value: "price", label: "Giá: Thấp-Cao" },
+      { value: "featured", label: "Nổi bật" },
     ],
     [],
   );
@@ -44,15 +52,20 @@ const SortControls: React.FC<SortControlsProps> = ({ onSortChange, currentSort, 
   };
 
   return (
-    <div className="flex items-center justify-between bg-white-500 px-4">
-      <button onClick={onToggleFilters} className="flex items-center gap-2 px-4 text-dark-80% hover:text-dark-90%">
+    <div className="flex flex-col items-center justify-between bg-white-500 px-4 py-2 md:flex-row md:py-0">
+      <button
+        onClick={() => {
+          onToggleFiltersDesktop();
+          onToggleFilters();
+        }}
+        className="flex items-center gap-2 px-4 py-2 text-dark-80% hover:text-dark-90% md:py-0"
+      >
         <SlidersHorizontal size={20} />
-        {showFilters ? "Hide Filters" : "Show Filters"}
+        <span className="whitespace-nowrap">{showFilters ? "Ẩn bộ lọc" : "Hiện bộ lọc"}</span>
       </button>
 
-      <div className="relative">
+      <div className="relative mt-2 md:mt-0">
         <div className="flex items-center gap-2">
-          <span className="text-gray-500">Sort By:</span>
           <div className="group relative">
             <button className="flex items-center gap-2 rounded-md bg-white-500 px-2 py-2 hover:bg-gray-20%">
               {getCurrentSortLabel()}
