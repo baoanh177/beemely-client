@@ -13,7 +13,7 @@ const ProductList: React.FC<ProductListProps> = ({ products }) => {
         {products.map((product) => {
           const sortVariants = [...product.variants].sort((a, b) => a.price - b.price);
           return (
-            <div key={product.id} className="transform transition-transform duration-200 hover:-translate-y-1">
+            <div key={product.id}>
               <ProductCard
                 slug={product.slug}
                 image={product.thumbnail}
