@@ -90,10 +90,30 @@ interface Tag {
   status: number;
   parentId: null | string;
 }
+
 interface IProductType {
   id: string;
   name: string;
   slug: string;
 }
 
-export type { IBrand, IColor, IGender, ILabel, IProduct, IProductColor, IProductType, ISize, IVariant };
+interface Filter {
+  gender: string[];
+  productType: string[];
+  color: string[];
+  size: string[];
+  brand: string[];
+  orderBy: string;
+  sort: string;
+  minPrice: string;
+  maxPrice: string;
+  label: string;
+  tag: string;
+}
+
+interface FilterChangeHandler {
+  type: string;
+  value: string | string[];
+}
+
+export type { IBrand, IColor, IGender, ILabel, IProduct, IProductColor, IProductType, ISize, IVariant, Filter, FilterChangeHandler };

@@ -14,6 +14,7 @@ import {
 import { IAuthInitialState } from "@/services/store/auth/auth.slice";
 import { useArchive } from "@/hooks/useArchive";
 import clsx from "clsx";
+import { Link } from "react-router-dom";
 
 interface UserDropdownProps {
   isMobile: boolean;
@@ -40,8 +41,6 @@ const UserDropdown: React.FC<UserDropdownProps> = ({ isMobile }) => {
   const handleMenuClick: MenuProps["onClick"] = ({ key }) => {
     if (key === "logout") {
       handleLogout();
-    } else {
-      window.location.href = menuItems.find((item) => item.key === key)?.href || "/";
     }
   };
 
@@ -50,26 +49,22 @@ const UserDropdown: React.FC<UserDropdownProps> = ({ isMobile }) => {
   }
 
   const menuItems = [
-    { key: "profile", icon: <UserOutlined />, label: "Profile", href: "/profile" },
-    { key: "inbox", icon: <MailOutlined />, label: "Inbox", href: "/inbox" },
-    { key: "tasks", icon: <CheckSquareOutlined />, label: "Tasks", href: "/tasks" },
-    { key: "chats", icon: <MessageOutlined />, label: "Chats", href: "/chats" },
-    { key: "pricing", icon: <DollarOutlined />, label: "Pricing", href: "/pricing" },
-    { key: "settings", icon: <SettingOutlined />, label: "Settings", href: "/settings" },
-    { key: "faq", icon: <QuestionCircleOutlined />, label: "FAQ", href: "/faq" },
+    { key: "profile", icon: <UserOutlined />, label: "Hồ sơ", href: "/profile" },
+    { key: "inbox", icon: <MailOutlined />, label: "Hộp thư đến", href: "/inbox" },
+    { key: "settings", icon: <SettingOutlined />, label: "Cài đặt", href: "/settings" },
   ];
 
   const items: MenuProps["items"] = [
     ...menuItems.map((item) => ({
       key: item.key,
       icon: item.icon,
-      label: item.label,
+      label: <Link to={item.href}>{item.label}</Link>,
     })),
     { type: "divider" },
     {
       key: "logout",
       icon: <LogoutOutlined />,
-      label: "Logout",
+      label: "Đăng xuất",
       danger: true,
     },
   ];

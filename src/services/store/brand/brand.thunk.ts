@@ -1,13 +1,13 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { client } from "../../config/client";
-import { ISize } from "../product/product.model";
+import { IBrand, ISize } from "../product/product.model";
 import { IResponse } from "@/shared/utils/shared-interfaces";
 
 const sizePrefix = "/api/client";
 
-export const getAllSize = createAsyncThunk<IResponse<ISize[]>, void>("sizes/getAllSize", async () => {
+export const getAllBrand = createAsyncThunk<IResponse<IBrand[]>, void>("brands/getAllBrand", async () => {
   try {
-    const { response, data } = await client.get<ISize>(`${sizePrefix}/size`);
+    const { response, data } = await client.get<ISize>(`${sizePrefix}/brands`);
     return response.status >= 400 ? data : data;
   } catch (error: any) {
     return error.response.data;

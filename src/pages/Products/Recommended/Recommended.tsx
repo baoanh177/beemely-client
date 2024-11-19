@@ -9,10 +9,10 @@ import clsx from "clsx";
 const { Title } = Typography;
 
 interface RecommendedProps {
-  handleClick: (selectedGenders: string[]) => void;
+  onSelectGender: (selectedGenders: string[]) => void;
 }
 
-const Recommended: React.FC<RecommendedProps> = ({ handleClick }) => {
+const Recommended: React.FC<RecommendedProps> = ({ onSelectGender }) => {
   const { state, dispatch } = useArchive<IGenderInitialState>("genders");
   const { genders } = state;
   const [selectedGenders, setSelectedGenders] = useState<string[]>([]);
@@ -23,10 +23,11 @@ const Recommended: React.FC<RecommendedProps> = ({ handleClick }) => {
 
   const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     const value = event.currentTarget.value;
-    setSelectedGenders((prevSelectedGenders) =>
-      prevSelectedGenders.includes(value) ? prevSelectedGenders.filter((gender) => gender !== value) : [...prevSelectedGenders, value],
-    );
-    handleClick(selectedGenders.includes(value) ? selectedGenders.filter((gender) => gender !== value) : [...selectedGenders, value]);
+    const newSelectedGenders = selectedGenders.includes(value)
+      ? selectedGenders.filter((gender) => gender !== value)
+      : [...selectedGenders, value];
+    setSelectedGenders(newSelectedGenders);
+    onSelectGender(newSelectedGenders);
   };
 
   return (
@@ -38,29 +39,16 @@ const Recommended: React.FC<RecommendedProps> = ({ handleClick }) => {
         </Title>
       </div>
       <div className="flex flex-wrap gap-2">
-        <button
-          onClick={handleButtonClick}
-          value=""
-          className={clsx(
-            "rounded-full border px-4 py-2 text-sm transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50",
-            {
-              "bg-dark-500 text-white-500": selectedGenders.length === 0,
-              "bg-white-500 text-primary-90% hover:bg-gray-10%": selectedGenders.length > 0,
-            },
-          )}
-        >
-          Tất cả sản phẩm
-        </button>
         {genders.map((gender) => (
           <button
             key={gender.id}
             onClick={handleButtonClick}
-            value={gender.name.trim()}
+            value={gender.id}
             className={clsx(
               "rounded-full border px-4 py-2 text-sm transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50",
               {
-                "bg-dark-500 text-white-500": selectedGenders.includes(gender.name.trim()),
-                "bg-white-500 text-primary-90% hover:bg-gray-20%": !selectedGenders.includes(gender.name.trim()),
+                "bg-dark-500 text-white-500": selectedGenders.includes(gender.id.trim()),
+                "bg-white-500 text-primary-90% hover:bg-gray-20%": !selectedGenders.includes(gender.id.trim()),
               },
             )}
           >
