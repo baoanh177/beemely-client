@@ -1,21 +1,20 @@
 import { useState, useEffect } from "react";
-import { Button } from "antd";
-import { FaArrowRight } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import { useArchive } from "@/hooks/useArchive";
 import { IBannerInitialState } from "@/services/store/banner/banner.slice";
 import useAsyncEffect from "@/hooks/useAsyncEffect";
 import { getAllBanners } from "@/services/store/banner/banner.thunk";
-import { Link } from "react-router-dom";
 
 const BannerSlider = () => {
-  const [currentSlide, setCurrentSlide] = useState<number>(0);
-
+  const [currentSlide, setCurrentSlide] = useState(0);
   const { state, dispatch } = useArchive<IBannerInitialState>("banner");
-  const {} = useAsyncEffect(
+
+  useAsyncEffect(
     (async) => async(dispatch(getAllBanners({ query: { _pagination: false, ...state.filter } })), "getAllProductsLoading"),
     [JSON.stringify(state.filter)],
   );
-  const length = state.banners.length || 0;
+
+  const length = state.banners.length;
 
   useEffect(() => {
     if (length > 0) {
@@ -28,33 +27,36 @@ const BannerSlider = () => {
   }, [length]);
 
   return (
-    <div className="relative h-96 w-full overflow-hidden rounded-sm bg-gray-10% md:h-[500px] lg:h-[600px]">
-      {state.banners.map((slide, index) => (
-        <div
-          key={index}
-          className={`absolute left-0 top-0 h-full w-full transition-opacity duration-500 ${
-            index === currentSlide ? "opacity-100" : "opacity-0"
-          }`}
-        >
-          <div className="relative h-full">
-            <div className="absolute bottom-8 left-0 right-0 z-10 flex flex-col items-center justify-center px-4 md:bottom-12 md:items-start md:px-12 lg:bottom-16 lg:px-16">
-              <Button
-                type="default"
-                className="group flex items-center space-x-2 rounded-md bg-dark-500 px-10 py-8 text-base font-medium text-tertiary-5% transition-all hover:bg-gray-500 md:text-lg"
-              >
-                <Link to={slide.path} className="flex items-center">
-                  <span>Mua ngay</span>
-                  <FaArrowRight className="ml-2 transition-transform group-hover:translate-x-1" />
+    <section className="mx-auto max-w-[2520px] sm:px-1 md:px-4 xl:px-4">
+      <div className="relative h-96 w-full overflow-hidden rounded-lg bg-[url('/src/assets/images/bg-banner.svg')] md:h-[500px] lg:h-[600px]">
+        {state.banners.map((slide, index) => (
+          <div
+            key={index}
+            className={`absolute left-0 top-0 h-full w-full transition-opacity duration-500 ${
+              index === currentSlide ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            <div className="flex h-full w-full flex-col items-center justify-center rounded-lg bg-cover bg-center p-8 md:flex-row">
+              <div className="flex basis-1/2 flex-col justify-center px-4 md:pr-8">
+                <div className="text-gray-900 flex flex-col text-3xl font-extrabold md:space-y-2 md:text-5xl lg:text-6xl">
+                  <span>{slide.title}</span>
+                </div>
+                <div className="my-5 h-1 w-[50%] bg-dark-500"></div>
+                <p className="line-clamp-3 text-sm font-light text-dark-90%">{slide.description}</p>
+                <Link to={slide.path} className="w-full">
+                  <button className="mt-6 w-full rounded-full bg-dark-500 px-6 py-2 text-white-500 hover:bg-dark-80% md:max-w-[50%]">
+                    Shopping now!
+                  </button>
                 </Link>
-              </Button>
-            </div>
-            <div className="block h-full">
-              <img src={slide.imageUrl} alt="Banner" className="h-full w-full object-cover" />
+              </div>
+              <div className="relative hidden h-full w-full md:block md:basis-1/2 md:pl-8">
+                <img src={slide.imageUrl} alt={slide.title} className="h-full w-full rounded-lg object-cover" />
+              </div>
             </div>
           </div>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
+    </section>
   );
 };
 
