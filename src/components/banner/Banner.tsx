@@ -27,8 +27,8 @@ const BannerSlider = () => {
   }, [length]);
 
   return (
-    <section className="mx-auto max-w-[2520px] px-4 sm:px-2 md:px-4 xl:px-4">
-      <div className="relative h-96 w-full overflow-hidden rounded-lg bg-cyan-200 md:h-[500px] lg:h-[600px]">
+    <section className="mx-auto max-w-[2520px] sm:px-1 md:px-4 xl:px-4">
+      <div className="relative h-96 w-full overflow-hidden rounded-lg bg-[url('/src/assets/images/bg-banner.svg')] md:h-[500px] lg:h-[600px]">
         {state.banners.map((slide, index) => (
           <div
             key={index}
