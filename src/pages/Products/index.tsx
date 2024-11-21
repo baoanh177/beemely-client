@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { useSearchParams } from "react-router-dom";
 import Recommended from "./Recommended/Recommended";
 import Sidebar from "./Sidebar/Sidebar";
 import SortControls from "./components/SortControls";
@@ -16,19 +17,23 @@ function Products() {
   const [showFilters, setShowFilters] = useState(true);
   const [showMobileSidebar, setShowMobileSidebar] = useState(false);
   const isMobile = useMediaQuery({ maxWidth: 767 });
-  const [filters, setFilters] = useState({
-    gender: [] as string[],
-    productType: [] as string[],
-    color: [] as string[],
-    size: [] as string[],
-    brand: [] as string[],
-    orderBy: "createdAt",
-    sort: "desc",
-    minPrice: "0",
-    maxPrice: "10000000",
-    label: "",
-    tag: "",
-  });
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const initialFilters = {
+    gender: searchParams.get("gender")?.split(",") || [],
+    productType: searchParams.get("productType")?.split(",") || [],
+    color: searchParams.get("color")?.split(",") || [],
+    size: searchParams.get("size")?.split(",") || [],
+    brand: searchParams.get("brand")?.split(",") || [],
+    orderBy: searchParams.get("orderBy") || "createdAt",
+    sort: searchParams.get("sort") || "desc",
+    minPrice: searchParams.get("minPrice") || "0",
+    maxPrice: searchParams.get("maxPrice") || "10000000",
+    label: searchParams.get("label") || "",
+    tag: searchParams.get("tag") || "",
+  };
+
+  const [filters, setFilters] = useState(initialFilters);
 
   const cleanQueryParams = useCallback((query: { [key: string]: any }) => {
     return Object.fromEntries(Object.entries(query).filter(([_, v]) => v !== undefined && v !== "" && v !== "0" && v !== "10000000"));
@@ -49,8 +54,9 @@ function Products() {
       sort: filters.sort,
     });
 
+    setSearchParams(query);
     dispatch(getAllProducts({ query }));
-  }, [filters, dispatch, state.filter, cleanQueryParams]);
+  }, [filters, dispatch, state.filter, cleanQueryParams, setSearchParams]);
 
   const handleFilterChange = useCallback(
     (type: string, value: string | string[]) => {
