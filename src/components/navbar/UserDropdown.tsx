@@ -1,16 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Dropdown, MenuProps } from "antd";
-import {
-  UserOutlined,
-  MailOutlined,
-  CheckSquareOutlined,
-  MessageOutlined,
-  SettingOutlined,
-  DollarOutlined,
-  QuestionCircleOutlined,
-  LogoutOutlined,
-  DownOutlined,
-} from "@ant-design/icons";
+import { UserOutlined, MailOutlined, SettingOutlined, LogoutOutlined, DownOutlined } from "@ant-design/icons";
 import { IAuthInitialState } from "@/services/store/auth/auth.slice";
 import { useArchive } from "@/hooks/useArchive";
 import clsx from "clsx";

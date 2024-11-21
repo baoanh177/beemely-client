@@ -5,6 +5,7 @@ import Stories from "@/components/stories/Stories";
 import { Container } from "@/styles/common-styles";
 import Categories from "../Components/categories/Categories";
 import Services from "@/components/service/Services";
+import ProductInterest from "@/components/common/ProductInterest";
 
 const Home = () => {
   return (
@@ -16,6 +17,7 @@ const Home = () => {
         <Categories />
       </Container>
       <BestsellerSection />
+      <ProductInterest />
       <div className="bg-[#FAFAFB] pb-8 pt-8">
         <Container>
           <CustomerSaySlider />
