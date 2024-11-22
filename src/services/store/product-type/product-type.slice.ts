@@ -36,7 +36,7 @@ const productTypesSlice = createSlice({
         state.error = null;
         state.status = EFetchStatus.PENDING;
       })
-      .addCase(getAllProductTypes.fulfilled, (state, { payload }: PayloadAction<IResponse<IProductType>>) => {
+      .addCase(getAllProductTypes.fulfilled, (state, { payload }: PayloadAction<IResponse<IProductType[]>>) => {
         state.loading = false;
         state.productTypes = payload.metaData;
         state.status = EFetchStatus.FULFILLED;

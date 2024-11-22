@@ -41,7 +41,7 @@ function Products() {
 
   useEffect(() => {
     const query = cleanQueryParams({
-      ...state.filter,
+      // ...state.filter,
       gender: filters.gender.length ? filters.gender.join(",") : undefined,
       productType: filters.productType.length ? filters.productType.join(",") : undefined,
       color: filters.color.length ? filters.color.join(",") : undefined,
