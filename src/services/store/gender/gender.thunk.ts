@@ -1,14 +1,15 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { client } from "../../config/client";
 import { IGender } from "../product/product.model";
+import { IResponse } from "@/shared/utils/shared-interfaces";
 
 const genderPrefix = "/api/client";
 
-export const getAllGender = createAsyncThunk("genders/getAllGender", async (_, { rejectWithValue }) => {
+export const getAllGender = createAsyncThunk<IResponse<IGender[]>, void>("genders/getAllGender", async () => {
   try {
     const { response, data } = await client.get<IGender>(`${genderPrefix}/genders`);
-    return response.status >= 400 ? rejectWithValue(data) : data;
+    return response.status >= 400 ? data : data;
   } catch (error: any) {
-    return rejectWithValue(error.response.data);
+    return error.response.data;
   }
 });

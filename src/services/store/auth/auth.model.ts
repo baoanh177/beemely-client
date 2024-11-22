@@ -19,6 +19,7 @@ export interface IUserProfile {
   isVerified: boolean;
   isNewUser: boolean;
   wishlist: string[];
+  tags: string[];
 }
 
 export interface IAddress {

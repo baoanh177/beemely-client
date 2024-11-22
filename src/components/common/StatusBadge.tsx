@@ -28,7 +28,7 @@ const CONVERT_STATUS = {
   delivered: "Đã giao hàng",
   success: "Đơn hàng đã hoàn thành",
   cancelled: "Đã hủy",
-  request_return: "Yêu cầu đổi trả",
+  request_return: "Đang khiếu nại",
   returning: "Đang đổi trả",
   returned: "Đã đổi trả",
 };

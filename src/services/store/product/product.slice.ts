@@ -7,6 +7,21 @@ import { getAllProducts, getProductBySlug } from "./product.thunk";
 export interface IProductInitialState extends IInitialState {
   products: IProduct[];
   activeProduct: IProduct | undefined;
+  filter: {
+    _page: number;
+    _limit: number;
+    orderBy: number;
+    sort: string;
+    gender?: string[];
+    color?: string[];
+    size?: string[];
+    brand?: string[];
+    productType?: string[];
+    minPrice: string;
+    maxPrice: string;
+    label: string;
+    tag: string;
+  };
 }
 
 const initialState: IProductInitialState = {
@@ -15,6 +30,17 @@ const initialState: IProductInitialState = {
   filter: {
     _page: 1,
     _limit: 10,
+    orderBy: 0,
+    sort: "",
+    gender: [],
+    color: [],
+    size: [],
+    brand: [],
+    productType: [],
+    minPrice: "",
+    maxPrice: "",
+    label: "",
+    tag: "",
   },
   totalRecords: 0,
   message: "",
@@ -28,6 +54,9 @@ const productSlice = createSlice({
     resetStatus(state) {
       state.status = EFetchStatus.IDLE;
       state.message = "";
+    },
+    updateFilters(state, action: PayloadAction<Partial<IProductInitialState["filter"]>>) {
+      state.filter = { ...state.filter, ...action.payload };
     },
   },
   extraReducers: (builder) => {
@@ -64,5 +93,5 @@ const productSlice = createSlice({
   },
 });
 
-export const { resetStatus } = productSlice.actions;
+export const { resetStatus, updateFilters } = productSlice.actions;
 export { productSlice };

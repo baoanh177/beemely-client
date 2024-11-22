@@ -1,25 +1,25 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { EFetchStatus } from "@/shared/enums/fetchStatus";
 import { IInitialState, IResponse } from "@/shared/utils/shared-interfaces";
-import { getAllSize } from "./size.thunk";
-import { ISize } from "../product/product.model";
+import { getAllBrand } from "./brand.thunk";
+import { IBrand } from "../product/product.model";
 
-export interface ISizeInitialState extends Partial<IInitialState> {
-  sizes: ISize[];
+export interface IBrandInitialState extends Partial<IInitialState> {
+  brands: IBrand[];
   loading: boolean;
   error: string | null;
 }
 
-const initialState: ISizeInitialState = {
-  sizes: [],
+const initialState: IBrandInitialState = {
+  brands: [],
   loading: false,
   error: null,
   status: EFetchStatus.IDLE,
   message: "",
 };
 
-const sizesSlice = createSlice({
-  name: "sizes",
+const brandsSlice = createSlice({
+  name: "brands",
   initialState,
   reducers: {
     resetStatus(state) {
@@ -29,25 +29,25 @@ const sizesSlice = createSlice({
   },
 
   extraReducers(builder) {
-    // ? Get Sizes
+    // ? Get Brands
     builder
-      .addCase(getAllSize.pending, (state) => {
+      .addCase(getAllBrand.pending, (state) => {
         state.loading = true;
         state.error = null;
         state.status = EFetchStatus.PENDING;
       })
-      .addCase(getAllSize.fulfilled, (state, { payload }: PayloadAction<IResponse<ISize[]>>) => {
+      .addCase(getAllBrand.fulfilled, (state, { payload }: PayloadAction<IResponse<IBrand[]>>) => {
         state.loading = false;
-        state.sizes = payload.metaData;
+        state.brands = payload.metaData;
         state.status = EFetchStatus.FULFILLED;
       })
-      .addCase(getAllSize.rejected, (state) => {
+      .addCase(getAllBrand.rejected, (state) => {
         state.loading = false;
-        state.error = "Failed to fetch sizes";
+        state.error = "Failed to fetch brands";
         state.status = EFetchStatus.REJECTED;
       });
   },
 });
 
-export const { resetStatus } = sizesSlice.actions;
-export { sizesSlice };
+export const { resetStatus } = brandsSlice.actions;
+export { brandsSlice };

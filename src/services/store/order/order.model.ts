@@ -1,6 +1,7 @@
 import { EStatusOrder } from "@/shared/enums/order";
 import { IUserProfile } from "../auth/auth.model";
 import { IProduct, IVariant } from "../product/product.model";
+import { IComplaint } from "../complaint/complaint.model";
 
 export interface IOrder {
   id: string;
@@ -19,6 +20,7 @@ export interface IOrder {
   userEmail: string;
   uniqueId: string;
   note?: string;
+  complaint?: IComplaint;
 }
 
 export interface IOrderItem {

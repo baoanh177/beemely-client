@@ -10,7 +10,7 @@ interface IProduct {
   minPrice?: number;
   maxPrice?: number;
   images: string[];
-  tags: Tag[];
+  tags: ITag[];
   gender: IGender;
   variants: IVariant[];
   labels: ILabel[];
@@ -81,7 +81,7 @@ interface IGender {
   path: string;
 }
 
-interface Tag {
+interface ITag {
   id: string;
   name: string;
   slug: string;
@@ -90,18 +90,30 @@ interface Tag {
   status: number;
   parentId: null | string;
 }
+
 interface IProductType {
   id: string;
   name: string;
   slug: string;
 }
 
-export interface IOrderItem {
-  id: string;
-  product: IProduct;
-  variant: IVariant;
-  quantity: number;
-  price: number;
+interface Filter {
+  gender: string[];
+  productType: string[];
+  color: string[];
+  size: string[];
+  brand: string[];
+  orderBy: string;
+  sort: string;
+  minPrice: string;
+  maxPrice: string;
+  label: string;
+  tag: string;
 }
 
-export type { IBrand, IColor, IGender, ILabel, IProduct, IProductColor, IProductType, ISize, IVariant };
+interface FilterChangeHandler {
+  type: string;
+  value: string | string[];
+}
+
+export type { IBrand, IColor, IGender, ILabel, IProduct, IProductColor, IProductType, ISize, ITag, IVariant, Filter, FilterChangeHandler };

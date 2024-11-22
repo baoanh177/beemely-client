@@ -3,7 +3,7 @@ import clsx from "clsx";
 
 export interface IButtonProps {
   type?: "button" | "submit" | "reset";
-  variant?: "primary" | "ghost" | "secondary" | "default" | "danger";
+  variant?: "primary" | "ghost" | "secondary" | "default" | "danger" | "success";
   text?: string;
   isDisabled?: boolean;
   isLoading?: boolean;
@@ -32,6 +32,7 @@ const Button = ({
     ghost: "border border-primary-500 text-primary-500",
     default: "text-primary-500 bg-white-500",
     danger: "bg-red-50 text-red-500",
+    success: "bg-green-50 text-green-500",
   };
 
   const typeLoading = {
@@ -40,6 +41,7 @@ const Button = ({
     secondary: "border-gray-400 border-t-white-500",
     default: "border-primary-500 border-t-white-500",
     danger: "border-red-500 border-t-white-500",
+    success: "border-green-500 border-t-white-500",
   };
 
   return (
