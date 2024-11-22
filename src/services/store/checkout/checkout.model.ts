@@ -47,22 +47,3 @@ export interface IGhnShippingFee {
   deliver_remote_areas_fee: number;
   cod_failed_fee: number;
 }
-
-export interface IGhnPayloadToGetShippingFee {
-  service_type_id: number;
-  from_district_id: number;
-  from_ward_code: string;
-  to_district_id: number;
-  to_ward_code: string;
-  weight: number;
-  items: IGhnShippngItem[];
-}
-
-interface IGhnShippngItem {
-  name: string;
-  quantity: number;
-  height: number;
-  weight: number;
-  length: number;
-  width: number;
-}

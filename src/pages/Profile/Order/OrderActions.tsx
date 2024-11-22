@@ -9,6 +9,8 @@ import { IoIosArrowDown } from "react-icons/io";
 import { IoBanSharp } from "react-icons/io5";
 import { IoCheckmarkCircleOutline } from "react-icons/io5";
 import { FiCreditCard } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
+import { EComplaintStatus } from "@/services/store/complaint/complaint.model";
 
 interface OrderActionsProps {
   order: IOrder;
@@ -18,7 +20,7 @@ const { confirm } = Modal;
 
 const OrderActions = ({ order }: OrderActionsProps) => {
   const { dispatch } = useArchive<IOrderInitialState>("order");
-
+  const navigate = useNavigate();
   const items: MenuProps["items"] = [
     {
       label: "Xác nhận đã nhận hàng",
@@ -27,6 +29,7 @@ const OrderActions = ({ order }: OrderActionsProps) => {
       onClick: () => handleSuccessOrder(order.id),
       disabled:
         order.orderStatus !== EStatusOrder.DELIVERED ||
+        order.complaint?.status === EComplaintStatus.PENDING ||
         [EStatusOrder.SUCCESS, EStatusOrder.CANCELLED, EStatusOrder.REQUEST_RETURN, EStatusOrder.RETURNING, EStatusOrder.RETURNED].includes(
           order.orderStatus,
         ),
@@ -48,13 +51,24 @@ const OrderActions = ({ order }: OrderActionsProps) => {
       disabled: order.orderStatus !== EStatusOrder.SUCCESS,
     },
     {
-      label: "Yêu cầu trả hàng",
+      label: "Khiếu nại đơn hàng",
       key: "3",
       icon: <IoCheckmarkCircleOutline />,
-      onClick: () => handleRequestReturnOrder(order.id),
+      onClick: () => {
+        confirm({
+          okButtonProps: { style: { backgroundColor: "#2B292F", borderColor: "#2B292F" } },
+          title: "Khiếu nại đơn hàng",
+          content: "Bạn có chắc chắn muốn khiếu nại đơn hàng này không?",
+          onOk: () => navigate(`/profile/orders/complaint/${order.id}`),
+          okText: "Xác nhận",
+          cancelText: "Hủy",
+          children: <div>lí do khiếu nại</div>,
+        });
+      },
       disabled:
         order.orderStatus !== EStatusOrder.DELIVERED ||
-        [EStatusOrder.SUCCESS, EStatusOrder.CANCELLED, EStatusOrder.REQUEST_RETURN, EStatusOrder.RETURNING, EStatusOrder.RETURNED].includes(
+        !!order.complaint ||
+        [(EStatusOrder.SUCCESS, EStatusOrder.CANCELLED, EStatusOrder.REQUEST_RETURN, EStatusOrder.RETURNING, EStatusOrder.RETURNED)].includes(
           order.orderStatus,
         ),
     },
@@ -84,7 +98,8 @@ const OrderActions = ({ order }: OrderActionsProps) => {
         confirm({
           okButtonProps: { style: { backgroundColor: "#2B292F", borderColor: "#2B292F" } },
           title: "Hủy đơn hàng",
-          content: "Bạn có chắc chắn muốn hủy đơn hàng này không?",
+          content:
+            "Bạn có chắc chắn muốn hủy đơn hàng này không?  Nếu bạn đã thanh toán, nhân viên của chúng tôi sẽ tự liên hệ tới bạn để tiến hành thủ tục hoàn tiền. Thời gian hoàn tiền có thể mất tới 1 tới 2 ngày làm việc!",
           onOk: () => handleCancelOrder(order.id),
           okText: "Hủy đơn hàng",
           cancelText: "Không",
@@ -102,11 +117,6 @@ const OrderActions = ({ order }: OrderActionsProps) => {
   const handleSuccessOrder = async (orderId: string) => {
     dispatch(updateOrder({ param: orderId, body: { order_status: EStatusOrder.SUCCESS } }));
     toast.success("Đã nhận hàng thành công");
-  };
-
-  const handleRequestReturnOrder = async (orderId: string) => {
-    dispatch(updateOrder({ param: orderId, body: { order_status: EStatusOrder.REQUEST_RETURN } }));
-    toast.success("Đã gửi yêu cầu trả hàng");
   };
 
   const handleRePaymentOrder = async (orderId: string) => {
