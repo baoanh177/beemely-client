@@ -83,17 +83,6 @@ const ReviewProduct: React.FC<ReviewProductProps> = ({ productId }) => {
             </div>
           )}
 
-          <div className="mt-3 flex items-center justify-end gap-4">
-            <button className="border-gray-200 text-gray-600 hover:bg-gray-50 flex items-center gap-1 rounded-lg border px-2 py-1 text-xs">
-              <ThumbsUp className="h-3 w-3" />
-              Hữu ích
-            </button>
-            <button className="border-gray-200 text-gray-600 hover:bg-gray-50 flex items-center gap-1 rounded-lg border px-2 py-1 text-xs">
-              <MessageCircle className="h-3 w-3" />
-              Bình luận
-            </button>
-          </div>
-
           {review.reply && (
             <div className="mt-3 rounded-lg border-l-4 border-blue-500 bg-blue-50 p-3">
               <div className="flex items-center gap-2">
