@@ -15,6 +15,7 @@ import { categorySlice } from "./store/category/category.slice";
 import { vouchersSlice } from "./store/voucher/voucher.slice";
 import { locationSlice } from "./store/location/location.slice";
 import { brandsSlice } from "./store/brand/brand.slice";
+import { complaintSlice } from "./store/complaint/complaint.slice";
 
 export const reducers = combineReducers({
   app: appSlice.reducer,
@@ -33,6 +34,7 @@ export const reducers = combineReducers({
   vouchers: vouchersSlice.reducer,
   location: locationSlice.reducer,
   brands: brandsSlice.reducer,
+  complaints: complaintSlice.reducer,
 });
 
 export type RootStateType = ReturnType<typeof reducers>;

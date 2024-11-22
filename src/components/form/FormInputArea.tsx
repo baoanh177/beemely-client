@@ -44,7 +44,7 @@ const FormInputArea: React.FC<FormInputAreaProps> = ({
         rows={5}
         className={clsx("custom-textarea w-full px-2 py-3", className, { readonly: isReadonly })}
       />
-      {error && <p className="text-red-500">{error}</p>}
+      {error && <p className="text-sm text-red-500">{error}</p>}
     </div>
   );
 };
