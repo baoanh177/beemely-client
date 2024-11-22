@@ -4,14 +4,13 @@ import { IAuthInitialState } from "@/services/store/auth/auth.slice";
 import { getProfile } from "@/services/store/auth/auth.thunk";
 import { IReviewHistory } from "@/services/store/review/review.model";
 import { IReviewInitialState } from "@/services/store/review/review.slice";
-import { deleteReview, getMyReviews } from "@/services/store/review/review.thunk";
-import { Empty, Image, Modal, Rate, message } from "antd";
+import { getMyReviews } from "@/services/store/review/review.thunk";
+import { Empty, Image, Rate } from "antd";
 import dayjs from "dayjs";
 import "dayjs/locale/vi";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import Button from "../common/Button";
 
 interface ReviewCardProps {
   review: IReviewHistory;
@@ -23,29 +22,10 @@ dayjs.locale("vi");
 const ReviewCard = ({ review }: ReviewCardProps) => {
   const formattedDate = dayjs(review.createdAt).fromNow();
   const { state, dispatch } = useArchive<IAuthInitialState>("auth");
-  const reviewDispatch = useArchive<IReviewInitialState>("review").dispatch;
 
   useEffect(() => {
     dispatch(getProfile());
   }, []);
-  //   const handleDeleteReview = () => {
-  //     Modal.confirm({
-  //       title: "Xác nhận xóa",
-  //       content: "Bạn có chắc chắn muốn xóa đánh giá này không?",
-  //       okText: "Xóa",
-  //       cancelText: "Hủy",
-  //       okButtonProps: { danger: true },
-  //       onOk: async () => {
-  //         try {
-  //           await reviewDispatch(deleteReview(review.id));
-  //           message.success("Xóa đánh giá thành công");
-  //           await dispatch(getMyReviews());
-  //         } catch (error) {
-  //           message.error("Có lỗi xảy ra khi xóa đánh giá");
-  //         }
-  //       },
-  //     });
-  //   };
 
   return (
     <div className="border-gray-200 bg-white mb-4 rounded-lg shadow-sm transition-shadow duration-300">
@@ -102,7 +82,6 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
               </svg>
               Đánh giá {formattedDate}
             </div>
-            {/* <Button onClick={handleDeleteReview} variant="danger" text="Xóa" className="mt-4" /> */}
           </div>
         </div>
 

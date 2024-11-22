@@ -49,13 +49,3 @@ export const createReview = createAsyncThunk("review/create-review", async (payl
     return rejectWithValue(error.response?.data ?? { message: "Có lỗi xảy ra khi gửi yêu cầu" });
   }
 });
-export const deleteReview = createAsyncThunk("review/delete-review", async (reviewId: string, { rejectWithValue }) => {
-  try {
-    const { response } = await client.delete(`${prefix}/${reviewId}`);
-    return response.status >= 400 ? rejectWithValue({ message: "Không thể xóa đánh giá" }) : reviewId;
-  } catch (error: any) {
-    return rejectWithValue({
-      message: error.response?.data?.message ?? "Có lỗi xảy ra khi xóa đánh giá",
-    });
-  }
-});

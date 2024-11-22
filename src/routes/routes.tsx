@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 //middle ware
 import GlobalMiddleware from "@/middlewares/GlobalMiddleware";
 import GuestMiddleware from "@/middlewares/GuestMiddleware";
+import AuthMiddleware from "@/middlewares/AuthMiddleware";
 import NewUserMiddleware from "@/middlewares/NewUserMiddleware";
 
 //auth router
@@ -31,13 +32,10 @@ import ProfilePage from "@/pages/Profile";
 import Addresses from "@/pages/Profile/Address/Address";
 import Notifications from "@/pages/Profile/Notifications/Notifications";
 import OrderDetail from "@/pages/Profile/Order/OrderDetail";
-<<<<<<< HEAD
 import Orders from "@/pages/Profile/Order/Orders";
 import Personal from "@/pages/Profile/Personal/Personal";
 import Wishlist from "@/pages/Profile/Wishlists/Wishlist";
-=======
 import ComplaintOrderPage from "@/pages/Profile/Order/ComplaintOrderPage";
->>>>>>> dev
 
 export interface IRoute {
   path: string;

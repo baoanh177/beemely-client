@@ -5,7 +5,7 @@ import Button from "../common/Button";
 import * as Yup from "yup";
 import UploadImage from "../form/UploadImage";
 import { IReview } from "@/services/store/review/review.model";
-import { IOrderItem } from "@/services/store/product/product.model";
+import { IOrderItem } from "@/services/store/order/order.model";
 
 interface ReviewModalProps {
   isOpen: boolean;

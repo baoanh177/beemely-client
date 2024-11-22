@@ -7,7 +7,6 @@ import { useArchive } from "@/hooks/useArchive";
 import useAsyncEffect from "@/hooks/useAsyncEffect";
 import { IOrderInitialState, setFilter } from "@/services/store/order/order.slice";
 import { getAllOrderByUser } from "@/services/store/order/order.thunk";
-import { IOrderItem } from "@/services/store/product/product.model";
 import { IReview } from "@/services/store/review/review.model";
 import { createReview, getAllReviews } from "@/services/store/review/review.thunk";
 import { EStatusOrder } from "@/shared/enums/order";
@@ -18,9 +17,9 @@ import { Link, useNavigate } from "react-router-dom";
 import OrderActions from "./OrderActions";
 import { MdReport } from "react-icons/md";
 import { IoIosCheckmarkCircle } from "react-icons/io";
-
 import { useComplaintModal } from "@/hooks/useComplaintModal";
 import { EComplaintStatus, IComplaint } from "@/services/store/complaint/complaint.model";
+import { IOrderItem } from "@/services/store/order/order.model";
 
 const Orders = () => {
   const navigate = useNavigate();

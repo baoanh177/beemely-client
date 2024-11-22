@@ -1,8 +1,8 @@
-import { IInitialState, IResponse } from "./../../../shared/utils/shared-interfaces";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IReview, IReviewHistory } from "./review.model";
-import { createReview, deleteReview, getAllReviews, getMyReviews } from "./review.thunk";
 import { EFetchStatus } from "@/shared/enums/fetchStatus";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { IInitialState, IResponse } from "./../../../shared/utils/shared-interfaces";
+import { IReview, IReviewHistory } from "./review.model";
+import { createReview, getAllReviews, getMyReviews } from "./review.thunk";
 
 export interface IReviewInitialState extends IInitialState {
   status: EFetchStatus;
@@ -64,19 +64,6 @@ const reviewSlice = createSlice({
       .addCase(createReview.rejected, (state: IReviewInitialState, { payload }: PayloadAction<any>) => {
         state.status = EFetchStatus.REJECTED;
         state.message = payload?.message ?? "Có lỗi xảy ra khi gửi đánh giá";
-      })
-      // delete review
-      .addCase(deleteReview.pending, (state: IReviewInitialState) => {
-        state.status = EFetchStatus.PENDING;
-      })
-      .addCase(deleteReview.fulfilled, (state: IReviewInitialState, { payload }: PayloadAction<string>) => {
-        state.myReviews = state.myReviews.filter((review) => review.id !== payload);
-        state.status = EFetchStatus.FULFILLED;
-        state.message = "Xóa đánh giá thành công";
-      })
-      .addCase(deleteReview.rejected, (state: IReviewInitialState, { payload }: PayloadAction<any>) => {
-        state.status = EFetchStatus.REJECTED;
-        state.message = payload?.message ?? "Có lỗi xảy ra khi xóa đánh giá";
       });
   },
 });
