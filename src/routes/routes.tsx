@@ -85,7 +85,7 @@ export const routes: IRoute[] = [
       {
         path: "profile",
         layout: () => <DefaultLayout />,
-        // middleware: () => <AuthMiddleware />,
+        middleware: () => <AuthMiddleware />,
         pages: [
           {
             path: "/",
