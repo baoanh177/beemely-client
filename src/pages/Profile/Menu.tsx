@@ -54,8 +54,7 @@ const Menu = () => {
   const selectedKey = profileItems.find(item => item.key === mainPath)?.key || "personal";
   
   return (
-    <nav>
-      <ul className="flex flex-col gap-2">
+      <ul className="flex lg:flex-col gap-2">
         {profileItems.map((item, index) => (
           <li
             key={index}
@@ -70,11 +69,10 @@ const Menu = () => {
             }}
           >
             {item.icon}
-            {item.label}
+            <div className="hidden lg:block">{item.label}</div>
           </li>
         ))}
       </ul>
-    </nav>
   );
 };
 

@@ -19,10 +19,10 @@ const Wishlist = () => {
   const products = Array.isArray(state.products) ? state.products : [];
 
   return (
-    <div className="flex w-full flex-wrap gap-8">
+    <div className="flex w-full flex-wrap gap-4 lg:gap-8">
       {products.length ? (
         products.map((p) => (
-          <div className="w-[calc((100%-64px)/3)]" key={p.id}>
+          <div className="w-[calc((100%-16px)/2)] lg:w-[calc((100%-64px)/3)]" key={p.id}>
             <ProductCard
               slug={p.slug}
               productId={p.id}
