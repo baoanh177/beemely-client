@@ -52,7 +52,7 @@ const Footer = () => {
             <p className="mb-4">Nhập email của bạn bên dưới để là người đầu tiên biết về các bộ sưu tập mới và ra mắt sản phẩm.</p>
             <div className="flex items-center rounded-lg border border-gray-500 p-1">
               <MailOutlined className="mx-2 text-gray-500" />
-              <Input placeholder="Email của bạn" bordered={false} className="flex-grow bg-transparent text-white-500 focus:outline-none" />
+              <Input placeholder="Email của bạn" variant="borderless" className="flex-grow bg-transparent text-white-500 focus:outline-none" />
               <Button
                 type="primary"
                 className="border-none bg-transparent text-gray-500 hover:bg-transparent hover:text-white-500"

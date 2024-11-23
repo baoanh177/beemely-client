@@ -30,7 +30,7 @@ const CONVERT_STATUS = {
   cancelled: "Đã hủy",
   request_return: "Đang khiếu nại",
   returning: "Đang được đổi trả",
-  returned: "Đổi trả và hoàn tiền thành công",
+  returned: "Trả hàng hoàn tiền thành công",
   denied_return: "Người bán từ chối khiếu nại",
 };
 
