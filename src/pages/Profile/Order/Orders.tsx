@@ -43,9 +43,10 @@ const Orders = () => {
     [EStatusOrder.DELIVERED]: "Giao thành công",
     [EStatusOrder.SUCCESS]: "Đã hoàn thành",
     [EStatusOrder.CANCELLED]: "Đã hủy",
-    [EStatusOrder.REQUEST_RETURN]: "Yêu cầu hoàn trả",
-    [EStatusOrder.RETURNING]: "Đang hoàn trả",
-    [EStatusOrder.RETURNED]: "Đã hoàn trả",
+    [EStatusOrder.REQUEST_RETURN]: "Yêu cầu đổi trả",
+    [EStatusOrder.RETURNING]: "Đang được đổi trả",
+    [EStatusOrder.RETURNED]: "Đổi trả và hoàn tiền thành công",
+    [EStatusOrder.DENIED_RETURN]: "Người bán từ chối khiếu nại",
   };
 
   const defaultSearch: IDefaultSearchProps = {
