@@ -20,7 +20,7 @@ const Recommended: React.FC<RecommendedProps> = ({ onSelectGender }) => {
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    dispatch(getAllGender());
+    dispatch(getAllGender({}));
   }, [dispatch]);
 
   useEffect(() => {

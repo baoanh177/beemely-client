@@ -10,16 +10,20 @@ import { Container } from "@/styles/common-styles";
 import { getAllProducts } from "@/services/store/product/product.thunk";
 import { useMediaQuery } from "react-responsive";
 import { X } from "lucide-react";
+import Pagination from "@/components/common/Pagination";
 
 function Products() {
   const { state, dispatch } = useArchive<IProductInitialState>("products");
-  const { products } = state;
+  const { products, totalRecords } = state;
+
   const [showFilters, setShowFilters] = useState(true);
   const [showMobileSidebar, setShowMobileSidebar] = useState(false);
   const isMobile = useMediaQuery({ maxWidth: 767 });
   const [searchParams, setSearchParams] = useSearchParams();
 
   const initialFilters = {
+    _page: parseInt(searchParams.get("page") || "1", 10),
+    _limit: 6,
     gender: searchParams.get("gender")?.split(",") || [],
     productType: searchParams.get("productType")?.split(",") || [],
     color: searchParams.get("color")?.split(",") || [],
@@ -41,7 +45,8 @@ function Products() {
 
   useEffect(() => {
     const query = cleanQueryParams({
-      // ...state.filter,
+      _page: filters._page,
+      _limit: filters._limit,
       gender: filters.gender.length ? filters.gender.join(",") : undefined,
       productType: filters.productType.length ? filters.productType.join(",") : undefined,
       color: filters.color.length ? filters.color.join(",") : undefined,
@@ -56,7 +61,7 @@ function Products() {
 
     setSearchParams(query);
     dispatch(getAllProducts({ query }));
-  }, [filters, dispatch, state.filter, cleanQueryParams, setSearchParams]);
+  }, [filters, dispatch, cleanQueryParams, setSearchParams]);
 
   const handleFilterChange = useCallback(
     (type: string, value: string | string[]) => {
@@ -83,6 +88,13 @@ function Products() {
     },
     [handleFilterChange],
   );
+
+  const handlePageChange = (page: number) => {
+    setFilters((prev) => ({
+      ...prev,
+      _page: page,
+    }));
+  };
 
   const toggleFilters = useCallback(() => {
     setShowFilters((prev) => !prev);
@@ -125,7 +137,18 @@ function Products() {
             </div>
 
             {products.length > 0 ? (
-              <ProductList products={products} />
+              <>
+                <ProductList products={products} />
+                <div className="mt-4 flex justify-end">
+                  <Pagination
+                    current={filters._page}
+                    pageSize={filters._limit}
+                    total={totalRecords || 0}
+                    onChange={handlePageChange}
+                    className="mt-6"
+                  />
+                </div>
+              </>
             ) : (
               <div className="flex h-full justify-center">
                 <p className="text-gray-500">Không có sản phẩm nào được tìm thấy.</p>
