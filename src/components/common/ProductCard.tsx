@@ -126,10 +126,10 @@ const ProductCard = ({
         <p className="line-clamp-1 text-sm capitalize">{description}</p>
         <div className="flex items-center space-x-2 font-semibold">
           {discountPrice ? (
-            <>
+            <div className="flex flex-wrap gap-2">
               <span className="text-nowrap text-sm text-primary-500 md:text-base">{formatPrice(discountPrice)}</span>
               <span className="text-nowrap text-sm text-gray-500 line-through md:text-base">{formatPrice(regularPrice)}</span>
-            </>
+            </div>
           ) : (
             <span className="text-primary-500">{formatPrice(regularPrice)}</span>
           )}

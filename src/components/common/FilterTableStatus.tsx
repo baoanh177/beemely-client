@@ -33,8 +33,7 @@ const FilterTableStatus: React.FC<IFilterTableStatusProps> = ({ options, onChang
   };
 
   return (
-    <div>
-      <div className="scrollbar flex h-[45px] cursor-pointer items-center overflow-x-auto rounded-lg p-1">
+      <div className="scrollbar w-full flex h-[45px] cursor-pointer items-center overflow-x-auto rounded-lg p-1">
         {fullOptions.map((option, index) => (
           <div
             key={index}
@@ -44,11 +43,10 @@ const FilterTableStatus: React.FC<IFilterTableStatusProps> = ({ options, onChang
             } `}
             onClick={() => handleClick(option, index)}
           >
-            {option.label}
+           <div className="w-full"> {option.label}</div>
           </div>
         ))}
       </div>
-    </div>
   );
 };
 

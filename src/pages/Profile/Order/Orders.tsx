@@ -78,40 +78,44 @@ const Orders = () => {
           <>
             {state.orders.length ? (
               state.orders.map((item) => (
-                <div key={item.id} className="flex flex-col gap-4 rounded-lg border border-primary-5% shadow-md">
-                  <div className="flex justify-between rounded-t-lg border-b border-primary-5% px-8 py-3">
+                <div key={item.id} className="flex flex-col gap-4 rounded-lg border border-primary-5% shadow-md p-2">
+                  <div className="flex flex-wrap gap-2 justify-between rounded-t-lg border-b border-primary-5% px-2 py-3">
                     <Link to={`/profile/orders/detail/${item.id}`} className="text-base font-semibold">
                       Đơn hàng: <span className="hover:underline">#{item.uniqueId}</span>
                     </Link>
-                    <div className="flex flex-nowrap items-center gap-4">
+                    <div className="flex flex-wrap items-center gap-4">
                       <StatusBadge text={item.orderStatus} color={item.orderStatus} />
                       <PaymentStatusBadge text={item.paymentStatus} status={item.paymentStatus} />
                       <OrderActions order={item} />
                     </div>
                   </div>
-                  <div className="px-8 py-4">
+                  <div className="pb-4">
                     {item.items.map((order) => (
-                      <div key={order.id} className="mt-2 flex items-center justify-between">
-                        <div className="flex w-[400px] flex-col gap-4">
-                          <div className="flex gap-4">
-                            <img className="aspect-square h-16 w-16 rounded-md" src={order.product.thumbnail} alt={order.product.name} />
-                            <div className="flex flex-col gap-[2px] text-sm">
-                              <div className="font-semibold">{order.product.name}</div>
-                              <p>
-                                Kích cỡ: <span>{order.variant.size.name}</span>
-                              </p>
-                              <p>
-                                Số lượng: <span>{order.quantity}</span>
-                              </p>
+                      <div>
+                        <div key={order.id} className=" flex flex-wrap px-3 pt-8 gap-6 items-center justify-between">
+                          <div className="flex flex-col gap-4">
+                            <div className="flex gap-4">
+                              <img className="aspect-square h-16 w-16 rounded-md" src={order.product.thumbnail} alt={order.product.name} />
+                              <div className="flex flex-col gap-[2px] text-sm">
+                                <div className="font-semibold ">{order.product.name}</div>
+                                <p>
+                                  Kích cỡ: <span>{order.variant?.size.name}</span>
+                                </p>
+                                <p>
+                                  Số lượng: <span>{order.quantity}</span>
+                                </p>
+                              </div>
                             </div>
                           </div>
+                          <div className="flex items-center gap-4">
+                            <div className="text-base font-semibold">{formatPrice(order.price)}</div>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-4">
-                          <div className="text-base font-semibold">{formatPrice(order.price)}</div>
+                        <div className="pt-4">
+                          {item.orderStatus === EStatusOrder.SUCCESS && order.hasFeedback && (
+                            <Button className="h-[45px]" text="Đánh giá" variant="ghost" onClick={() => handleFeedbackOrder(item.id)} />
+                          )}
                         </div>
-                        {item.orderStatus === EStatusOrder.SUCCESS && order.hasFeedback && (
-                          <Button className="h-[45px]" text="Đánh giá" variant="ghost" onClick={() => handleFeedbackOrder(item.id)} />
-                        )}
                       </div>
                     ))}
                   </div>
