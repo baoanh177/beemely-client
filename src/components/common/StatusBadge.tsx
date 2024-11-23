@@ -28,9 +28,10 @@ const CONVERT_STATUS = {
   delivered: "Đã giao hàng",
   success: "Đơn hàng đã hoàn thành",
   cancelled: "Đã hủy",
-  request_return: "Yêu cầu đổi trả",
-  returning: "Đang đổi trả",
-  returned: "Đã đổi trả",
+  request_return: "Đang khiếu nại",
+  returning: "Đang được đổi trả",
+  returned: "Trả hàng hoàn tiền thành công",
+  denied_return: "Người bán từ chối khiếu nại",
 };
 
 const StatusBadge: React.FC<StatusBadgeProps> = ({ text, color, disabled = false }) => {
@@ -45,6 +46,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ text, color, disabled = false
     [EStatusOrder.REQUEST_RETURN]: disabled ? "bg-purple-100 text-purple-300 capitalize" : "bg-[#F4ECFB] text-[#883DCF] capitalize",
     [EStatusOrder.RETURNING]: disabled ? "bg-purple-100 text-purple-300 capitalize" : "bg-[#F4ECFB] text-[#883DCF] capitalize",
     [EStatusOrder.RETURNED]: disabled ? "bg-gray-100 text-gray-300" : "bg-red-400 text-white-500",
+    [EStatusOrder.DENIED_RETURN]: disabled ? "bg-gray-100 text-gray-300" : "bg-red-700 text-white-500",
     blue: disabled ? "bg-cyan-100 text-cyan-300" : "bg-cyan-50 text-cyan-500",
     green: disabled ? "bg-green-100 text-green-300" : "bg-green-50 text-green-600",
     orange: disabled ? "bg-orange-100 text-orange-300" : "bg-orange-50 text-orange-500",
