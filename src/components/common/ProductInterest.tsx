@@ -2,20 +2,20 @@ import ProductCard from "./ProductCard";
 import { Container } from "@/styles/common-styles";
 import Title from "./Title";
 import { useArchive } from "@/hooks/useArchive";
-import { IProductInitialState } from "@/services/store/product/product.slice";
 import useAsyncEffect from "@/hooks/useAsyncEffect";
-import { getAllProducts } from "@/services/store/product/product.thunk";
+import { getInterestProducts } from "@/services/store/product/product.thunk";
 import { IAuthInitialState } from "@/services/store/auth/auth.slice";
 import { IUserProfile } from "@/services/store/auth/auth.model";
+import { IInterestInitialState } from "@/services/store/product/product-interest.slice";
 
 const ProductInterest = () => {
-  const { state, dispatch } = useArchive<IProductInitialState>("products");
+  const { state, dispatch } = useArchive<IInterestInitialState>("interestProducts");
   const { state: userState } = useArchive<IAuthInitialState>("auth");
   const { profile } = userState;
 
   if (profile && (profile as IUserProfile).tags) {
     const tagsString = profile.tags.join(",");
-    useAsyncEffect((async) => async(dispatch(getAllProducts({ query: { tag: tagsString, _limit: 8 } })), "getAllProductsLoading"), []);
+    useAsyncEffect((async) => async(dispatch(getInterestProducts({ query: { tag: tagsString, _limit: 4 } })), "getAllProductsLoading"), []);
   }
 
   const content = state.products.map((product, index) => {

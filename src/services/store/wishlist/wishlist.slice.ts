@@ -53,13 +53,12 @@ const wishlistSlice = createSlice({
         state.status = EFetchStatus.PENDING;
       })
 
-            // @ts-ignore
+      // @ts-ignore
 
       .addCase(moveWishlist.fulfilled, (state, { payload }: PayloadAction<IResponse<IProduct[]>>) => {
         state.status = EFetchStatus.FULFILLED;
         state.message = "Xóa thành công";
         state.products = payload.metaData;
-
       })
       .addCase(moveWishlist.rejected, (state, { payload }: PayloadAction<any>) => {
         state.status = EFetchStatus.REJECTED;

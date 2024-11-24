@@ -5,6 +5,7 @@ import { useArchive } from "@/hooks/useArchive";
 import { getAllGender } from "@/services/store/gender/gender.thunk";
 import { Lightbulb } from "lucide-react";
 import clsx from "clsx";
+import { useSearchParams } from "react-router-dom";
 
 const { Title } = Typography;
 
@@ -16,10 +17,17 @@ const Recommended: React.FC<RecommendedProps> = ({ onSelectGender }) => {
   const { state, dispatch } = useArchive<IGenderInitialState>("genders");
   const { genders } = state;
   const [selectedGenders, setSelectedGenders] = useState<string[]>([]);
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    dispatch(getAllGender());
+    dispatch(getAllGender({}));
   }, [dispatch]);
+
+  useEffect(() => {
+    const genderParams = searchParams.get("gender")?.split(",") || [];
+    setSelectedGenders(genderParams);
+    onSelectGender(genderParams);
+  }, [searchParams, onSelectGender]);
 
   const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     const value = event.currentTarget.value;

@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { useSearchParams } from "react-router-dom";
 import Recommended from "./Recommended/Recommended";
 import Sidebar from "./Sidebar/Sidebar";
 import SortControls from "./components/SortControls";
@@ -9,26 +10,34 @@ import { Container } from "@/styles/common-styles";
 import { getAllProducts } from "@/services/store/product/product.thunk";
 import { useMediaQuery } from "react-responsive";
 import { X } from "lucide-react";
+import Pagination from "@/components/common/Pagination";
 
 function Products() {
   const { state, dispatch } = useArchive<IProductInitialState>("products");
-  const { products } = state;
+  const { products, totalRecords } = state;
+
   const [showFilters, setShowFilters] = useState(true);
   const [showMobileSidebar, setShowMobileSidebar] = useState(false);
   const isMobile = useMediaQuery({ maxWidth: 767 });
-  const [filters, setFilters] = useState({
-    gender: [] as string[],
-    productType: [] as string[],
-    color: [] as string[],
-    size: [] as string[],
-    brand: [] as string[],
-    orderBy: "createdAt",
-    sort: "desc",
-    minPrice: "0",
-    maxPrice: "10000000",
-    label: "",
-    tag: "",
-  });
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const initialFilters = {
+    _page: parseInt(searchParams.get("page") || "1", 10),
+    _limit: 6,
+    gender: searchParams.get("gender")?.split(",") || [],
+    productType: searchParams.get("productType")?.split(",") || [],
+    color: searchParams.get("color")?.split(",") || [],
+    size: searchParams.get("size")?.split(",") || [],
+    brand: searchParams.get("brand")?.split(",") || [],
+    orderBy: searchParams.get("orderBy") || "createdAt",
+    sort: searchParams.get("sort") || "desc",
+    minPrice: searchParams.get("minPrice") || "0",
+    maxPrice: searchParams.get("maxPrice") || "10000000",
+    label: searchParams.get("label") || "",
+    tag: searchParams.get("tag") || "",
+  };
+
+  const [filters, setFilters] = useState(initialFilters);
 
   const cleanQueryParams = useCallback((query: { [key: string]: any }) => {
     return Object.fromEntries(Object.entries(query).filter(([_, v]) => v !== undefined && v !== "" && v !== "0" && v !== "10000000"));
@@ -36,7 +45,8 @@ function Products() {
 
   useEffect(() => {
     const query = cleanQueryParams({
-      ...state.filter,
+      _page: filters._page,
+      _limit: filters._limit,
       gender: filters.gender.length ? filters.gender.join(",") : undefined,
       productType: filters.productType.length ? filters.productType.join(",") : undefined,
       color: filters.color.length ? filters.color.join(",") : undefined,
@@ -49,8 +59,9 @@ function Products() {
       sort: filters.sort,
     });
 
+    setSearchParams(query);
     dispatch(getAllProducts({ query }));
-  }, [filters, dispatch, state.filter, cleanQueryParams]);
+  }, [filters, dispatch, cleanQueryParams, setSearchParams]);
 
   const handleFilterChange = useCallback(
     (type: string, value: string | string[]) => {
@@ -77,6 +88,13 @@ function Products() {
     },
     [handleFilterChange],
   );
+
+  const handlePageChange = (page: number) => {
+    setFilters((prev) => ({
+      ...prev,
+      _page: page,
+    }));
+  };
 
   const toggleFilters = useCallback(() => {
     setShowFilters((prev) => !prev);
@@ -119,7 +137,18 @@ function Products() {
             </div>
 
             {products.length > 0 ? (
-              <ProductList products={products} />
+              <>
+                <ProductList products={products} />
+                <div className="mt-4 flex justify-end">
+                  <Pagination
+                    current={filters._page}
+                    pageSize={filters._limit}
+                    total={totalRecords || 0}
+                    onChange={handlePageChange}
+                    className="mt-6"
+                  />
+                </div>
+              </>
             ) : (
               <div className="flex h-full justify-center">
                 <p className="text-gray-500">Không có sản phẩm nào được tìm thấy.</p>

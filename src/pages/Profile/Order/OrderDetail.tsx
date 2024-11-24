@@ -39,7 +39,7 @@ const OrderDetail = () => {
         <StatusBadge color={activeOrder.orderStatus} text={activeOrder.orderStatus} />
       </div>
 
-      <div className="grid grid-cols-1 gap-8 ">
+      <div className="grid grid-cols-1 gap-8">
         {/* Customer Information */}
         <div className="bg-white rounded-lg p-6 shadow">
           <h2 className="mb-4 text-lg font-semibold">Thông tin người nhận</h2>
@@ -61,7 +61,7 @@ const OrderDetail = () => {
               <span className="ml-4 flex-1 text-right font-medium">{activeOrder.shippingAddress}</span>
             </div>
           </div>
-        </div>      
+        </div>
       </div>
 
       {/* Order Items */}

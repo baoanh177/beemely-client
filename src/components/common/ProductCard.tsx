@@ -46,23 +46,21 @@ const ProductCard = ({
   
     if (productId) {
       if (isInWishlist) {
-        wishlistDispatch(moveWishlist({ param: productId }))
-          .then(() => {
-            toast.success("Bỏ Wishlist thành công!");
-            if (wishListState.profile) {
-              const updatedWishlist = wishListState.profile.wishlist.filter((id) => id !== productId);
-              dispatch(addProductToWishlist(updatedWishlist));
-            }
-          });
+        wishlistDispatch(moveWishlist({ param: productId })).then(() => {
+          toast.success("Bỏ Wishlist thành công!");
+          if (wishListState.profile) {
+            const updatedWishlist = wishListState.profile.wishlist.filter((id) => id !== productId);
+            dispatch(addProductToWishlist(updatedWishlist));
+          }
+        });
       } else {
-        wishlistDispatch(addWishList({ param: productId }))
-          .then(() => {
-            toast.success("Thêm vào Wishlist thành công!");
-            if (wishListState.profile) {
-              const updatedWishlist = [...wishListState.profile.wishlist, productId];
-              dispatch(addProductToWishlist(updatedWishlist));
-            }
-          });
+        wishlistDispatch(addWishList({ param: productId })).then(() => {
+          toast.success("Thêm vào Wishlist thành công!");
+          if (wishListState.profile) {
+            const updatedWishlist = [...wishListState.profile.wishlist, productId];
+            dispatch(addProductToWishlist(updatedWishlist));
+          }
+        });
       }
     }
   };
@@ -97,7 +95,6 @@ const ProductCard = ({
               onClick={handleWishlistToggle}
               className={clsx("transition-transform duration-300 ease-in-out hover:scale-110")}
             />
-
           ) : (
             <Button
               shape="rounded"

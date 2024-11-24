@@ -48,11 +48,11 @@ const profileItems: ProfileItem[] = [
 const Menu = () => {
   const navigate = useNavigate();
   const location = useLocation();
-    const currentPath = location.pathname.replace("/profile/", "");
-  const mainPath = currentPath.split('/')[0];
-  
-  const selectedKey = profileItems.find(item => item.key === mainPath)?.key || "personal";
-  
+  const currentPath = location.pathname.replace("/profile/", "");
+  const mainPath = currentPath.split("/")[0];
+
+  const selectedKey = profileItems.find((item) => item.key === mainPath)?.key || "personal";
+
   return (
       <ul className="flex lg:flex-col gap-2">
         {profileItems.map((item, index) => (
