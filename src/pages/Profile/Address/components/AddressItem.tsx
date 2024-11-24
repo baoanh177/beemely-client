@@ -95,7 +95,7 @@ const AddressItem = ({ item, index }: AddressItemProps) => {
           type="checkbox"
         />
       </div>
-      <div className="flex flex-row gap-4 md:flex-col">
+      <div className="flex flex-row gap-4 sm:flex-col">
         <Button
           icon={<FiEdit size={15} />}
           variant="secondary"

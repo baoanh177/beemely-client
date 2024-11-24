@@ -48,6 +48,10 @@ const ProductDetails = ({ product, selectedVariant, setSelectedVariant }: Produc
   }, [product, selectedColor, selectedSize, setSelectedVariant]);
 
   const handleWishlistToggle = () => {
+    if(!wishListState.profile) {
+      toast.error("Bạn cần đăng nhập để thêm sản phẩm vào Wishlist!");
+      return;
+    }
     if (product.id) {
       if (isInWishlist) {
         wishlistDispatch(moveWishlist({ param: product.id })).then(() => {

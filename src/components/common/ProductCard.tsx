@@ -12,6 +12,7 @@ import toast from "react-hot-toast";
 import { addProductToWishlist, IAuthInitialState } from "@/services/store/auth/auth.slice";
 import { useDispatch } from "react-redux";
 import clsx from "clsx";
+import AuthMiddleware from "@/middlewares/AuthMiddleware";
 export interface IProductCardProps {
   productId?: string;
   slug: string;
@@ -38,6 +39,11 @@ const ProductCard = ({
   const { dispatch: wishlistDispatch, state: wishListState } = useArchive<IAuthInitialState>("auth");
   const dispatch = useDispatch();
   const handleWishlistToggle = () => {
+    if (!wishListState.profile) {
+      toast.error("Bạn cần đăng nhập để thêm sản phẩm vào Wishlist!");
+      return;
+    }
+  
     if (productId) {
       if (isInWishlist) {
         wishlistDispatch(moveWishlist({ param: productId }))
@@ -60,6 +66,7 @@ const ProductCard = ({
       }
     }
   };
+  
   const isInWishlist = wishListState.profile?.wishlist.some((id) => id === productId);
 
   const { onOpen } = useProductModal();
@@ -119,10 +126,10 @@ const ProductCard = ({
         <p className="line-clamp-1 text-sm capitalize">{description}</p>
         <div className="flex items-center space-x-2 font-semibold">
           {discountPrice ? (
-            <>
+            <div className="flex flex-wrap gap-2">
               <span className="text-nowrap text-sm text-primary-500 md:text-base">{formatPrice(discountPrice)}</span>
               <span className="text-nowrap text-sm text-gray-500 line-through md:text-base">{formatPrice(regularPrice)}</span>
-            </>
+            </div>
           ) : (
             <span className="text-primary-500">{formatPrice(regularPrice)}</span>
           )}
