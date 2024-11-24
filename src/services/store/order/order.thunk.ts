@@ -27,7 +27,6 @@ export const getOrderDetail = createAsyncThunk("order/get-order-detail", async (
 export const updateOrder = createAsyncThunk("order/update-order", async (payload: IThunkPayload, { rejectWithValue }) => {
   try {
     const { response, data } = await client.patch<IOrder>(`${prefix}`, payload);
-    console.log(`${prefix}/${payload.param}`, payload);
     return response.status >= 400 ? rejectWithValue(data) : data;
   } catch (error: any) {
     return rejectWithValue(error.response.data);

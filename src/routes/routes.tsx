@@ -15,24 +15,26 @@ import ResetPassword from "@/pages/(auth)/ResetPassword";
 import VerifyEmailPage from "@/pages/(auth)/VerifyEmail";
 
 //site router
-import Home from "@/pages/Home";
-import CartPage from "@/pages/Cart";
-import GetStartedPage from "@/pages/GetStarted";
-import ProductPage from "@/pages/ProductPage";
-import { Components } from "@/pages/Components/Components";
 import DefaultLayout from "@/layouts/Default";
+import CartPage from "@/pages/Cart";
+import { Components } from "@/pages/Components/Components";
+import GetStartedPage from "@/pages/GetStarted";
+import Home from "@/pages/Home";
+import ProductPage from "@/pages/ProductPage";
 // import ShippingAddress from "@/pages/(checkout)/ShippingAddress";
 // import PaymentMethod from "@/pages/(checkout)/PaymentMethod";
-import Products from "@/pages/Products";
-import Wishlist from "@/pages/Profile/Wishlists/Wishlist";
-import Notifications from "@/pages/Profile/Notifications/Notifications";
-import Addresses from "@/pages/Profile/Address/Address";
+import ReviewHistory from "@/components/product-information/ReviewHistory";
+import ReviewProduct from "@/components/product-information/ReviewProducts";
 import CheckoutPage from "@/pages/(checkout)/Checkout";
 import PaymentPage from "@/pages/(checkout)/Payment";
-import Personal from "@/pages/Profile/Personal/Personal";
-import Orders from "@/pages/Profile/Order/Orders";
+import Products from "@/pages/Products";
 import ProfilePage from "@/pages/Profile";
+import Addresses from "@/pages/Profile/Address/Address";
+import Notifications from "@/pages/Profile/Notifications/Notifications";
 import OrderDetail from "@/pages/Profile/Order/OrderDetail";
+import Orders from "@/pages/Profile/Order/Orders";
+import Personal from "@/pages/Profile/Personal/Personal";
+import Wishlist from "@/pages/Profile/Wishlists/Wishlist";
 import ComplaintOrderPage from "@/pages/Profile/Order/ComplaintOrderPage";
 
 export interface IRoute {
@@ -81,6 +83,10 @@ export const routes: IRoute[] = [
             path: "product/:id",
             element: () => <ProductPage />,
           },
+          {
+            path: "products/:productId/reviews",
+            element: () => <ReviewProduct />,
+          },
         ],
       },
       {
@@ -119,6 +125,10 @@ export const routes: IRoute[] = [
               {
                 path: "/notification",
                 element: Notifications,
+              },
+              {
+                path: "/review-history",
+                element: () => <ReviewHistory />,
               },
             ],
           },

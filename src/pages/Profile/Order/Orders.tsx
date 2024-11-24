@@ -1,25 +1,31 @@
 import Button from "@/components/common/Button";
-import { IDefaultSearchProps, DefaultSearch } from "@/components/common/search/DefaultSearch";
-import StatusBadge from "@/components/common/StatusBadge";
-import { useArchive } from "@/hooks/useArchive";
-import { IOrderInitialState, setFilter } from "@/services/store/order/order.slice"; // updateOrderStatus để cập nhật trạng thái
-import { getAllOrderByUser, updateOrder } from "@/services/store/order/order.thunk";
-import useAsyncEffect from "@/hooks/useAsyncEffect";
-import { EStatusOrder } from "@/shared/enums/order";
-import { Link } from "react-router-dom";
-import toast from "react-hot-toast";
-import { Empty } from "antd";
-import { formatPrice } from "@/utils/curency";
 import PaymentStatusBadge from "@/components/common/PaymentStatusBadge";
+import { DefaultSearch, IDefaultSearchProps } from "@/components/common/search/DefaultSearch";
+import StatusBadge from "@/components/common/StatusBadge";
+import ReviewModal from "@/components/product-information/ReviewModel";
+import { useArchive } from "@/hooks/useArchive";
+import useAsyncEffect from "@/hooks/useAsyncEffect";
+import { IOrderInitialState, setFilter } from "@/services/store/order/order.slice";
+import { getAllOrderByUser } from "@/services/store/order/order.thunk";
+import { IReview } from "@/services/store/review/review.model";
+import { createReview, getAllReviews } from "@/services/store/review/review.thunk";
+import { EStatusOrder } from "@/shared/enums/order";
+import { formatPrice } from "@/utils/curency";
+import { Empty, message } from "antd";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import OrderActions from "./OrderActions";
 import { MdReport } from "react-icons/md";
 import { IoIosCheckmarkCircle } from "react-icons/io";
-
 import { useComplaintModal } from "@/hooks/useComplaintModal";
 import { EComplaintStatus, IComplaint } from "@/services/store/complaint/complaint.model";
+import { IOrderItem } from "@/services/store/order/order.model";
 
 const Orders = () => {
+  const navigate = useNavigate();
   const { state, dispatch } = useArchive<IOrderInitialState>("order");
+  const [reviewModalOpen, setReviewModalOpen] = useState(false);
+  const [selectedOrderItem, setSelectedOrderItem] = useState<IOrderItem | null>(null);
 
   const { onOpen } = useComplaintModal();
 
@@ -63,9 +69,33 @@ const Orders = () => {
     },
   };
 
-  const handleFeedbackOrder = async (orderId: string) => {
-    dispatch(updateOrder({ param: orderId, body: { order_status: EStatusOrder.SUCCESS } }));
-    toast.success("Đã nhận hàng thành công");
+  const handleReviewSubmit = async (values: IReview) => {
+    if (!values.content || !values.rates) {
+      message.error("Vui lòng điền đầy đủ thông tin đánh giá.");
+      return;
+    }
+
+    const payload = {
+      content: values.content,
+      rates: values.rates,
+      orderItemId: selectedOrderItem?.id || "",
+      images: values.images ?? [],
+    };
+
+    try {
+      const result = await dispatch(createReview({ body: payload })).unwrap();
+      message.success("Đánh giá của bạn đã được gửi thành công!");
+      await dispatch(getAllOrderByUser({ query: { ...state.filter } }));
+      if (selectedOrderItem) {
+        await dispatch(getAllReviews(selectedOrderItem.product.id));
+      }
+      setReviewModalOpen(false);
+      setSelectedOrderItem(null);
+      navigate(`/profile/review-history`);
+    } catch (error: any) {
+      console.error("Error submitting review:", error);
+      message.error(error?.message || "Có lỗi xảy ra khi gửi đánh giá. Vui lòng thử lại.");
+    }
   };
 
   return (
@@ -78,8 +108,8 @@ const Orders = () => {
           <>
             {state.orders.length ? (
               state.orders.map((item) => (
-                <div key={item.id} className="flex flex-col gap-4 rounded-lg border border-primary-5% shadow-md p-2">
-                  <div className="flex flex-wrap gap-2 justify-between rounded-t-lg border-b border-primary-5% px-2 py-3">
+                <div key={item.id} className="flex flex-col gap-4 rounded-lg border border-primary-5% p-2 shadow-md">
+                  <div className="flex flex-wrap justify-between gap-2 rounded-t-lg border-b border-primary-5% px-2 py-3">
                     <Link to={`/profile/orders/detail/${item.id}`} className="text-base font-semibold">
                       Đơn hàng: <span className="hover:underline">#{item.uniqueId}</span>
                     </Link>
@@ -91,13 +121,13 @@ const Orders = () => {
                   </div>
                   <div className="pb-4">
                     {item.items.map((order) => (
-                      <div>
-                        <div key={order.id} className=" flex flex-wrap px-3 pt-8 gap-6 items-center justify-between">
+                      <div key={order.id} className="flex flex-col">
+                        <div className="flex items-center justify-between gap-8 px-4 pt-8">
                           <div className="flex flex-col gap-4">
                             <div className="flex gap-4">
                               <img className="aspect-square h-16 w-16 rounded-md" src={order.product.thumbnail} alt={order.product.name} />
                               <div className="flex flex-col gap-[2px] text-sm">
-                                <div className="font-semibold ">{order.product.name}</div>
+                                <div className="font-semibold">{order.product.name}</div>
                                 <p>
                                   Kích cỡ: <span>{order.variant?.size.name}</span>
                                 </p>
@@ -111,11 +141,26 @@ const Orders = () => {
                             <div className="text-base font-semibold">{formatPrice(order.price)}</div>
                           </div>
                         </div>
-                        <div className="pt-4">
-                          {item.orderStatus === EStatusOrder.SUCCESS && order.hasFeedback && (
-                            <Button className="h-[45px]" text="Đánh giá" variant="ghost" onClick={() => handleFeedbackOrder(item.id)} />
-                          )}
-                        </div>
+                        {item.orderStatus === EStatusOrder.SUCCESS && (
+                          <div className="self-end">
+                            <div className="flex flex-col gap-2">
+                              <Button
+                                className="h-[45px]"
+                                text={order.hasFeedback ? "Xem đánh giá" : "Đánh giá"}
+                                size="full"
+                                variant="ghost"
+                                onClick={() => {
+                                  if (order.hasFeedback) {
+                                    navigate(`/profile/review-history`);
+                                  } else {
+                                    setSelectedOrderItem(order);
+                                    setReviewModalOpen(true);
+                                  }
+                                }}
+                              />
+                            </div>
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -151,6 +196,12 @@ const Orders = () => {
             )}
           </>
         )}
+        <ReviewModal
+          isOpen={reviewModalOpen}
+          onClose={() => setReviewModalOpen(false)}
+          onSubmit={handleReviewSubmit}
+          selectedOrderItem={selectedOrderItem}
+        />
       </div>
     </>
   );

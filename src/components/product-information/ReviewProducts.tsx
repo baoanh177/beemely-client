@@ -1,112 +1,144 @@
-import { useState } from "react";
-import { Star } from "lucide-react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import Button from "../common/Button";
+import { AppDispatch } from "@/services/store";
+import { getAllReviews } from "@/services/store/review/review.thunk";
+import { EFetchStatus } from "@/shared/enums/fetchStatus";
+import { Avatar, Card, Image, List, Rate, Spin, Typography } from "antd";
+import dayjs from "dayjs";
+import "dayjs/locale/vi";
+import { MessageCircle, Package, ThumbsUp } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-interface Review {
-  id: number;
-  name: string;
-  rating: number;
-  email: string;
-  content: string;
-  date: string;
-  image: string;
-}
-
-interface User {
-  name: string;
-  email: string;
-  image: string;
-}
+const { Text, Title } = Typography;
 
 interface ReviewProductProps {
-  reviews: Review[];
-  currentUser: User;
+  productId: string;
 }
 
-const ReviewProduct: React.FC<ReviewProductProps> = ({ reviews: initialReviews, currentUser }) => {
-  const [reviews, setReviews] = useState<Review[]>(initialReviews);
+const ReviewProduct: React.FC<ReviewProductProps> = ({ productId }) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const [isLoading, setIsLoading] = useState(true);
+  const { reviews, status } = useSelector((state: any) => state.review);
+  const reviewList = Array.isArray(reviews.metaData) ? reviews.metaData : [];
 
-  const validationSchema = Yup.object().shape({
-    rating: Yup.number().required("Vui lòng chọn đánh giá").min(1, "Vui lòng chọn đánh giá"),
-    content: Yup.string().required("Vui lòng nhập nhận xét của bạn").trim(),
-  });
-
-  const handleSubmit = (values: { rating: number; content: string }, { resetForm }: { resetForm: () => void }) => {
-    const review: Review = {
-      id: reviews.length + 1,
-      name: currentUser.name,
-      email: currentUser.email,
-      rating: values.rating,
-      content: values.content,
-      date: new Date().toLocaleDateString("vi-VN", { year: "numeric", month: "long", day: "numeric" }),
-      image: currentUser.image,
+  useEffect(() => {
+    const fetchReviews = async () => {
+      setIsLoading(true);
+      if (typeof productId === "string") {
+        await dispatch(getAllReviews(productId));
+      }
+      setIsLoading(false);
     };
-    setReviews((prev) => [...prev, review]);
-    resetForm();
-  };
+    fetchReviews();
+  }, [dispatch, productId]);
 
-  return (
-    <div className="w-full">
-      {reviews.length > 0 && <h2 className="mb-4 text-2xl font-bold">Đánh giá của khách hàng</h2>}
-      {reviews.map((review) => (
-        <div key={review.id} className="mb-4 border-b border-gray-500 pb-4">
-          <div className="mb-2 flex items-center">
-            <div className="bg-gray-300 mr-4 h-12 w-12 overflow-hidden rounded-full">
-              <img src={review.image} alt={review.name} className="h-full w-full object-cover" />
-            </div>
+  const renderReviewItem = (review: any) => (
+    <Card className="mb-4 overflow-hidden rounded-xl shadow-sm">
+      <div className="flex gap-4">
+        <Avatar src={review.user?.avatarUrl || "/api/placeholder/32/32"} size={32} className="ring-gray-100 ring-2" />
+        <div className="flex-1">
+          <div className="flex items-start justify-between">
             <div>
-              <p className="font-bold">{review.name}</p>
-              <div className="flex">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Star key={star} className={`h-5 w-5 ${star <= review.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`} />
-                ))}
+              <Text strong className="text-base">
+                {review.user?.fullName || "Người dùng ẩn danh"}
+              </Text>
+              <div className="mb-4 mt-1 flex items-center gap-4">
+                <Rate disabled value={review.rates} className="text-xs" />
+                <Text className="text-sm text-gray-500">{dayjs(review.createdAt).locale("vi").format("DD MMMM, YYYY")}</Text>
               </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Package className="h-4 w-4 text-green-500" />
+              <Text className="text-xs text-green-600">Đã mua hàng</Text>
             </div>
           </div>
-          <p className="mb-2">{review.content}</p>
-          <p className="text-sm text-gray-500">
-            Đánh giá bởi <span className="text-primary-600">{review.name}</span> vào <span className="text-primary-600">{review.date}</span>
-          </p>
-        </div>
-      ))}
 
-      <h2 className="mb-4 text-2xl font-bold">Thêm đánh giá của bạn</h2>
-      <Formik initialValues={{ rating: 0, content: "" }} validationSchema={validationSchema} onSubmit={handleSubmit}>
-        {({ setFieldValue, values }) => (
-          <Form>
-            <div className="mb-4">
-              <p className="mb-2">Đánh giá của bạn</p>
-              <div className="flex">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Star
-                    key={star}
-                    className={`cursor-pointer ${star <= values.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`}
-                    onClick={() => setFieldValue("rating", star)}
+          {review.title && (
+            <Title level={5} className="mb-2 mt-3 text-base">
+              {review.title}
+            </Title>
+          )}
+
+          <Text className="text-gray-700 mt-4 text-sm">
+            <span className="mb-3 text-gray-80%">Nội dung đánh giá: </span>
+            <span className="text-[14px] font-bold">{review.content}</span>
+          </Text>
+          {review.images && review.images.length > 0 && (
+            <div className="mt-3 grid grid-cols-5 gap-2">
+              {review.images.map((image: string, index: number) => (
+                <div key={index} className="relative aspect-square h-20 w-20 overflow-hidden rounded-lg">
+                  <Image
+                    src={image}
+                    alt={`Ảnh đánh giá ${index + 1}`}
+                    className="h-6 w-6 object-cover"
+                    preview={{
+                      mask: (
+                        <div className="text-white flex items-center justify-center text-xs">
+                          <span>Xem</span>
+                        </div>
+                      ),
+                    }}
                   />
-                ))}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {review.reply && (
+            <div className="mt-3 rounded-lg border-l-4 border-blue-500 bg-blue-50 p-3">
+              <div className="flex items-center gap-2">
+                <Avatar src="/api/placeholder/24/24" size={24} />
+                <div>
+                  <Text strong className="text-sm text-blue-700">
+                    Phản hồi từ Cửa hàng
+                  </Text>
+                  <Text className="block text-xs text-gray-500">
+                    {dayjs(review.replyDate || review.createdAt)
+                      .locale("vi")
+                      .format("DD MMMM, YYYY")}
+                  </Text>
+                </div>
               </div>
-              <ErrorMessage name="rating" component="p" className="text-red-500" />
+              <Text className="mt-2 text-sm text-blue-800">{review.reply}</Text>
             </div>
-            <div className="mb-4">
-              <label htmlFor="content" className="mb-2 block">
-                Nhận xét của bạn
-              </label>
-              <Field
-                as="textarea"
-                id="content"
-                name="content"
-                className="w-full rounded border bg-gray-10% p-2"
-                placeholder="Nhập Nhận xét của bạn"
-                rows={4}
-              />
-              <ErrorMessage name="content" component="p" className="text-red-500" />
-            </div>
-            <Button type="submit" text="Gửi đi" />
-          </Form>
-        )}
-      </Formik>
+          )}
+        </div>
+      </div>
+    </Card>
+  );
+
+  if (status === EFetchStatus.REJECTED) {
+    return (
+      <div className="flex items-center justify-center rounded-lg bg-red-50 p-6">
+        <Text type="danger" className="text-base font-semibold">
+          ⚠️ Có lỗi xảy ra khi tải đánh giá.
+        </Text>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mx-auto w-full px-4 py-4">
+      <Title level={3} className="mb-4">
+        Đánh giá sản phẩm
+        <Text className="ml-2 text-base font-normal text-gray-500">({reviewList.length} đánh giá)</Text>
+      </Title>
+
+      {isLoading ? (
+        <div className="flex items-center justify-center py-8">
+          <Spin size="large" tip="Đang tải đánh giá..." />
+        </div>
+      ) : reviewList.length === 0 ? (
+        <Card className="text-center">
+          <div className="py-8">
+            <Title level={4} className="text-gray-500">
+              Chưa có đánh giá nào cho sản phẩm này
+            </Title>
+            <Text className="text-gray-400">Hãy là người đầu tiên đánh giá sản phẩm</Text>
+          </div>
+        </Card>
+      ) : (
+        <div>{reviewList.map(renderReviewItem)}</div>
+      )}
     </div>
   );
 };

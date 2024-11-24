@@ -129,7 +129,7 @@ const OrderSummary = () => {
     if (shippingFee) {
       checkoutDispatch(setShippingFee(shippingFee));
     }
-  }, [shippingFee]);
+  }, [shippingFee, checkoutDispatch]);
 
   return (
     <Card title="Thông tin đơn hàng" className="rounded-xl border border-primary-10% px-4 py-5 shadow-md" bordered={false}>

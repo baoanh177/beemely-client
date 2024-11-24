@@ -14,23 +14,23 @@ const ProfilePage = () => {
   return (
     <div className="mx-auto flex max-w-[1360px] flex-col gap-8 p-4">
       <h1 className="text-3xl font-normal">Hồ sơ của tôi</h1>
-      <div className="flex flex-col lg:flex-row w-full gap-3 lg:gap-6 pb-[120px]">
-        <div className="lg:max-w-[250px] w-full border items-center py-3 border-gray-20% flex mb-6 lg:mb-0 flex-row justify-between lg:justify-normal gap-1 flex-wrap lg:flex-col">
-          <div className="flex flex-row items-center gap-4  lg:border-b border-gray-20% p-2 lg:p-4 lg:w-full">
+      <div className="flex w-full flex-col gap-3 pb-[120px] lg:flex-row lg:gap-6">
+        <div className="mb-6 flex w-full flex-row flex-wrap items-center justify-between gap-1 border border-gray-20% py-3 lg:mb-0 lg:max-w-[250px] lg:flex-col lg:justify-normal">
+          <div className="flex flex-row items-center gap-4 border-gray-20% p-2 lg:w-full lg:border-b lg:p-4">
             <img
-              className="h-[35px] w-[35px] lg:h-[60px] lg:w-[60px] shrink-0 rounded-full object-cover"
+              className="h-[35px] w-[35px] shrink-0 rounded-full object-cover lg:h-[60px] lg:w-[60px]"
               src={state.profile?.avatarUrl}
               alt={state.profile?.fullName}
             />
-            <div className="flex flex-row lg:flex-col gap-2">
-              <div className="inline-block lg:hidden font-semibold">{state.profile?.fullName}</div>
+            <div className="flex flex-row gap-2 lg:flex-col">
+              <div className="inline-block font-semibold lg:hidden">{state.profile?.fullName}</div>
               <div className="hidden lg:inline-block">
                 Chao xìn <span>👋</span>
               </div>
               <div className="font-semibold">{state.profile?.fullName}</div>
             </div>
           </div>
-          <div className="p-2 lg:p-0 lg:py-6 flex lg:justify-center lg:block lg:w-full">
+          <div className="flex p-2 lg:block lg:w-full lg:justify-center lg:p-0 lg:py-6">
             <Menu />
           </div>
         </div>

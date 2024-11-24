@@ -4,7 +4,7 @@ import clsx from "clsx";
 import { CiHeart, CiUser } from "react-icons/ci";
 import { PiCodesandboxLogoThin, PiMapPinLight } from "react-icons/pi";
 import { IoIosNotificationsOutline } from "react-icons/io";
-
+import { CiStar } from "react-icons/ci";
 type ProfileItem = {
   key: string;
   label: string;
@@ -42,6 +42,12 @@ const profileItems: ProfileItem[] = [
     label: "Thông báo",
     path: "profile/notification",
     icon: <IoIosNotificationsOutline size={24} />,
+  },
+  {
+    key: "review-history",
+    label: "Lịch sử đánh giá",
+    path: "profile/review-history",
+    icon: <CiStar size={24} />,
   },
 ];
 
