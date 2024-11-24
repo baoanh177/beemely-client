@@ -121,8 +121,8 @@ const Orders = () => {
                   </div>
                   <div className="pb-4">
                     {item.items.map((order) => (
-                      <div>
-                        <div key={order.id} className="flex flex-wrap items-center justify-between gap-8 px-3 pt-10">
+                      <div key={order.id} className="flex flex-col">
+                        <div className="flex items-center justify-between gap-8 px-4 pt-8">
                           <div className="flex flex-col gap-4">
                             <div className="flex gap-4">
                               <img className="aspect-square h-16 w-16 rounded-md" src={order.product.thumbnail} alt={order.product.name} />
@@ -141,8 +141,8 @@ const Orders = () => {
                             <div className="text-base font-semibold">{formatPrice(order.price)}</div>
                           </div>
                         </div>
-                        <div className="float-end w-[150px] p-2">
-                          {item.orderStatus === EStatusOrder.SUCCESS && (
+                        {item.orderStatus === EStatusOrder.SUCCESS && (
+                          <div className="self-end">
                             <div className="flex flex-col gap-2">
                               <Button
                                 className="h-[45px]"
@@ -159,8 +159,8 @@ const Orders = () => {
                                 }}
                               />
                             </div>
-                          )}
-                        </div>
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
