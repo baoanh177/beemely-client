@@ -8,4 +8,5 @@ export enum EStatusOrder {
   REQUEST_RETURN = "request_return",
   RETURNING = "returning",
   RETURNED = "returned",
+  DENIED_RETURN = "denied_return",
 }

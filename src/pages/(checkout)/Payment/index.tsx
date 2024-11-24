@@ -2,10 +2,10 @@ import { useArchive } from "@/hooks/useArchive";
 import useAsyncEffect from "@/hooks/useAsyncEffect";
 import { IOrderInitialState } from "@/services/store/order/order.slice";
 import { getOrderDetail } from "@/services/store/order/order.thunk";
-import Loading from "./components/Loading";
 import PaymentSuccess from "./components/PaymentSuccess";
 import { useLocation } from "react-router-dom";
 import FailedNotification from "./components/FailedNotification";
+import Loading from "./components/Loading";
 
 const PaymentPage = () => {
   const location = useLocation();
@@ -32,13 +32,9 @@ const PaymentPage = () => {
     },
     [orderId, success],
   );
+  if (getOrderDetailLoading) return <Loading />;
 
-  return (
-    <div>
-      {getOrderDetailLoading && <Loading />}
-      {state.acctiveOrder ? <PaymentSuccess order={state.acctiveOrder} /> : cancel && <FailedNotification />}
-    </div>
-  );
+  return <div>{state.acctiveOrder ? <PaymentSuccess order={state.acctiveOrder} /> : cancel && <FailedNotification />}</div>;
 };
 
 export default PaymentPage;

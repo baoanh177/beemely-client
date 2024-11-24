@@ -33,6 +33,7 @@ import Personal from "@/pages/Profile/Personal/Personal";
 import Orders from "@/pages/Profile/Order/Orders";
 import ProfilePage from "@/pages/Profile";
 import OrderDetail from "@/pages/Profile/Order/OrderDetail";
+import ComplaintOrderPage from "@/pages/Profile/Order/ComplaintOrderPage";
 
 export interface IRoute {
   path: string;
@@ -85,7 +86,7 @@ export const routes: IRoute[] = [
       {
         path: "profile",
         layout: () => <DefaultLayout />,
-        // middleware: () => <AuthMiddleware />,
+        middleware: () => <AuthMiddleware />,
         pages: [
           {
             path: "/",
@@ -102,6 +103,10 @@ export const routes: IRoute[] = [
               {
                 path: "/orders/detail/:id",
                 element: OrderDetail,
+              },
+              {
+                path: "/orders/complaint/:orderId",
+                element: ComplaintOrderPage,
               },
               {
                 path: "/wishlists",
