@@ -122,7 +122,7 @@ const Orders = () => {
                   <div className="pb-4">
                     {item.items.map((order) => (
                       <div>
-                        <div key={order.id} className="flex flex-wrap items-center justify-between gap-6 px-3 pt-8">
+                        <div key={order.id} className="flex flex-wrap items-center justify-between gap-8 px-3 pt-10">
                           <div className="flex flex-col gap-4">
                             <div className="flex gap-4">
                               <img className="aspect-square h-16 w-16 rounded-md" src={order.product.thumbnail} alt={order.product.name} />
@@ -140,6 +140,26 @@ const Orders = () => {
                           <div className="flex items-center gap-4">
                             <div className="text-base font-semibold">{formatPrice(order.price)}</div>
                           </div>
+                        </div>
+                        <div className="float-end w-[150px] p-2">
+                          {item.orderStatus === EStatusOrder.SUCCESS && (
+                            <div className="flex flex-col gap-2">
+                              <Button
+                                className="h-[45px]"
+                                text={order.hasFeedback ? "Xem đánh giá" : "Đánh giá"}
+                                size="full"
+                                variant="ghost"
+                                onClick={() => {
+                                  if (order.hasFeedback) {
+                                    navigate(`/profile/review-history`);
+                                  } else {
+                                    setSelectedOrderItem(order);
+                                    setReviewModalOpen(true);
+                                  }
+                                }}
+                              />
+                            </div>
+                          )}
                         </div>
                       </div>
                     ))}
