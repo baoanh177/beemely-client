@@ -20,14 +20,14 @@ const Pagination: React.FC<PaginationProps> = ({ current, pageSize, total, onCha
       return (
         <button className="flex items-center justify-center px-3 py-1.5 text-sm hover:text-blue-600">
           <ChevronLeft size={18} className="mr-1" />
-          Previous
+          Trước
         </button>
       );
     }
     if (type === "next") {
       return (
         <button className="flex items-center justify-center px-3 py-1.5 text-sm hover:text-blue-600">
-          Next
+          Tiếp
           <ChevronRight size={18} className="ml-1" />
         </button>
       );
@@ -82,12 +82,12 @@ const Pagination: React.FC<PaginationProps> = ({ current, pageSize, total, onCha
 
         .custom-pagination .ant-pagination-item-active a {
           color: #ffffff;
-          background: #2563eb;
+          background: #424146;
         }
 
         .custom-pagination .ant-pagination-item-active:hover a {
           color: #ffffff;
-          background: #1d4ed8;
+          background: #131118;
         }
 
         .custom-pagination .ant-pagination-prev,
