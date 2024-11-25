@@ -82,7 +82,7 @@ const Pagination: React.FC<PaginationProps> = ({ current, pageSize, total, onCha
 
         .custom-pagination .ant-pagination-item-active a {
           color: #ffffff;
-          background: #424146;
+          background: #000000;
         }
 
         .custom-pagination .ant-pagination-item-active:hover a {
