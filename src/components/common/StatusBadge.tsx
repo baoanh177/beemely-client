@@ -16,7 +16,7 @@ export type StatusBadgeColors =
   | "darkgreen";
 
 export interface StatusBadgeProps {
-  text: EStatusOrder;
+  status: EStatusOrder;
   color: StatusBadgeColors | EStatusOrder;
   disabled?: boolean;
 }
@@ -32,9 +32,11 @@ const CONVERT_STATUS = {
   returning: "Đang được đổi trả",
   returned: "Trả hàng hoàn tiền thành công",
   denied_return: "Người bán từ chối khiếu nại",
+  compensated: "Đã gửi bù hàng",
+  compensating: "Đang gửi bù hàng",
 };
 
-const StatusBadge: React.FC<StatusBadgeProps> = ({ text, color, disabled = false }) => {
+const StatusBadge: React.FC<StatusBadgeProps> = ({ status, color, disabled = false }) => {
   // @ts-ignore
   const colorMapping: Record<EStatusOrder | StatusBadgeColors, string> = {
     [EStatusOrder.PENDING]: disabled ? "bg-orange-100 text-orange-300" : "bg-orange-50 text-orange-500",
@@ -47,6 +49,8 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ text, color, disabled = false
     [EStatusOrder.RETURNING]: disabled ? "bg-purple-100 text-purple-300 capitalize" : "bg-[#F4ECFB] text-[#883DCF] capitalize",
     [EStatusOrder.RETURNED]: disabled ? "bg-gray-100 text-gray-300" : "bg-red-400 text-white-500",
     [EStatusOrder.DENIED_RETURN]: disabled ? "bg-gray-100 text-gray-300" : "bg-red-700 text-white-500",
+    [EStatusOrder.COMPENSATING]: disabled ? "bg-green-100 text-green-300" : "bg-green-500 text-white-500",
+    [EStatusOrder.COMPENSATED]: disabled ? "bg-gray-100 text-gray-300" : "bg-green-700 text-white-500",
     blue: disabled ? "bg-cyan-100 text-cyan-300" : "bg-cyan-50 text-cyan-500",
     green: disabled ? "bg-green-100 text-green-300" : "bg-green-50 text-green-600",
     orange: disabled ? "bg-orange-100 text-orange-300" : "bg-orange-50 text-orange-500",
@@ -63,7 +67,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ text, color, disabled = false
 
   return (
     <div className={clsx(className, "inline-block text-nowrap rounded-lg border-none px-[10px] py-1 text-center text-sm")}>
-      {CONVERT_STATUS[text]}
+      {CONVERT_STATUS[status]}
     </div>
   );
 };

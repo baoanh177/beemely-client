@@ -53,6 +53,8 @@ const Orders = () => {
     [EStatusOrder.RETURNING]: "Đang được đổi trả",
     [EStatusOrder.RETURNED]: "Đổi trả thành công",
     [EStatusOrder.DENIED_RETURN]: "Từ chối đổi trả",
+    [EStatusOrder.COMPENSATING]: "Người bán đang gửi bù hàng",
+    [EStatusOrder.COMPENSATED]: "Người bán đã gửi bù hàng",
   };
 
   const defaultSearch: IDefaultSearchProps = {
@@ -83,7 +85,7 @@ const Orders = () => {
     };
 
     try {
-      const result = await dispatch(createReview({ body: payload })).unwrap();
+      await dispatch(createReview({ body: payload })).unwrap();
       message.success("Đánh giá của bạn đã được gửi thành công!");
       await dispatch(getAllOrderByUser({ query: { ...state.filter } }));
       if (selectedOrderItem) {
@@ -114,7 +116,7 @@ const Orders = () => {
                       Đơn hàng: <span className="hover:underline">#{item.uniqueId}</span>
                     </Link>
                     <div className="flex flex-wrap items-center gap-4">
-                      <StatusBadge text={item.orderStatus} color={item.orderStatus} />
+                      <StatusBadge status={item.orderStatus} color={item.orderStatus} />
                       <PaymentStatusBadge text={item.paymentStatus} status={item.paymentStatus} />
                       <OrderActions order={item} />
                     </div>
@@ -168,20 +170,24 @@ const Orders = () => {
                     <div className="border-t border-primary-10% px-8 py-4">
                       <Button
                         variant={
-                          item.complaint.status === EComplaintStatus.PENDING
+                          item.complaint.status === EComplaintStatus.PENDING || item.complaint.status === EComplaintStatus.PROCESSING
                             ? "danger"
-                            : item.complaint.status === EComplaintStatus.RESOLVED
+                            : item.complaint.status === EComplaintStatus.RESOLVED || item.complaint.status === EComplaintStatus.COMPENSATE
                               ? "success"
                               : "secondary"
                         }
                         icon={
-                          item.complaint.status === EComplaintStatus.RESOLVED ? (
+                          item.complaint.status === EComplaintStatus.RESOLVED || item.complaint.status === EComplaintStatus.COMPENSATE ? (
                             <IoIosCheckmarkCircle className="h-5 w-5" />
                           ) : (
                             <MdReport className="h-5 w-5" />
                           )
                         }
-                        text={item.complaint.status === EComplaintStatus.RESOLVED ? "Đã xử lý" : "Xem khiếu nại"}
+                        text={
+                          item.complaint.status === EComplaintStatus.RESOLVED || item.complaint.status === EComplaintStatus.COMPENSATE
+                            ? "Đã xử lý"
+                            : "Xem khiếu nại"
+                        }
                         className="flex items-center space-x-2"
                         onClick={() => {
                           onOpen({ ...item.complaint, order: item.uniqueId } as IComplaint);
