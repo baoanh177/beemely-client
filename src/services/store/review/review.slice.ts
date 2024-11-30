@@ -57,7 +57,7 @@ const reviewSlice = createSlice({
         state.status = EFetchStatus.PENDING;
       })
       .addCase(createReview.fulfilled, (state: IReviewInitialState, { payload }: PayloadAction<IResponse<IReview>>) => {
-        state.reviews.push(payload.metaData);
+        // state.reviews.push(payload.metaData);
         state.status = EFetchStatus.FULFILLED;
         state.message = "Gửi đánh giá thành công";
       })
