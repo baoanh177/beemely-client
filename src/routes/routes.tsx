@@ -36,6 +36,7 @@ import Orders from "@/pages/Profile/Order/Orders";
 import Personal from "@/pages/Profile/Personal/Personal";
 import Wishlist from "@/pages/Profile/Wishlists/Wishlist";
 import ComplaintOrderPage from "@/pages/Profile/Order/ComplaintOrderPage";
+import ProductCategories from "@/pages/ProductCategories";
 
 export interface IRoute {
   path: string;
@@ -80,12 +81,16 @@ export const routes: IRoute[] = [
             element: () => <Products />,
           },
           {
+            path: "products/:slug",
+            element: () => <ProductCategories />,
+          },
+          {
             path: "product/:id",
             element: () => <ProductPage />,
           },
           {
             path: "products/:productId/reviews",
-            element: () => <ReviewProduct />,
+            element: () => <ReviewProduct productId="someProductId" />,
           },
         ],
       },
