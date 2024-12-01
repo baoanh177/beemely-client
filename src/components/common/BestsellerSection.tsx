@@ -16,6 +16,9 @@ const BestsellerSection = () => {
 
     return (
       <ProductCard
+        sold={product.sold || 0}
+        averageRating={product.averageRating || 0}
+        totalReviews={product.totalReviews || 0}
         productId={product.id}
         key={index}
         slug={product.slug}

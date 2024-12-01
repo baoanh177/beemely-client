@@ -1,9 +1,12 @@
+import { IUserProfile } from "../auth/auth.model";
+import { IOrderItem } from "../order/order.model";
+
 export interface IReview {
   id?: string;
   content?: string;
   images?: string[];
   rates?: number;
-  orderItemId?: string | undefined;
+  orderItemId?: string;
   reply?: string | undefined;
 }
 export interface IReviewReply {
@@ -21,16 +24,7 @@ export interface IReviewHistory {
   status: number;
   reply?: string;
   description: string;
-
-  product?: {
-    id: string;
-    name: string;
-    [key: string]: any;
-  };
-  user: string;
-  orderItem: {
-    id: string;
-    [key: string]: any;
-    price: number;
-  };
+  user: IUserProfile;
+  orderItem: IOrderItem;
+  replyDate: string;
 }

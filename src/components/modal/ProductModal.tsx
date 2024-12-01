@@ -1,6 +1,5 @@
 import React from "react";
 import { Modal } from "antd";
-import clsx from "clsx";
 import { useProductModal } from "@/hooks/useProductModal";
 import ProductWrapper from "../product/ProductWrapper";
 import { useArchive } from "@/hooks/useArchive";
@@ -19,14 +18,7 @@ const ProductModal: React.FC = () => {
     [slug],
   );
   return (
-    <Modal
-      width="auto"
-      className={clsx("h-[70vh] max-w-[90vw] px-4 md:max-w-[80vw] lg:w-[80vw]")}
-      open={isOpen}
-      loading={getProductByIdLoading || !state.activeProduct}
-      onCancel={onClose}
-      footer={null}
-    >
+    <Modal width={"1000px"} open={isOpen} centered loading={getProductByIdLoading || !state.activeProduct} onCancel={onClose} footer={null}>
       {state.activeProduct && <ProductWrapper product={state.activeProduct} />}
     </Modal>
   );

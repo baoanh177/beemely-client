@@ -35,12 +35,6 @@ const CartTable = () => {
       key: "product",
     },
     {
-      title: "Đơn giá",
-      dataIndex: "unitPrice",
-      key: "unitPrice",
-      render: (text: number) => formatPrice(text),
-    },
-    {
       title: "Số lượng",
       dataIndex: "quantity",
       key: "quantity",

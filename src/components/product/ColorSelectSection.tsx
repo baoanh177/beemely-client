@@ -1,7 +1,6 @@
 import { IProductColor } from "@/services/store/product/product.model";
 import { Tooltip } from "antd";
 import clsx from "clsx";
-
 interface ColorSelectSectionProps {
   colors: IProductColor[];
   selectedColor: string;
@@ -17,7 +16,10 @@ const ColorSelectSection = ({ colors, selectedColor, setSelectedColor }: ColorSe
           <Tooltip title={color.colorId.name} key={color.id}>
             <button
               key={color.id}
-              className={clsx("h-11 w-11 rounded-md shadow", selectedColor === color.colorId.id ? "border" : "")}
+              className={clsx(
+                "flex h-11 w-11 items-center justify-center rounded-md border border-primary-10%",
+                selectedColor === color.colorId.id ? "border-primary-500" : "",
+              )}
               style={{ backgroundColor: color.colorId.value }}
               onClick={() => setSelectedColor(color.colorId.id)}
             />

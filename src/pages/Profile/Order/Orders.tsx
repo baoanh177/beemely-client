@@ -2,7 +2,7 @@ import Button from "@/components/common/Button";
 import PaymentStatusBadge from "@/components/common/PaymentStatusBadge";
 import { DefaultSearch, IDefaultSearchProps } from "@/components/common/search/DefaultSearch";
 import StatusBadge from "@/components/common/StatusBadge";
-import ReviewModal from "@/components/product-information/ReviewModel";
+import ReviewModal from "@/components/product-information/ReviewModal";
 import { useArchive } from "@/hooks/useArchive";
 import useAsyncEffect from "@/hooks/useAsyncEffect";
 import { IOrderInitialState, setFilter } from "@/services/store/order/order.slice";

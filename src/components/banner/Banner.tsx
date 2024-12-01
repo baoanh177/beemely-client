@@ -45,7 +45,7 @@ const BannerSlider = () => {
                 <p className="line-clamp-3 text-sm font-light text-dark-90%">{slide.description}</p>
                 <Link to={slide.path} className="w-full">
                   <button className="mt-6 w-full rounded-full bg-dark-500 px-6 py-2 text-white-500 hover:bg-dark-80% md:max-w-[50%]">
-                    Shopping now!
+                    Mua ngay
                   </button>
                 </Link>
               </div>

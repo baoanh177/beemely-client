@@ -8,7 +8,7 @@ const CartTotal = () => {
   const { state } = useArchive<ICartInitialState>("cart");
 
   return (
-    <div className="rounded-xl border border-primary-10% px-4 py-5 shadow-lg">
+    <div className="w-full rounded-xl border border-primary-10% px-4 py-5 shadow-lg">
       <div className="space-y-6">
         <div className="space-y-3">
           <div className="flex justify-between text-sm font-bold text-primary-500">

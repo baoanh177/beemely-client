@@ -48,7 +48,7 @@ const ProductDetails = ({ product, selectedVariant, setSelectedVariant }: Produc
   }, [product, selectedColor, selectedSize, setSelectedVariant]);
 
   const handleWishlistToggle = () => {
-    if(!wishListState.profile) {
+    if (!wishListState.profile) {
       toast.error("Bạn cần đăng nhập để thêm sản phẩm vào Wishlist!");
       return;
     }
@@ -114,15 +114,15 @@ const ProductDetails = ({ product, selectedVariant, setSelectedVariant }: Produc
         <h2 className="text-gray-900 text-2xl font-medium">{product.name}</h2>
       </div>
 
-      <StarSection count={200} rating={2.6} />
+      <StarSection totalReviews={product.totalReviews || 0} averageRating={product.averageRating || 0} />
 
       <PriceSection regularPrice={selectedVariant.price} discountPrice={selectedVariant.discountPrice} />
 
       <DescriptionSection content={product.sortDescription} />
 
-      <ColorSelectSection colors={product?.productColors} selectedColor={selectedColor} setSelectedColor={setSelectedColor} />
-
       <SizeSelectSection sizes={product?.productSizes} selectedSize={selectedSize} setSelectedSize={setSelectedSize} />
+
+      <ColorSelectSection colors={product?.productColors} selectedColor={selectedColor} setSelectedColor={setSelectedColor} />
 
       <StockSection stock={selectedVariant.stock} />
 

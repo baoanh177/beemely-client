@@ -7,9 +7,7 @@ import { useArchive } from "@/hooks/useArchive";
 import { IColorInitialState } from "@/services/store/color/color.slice";
 import { ISizeInitialState } from "@/services/store/size/size.slice";
 import { getAllSize } from "@/services/store/size/size.thunk";
-import { ChevronDown, ChevronUp, Diameter, PaintbrushIcon, PawPrint, ShoppingBasket, Sparkles, X } from "lucide-react";
-import { IProductTypeInitialState } from "@/services/store/product-type/product-type.slice";
-import { getAllProductTypes } from "@/services/store/product-type/product-type.thunk";
+import { ChevronDown, ChevronUp, Diameter, PaintbrushIcon, PawPrint, Sparkles, X } from "lucide-react";
 import { IBrandInitialState } from "@/services/store/brand/brand.slice";
 import { getAllBrand } from "@/services/store/brand/brand.thunk";
 import Title from "antd/es/typography/Title";
@@ -46,9 +44,6 @@ const Sidebar: React.FC<SidebarProps> = ({ filters, onFilterChange, showMobileSi
   const { state: stateSizes, dispatch: dispatchSizes } = useArchive<ISizeInitialState>("sizes");
   const { sizes } = stateSizes;
 
-  const { state: stateProductTypes, dispatch: dispatchProductTypes } = useArchive<IProductTypeInitialState>("productTypes");
-  const { productTypes } = stateProductTypes;
-
   const { state: stateBrands, dispatch: dispatchBrands } = useArchive<IBrandInitialState>("brands");
   const { brands } = stateBrands;
 
@@ -65,9 +60,8 @@ const Sidebar: React.FC<SidebarProps> = ({ filters, onFilterChange, showMobileSi
   useEffect(() => {
     dispatchSizes(getAllSize({}));
     dispatchColors(getAllColor({}));
-    dispatchProductTypes(getAllProductTypes({}));
     dispatchBrands(getAllBrand({}));
-  }, [dispatchSizes, dispatchColors, dispatchProductTypes, dispatchBrands]);
+  }, [dispatchSizes, dispatchColors, dispatchBrands]);
 
   useEffect(() => {
     setPriceRange([Number(filters.minPrice) || 0, Number(filters.maxPrice) || 10000000]);
@@ -155,22 +149,6 @@ const Sidebar: React.FC<SidebarProps> = ({ filters, onFilterChange, showMobileSi
   function FilterSectionsContent() {
     return (
       <>
-        <FilterSection title="Thể loại giày" icon={<ShoppingBasket className="text-lg text-options-8" />} section="productType">
-          <Space direction="vertical" className="pl-2">
-            {productTypes.map((productType) => (
-              <FormCheck
-                key={productType.id}
-                id={`productType-${productType.id}`}
-                checked={filters.productType.includes(productType.id)}
-                onChange={() => handleCheckboxChange("productType", productType.id)}
-                label={productType.name}
-                value={productType.id}
-                name="productType"
-              />
-            ))}
-          </Space>
-        </FilterSection>
-
         <FilterSection title="Thương hiệu" icon={<PawPrint className="text-lg text-options-7" />} section="brand">
           <Space direction="vertical" className="pl-2">
             {brands.map((brand) => (

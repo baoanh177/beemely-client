@@ -1,13 +1,13 @@
 import { EFetchStatus } from "@/shared/enums/fetchStatus";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IInitialState, IResponse } from "./../../../shared/utils/shared-interfaces";
-import { IReview, IReviewHistory } from "./review.model";
+import { IInitialState, IResponse } from "@/shared/utils/shared-interfaces";
+import { IReviewHistory } from "./review.model";
 import { createReview, getAllReviews, getMyReviews } from "./review.thunk";
 
 export interface IReviewInitialState extends IInitialState {
   status: EFetchStatus;
   message: string;
-  reviews: IReview[];
+  reviews: IReviewHistory[];
   myReviews: IReviewHistory[];
 }
 
@@ -32,8 +32,8 @@ const reviewSlice = createSlice({
       .addCase(getAllReviews.pending, (state: IReviewInitialState) => {
         state.status = EFetchStatus.PENDING;
       })
-      .addCase(getAllReviews.fulfilled, (state: IReviewInitialState, { payload }: any) => {
-        state.reviews = payload;
+      .addCase(getAllReviews.fulfilled, (state: IReviewInitialState, { payload }: PayloadAction<IResponse<IReviewHistory[]>>) => {
+        state.reviews = payload.metaData;
         state.status = EFetchStatus.FULFILLED;
       })
       .addCase(getAllReviews.rejected, (state: IReviewInitialState, { payload }: PayloadAction<any>) => {
@@ -44,8 +44,8 @@ const reviewSlice = createSlice({
       .addCase(getMyReviews.pending, (state: IReviewInitialState) => {
         state.status = EFetchStatus.PENDING;
       })
-      .addCase(getMyReviews.fulfilled, (state: IReviewInitialState, { payload }: PayloadAction<IReviewHistory[]>) => {
-        state.myReviews = payload;
+      .addCase(getMyReviews.fulfilled, (state: IReviewInitialState, { payload }: PayloadAction<IResponse<IReviewHistory[]>>) => {
+        state.myReviews = payload.metaData;
         state.status = EFetchStatus.FULFILLED;
       })
       .addCase(getMyReviews.rejected, (state: IReviewInitialState, { payload }: PayloadAction<any>) => {
@@ -56,8 +56,7 @@ const reviewSlice = createSlice({
       .addCase(createReview.pending, (state: IReviewInitialState) => {
         state.status = EFetchStatus.PENDING;
       })
-      .addCase(createReview.fulfilled, (state: IReviewInitialState, { payload }: PayloadAction<IResponse<IReview>>) => {
-        // state.reviews.push(payload.metaData);
+      .addCase(createReview.fulfilled, (state: IReviewInitialState) => {
         state.status = EFetchStatus.FULFILLED;
         state.message = "Gửi đánh giá thành công";
       })

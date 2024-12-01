@@ -30,12 +30,12 @@ import PaymentPage from "@/pages/(checkout)/Payment";
 import Products from "@/pages/Products";
 import ProfilePage from "@/pages/Profile";
 import Addresses from "@/pages/Profile/Address/Address";
-import Notifications from "@/pages/Profile/Notifications/Notifications";
 import OrderDetail from "@/pages/Profile/Order/OrderDetail";
 import Orders from "@/pages/Profile/Order/Orders";
 import Personal from "@/pages/Profile/Personal/Personal";
 import Wishlist from "@/pages/Profile/Wishlists/Wishlist";
 import ComplaintOrderPage from "@/pages/Profile/Order/ComplaintOrderPage";
+import ProductCategories from "@/pages/ProductCategories";
 
 export interface IRoute {
   path: string;
@@ -80,12 +80,16 @@ export const routes: IRoute[] = [
             element: () => <Products />,
           },
           {
+            path: "products/:slug",
+            element: () => <ProductCategories />,
+          },
+          {
             path: "product/:id",
             element: () => <ProductPage />,
           },
           {
             path: "products/:productId/reviews",
-            element: () => <ReviewProduct />,
+            element: () => <ReviewProduct productId="someProductId" />,
           },
         ],
       },
@@ -121,10 +125,6 @@ export const routes: IRoute[] = [
               {
                 path: "/address",
                 element: Addresses,
-              },
-              {
-                path: "/notification",
-                element: Notifications,
               },
               {
                 path: "/review-history",

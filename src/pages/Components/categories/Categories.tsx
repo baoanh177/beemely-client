@@ -1,23 +1,22 @@
 import React from "react";
 import { IoMdArrowBack, IoMdArrowForward } from "react-icons/io";
-
+import { Link } from "react-router-dom";
 import CategoryCard from "@/components/common/CategoryCard";
 import Title from "@/components/common/Title";
 import Button from "@/components/common/Button";
-
 import { Carousel } from "antd";
 import { CarouselRef } from "antd/es/carousel";
 import { useArchive } from "@/hooks/useArchive";
-import { ICategoryInitialState } from "@/services/store/category/category.slice";
 import useAsyncEffect from "@/hooks/useAsyncEffect";
-import { getAllCategories } from "@/services/store/category/category.thunk";
+import { IProductTypeInitialState } from "@/services/store/product-type/product-type.slice";
+import { getAllProductTypes } from "@/services/store/product-type/product-type.thunk";
 
 const Categories: React.FC = () => {
   const carouselRef = React.useRef<CarouselRef>(null);
 
-  const { state, dispatch } = useArchive<ICategoryInitialState>("category");
+  const { state, dispatch } = useArchive<IProductTypeInitialState>("productTypes");
   const {} = useAsyncEffect(
-    (async) => async(dispatch(getAllCategories({ query: { _pagination: false, ...state.filter } })), "getAllProductsLoading"),
+    (async) => async(dispatch(getAllProductTypes({ query: { _pagination: false, ...state.filter } })), "getAllProductsLoading"),
     [JSON.stringify(state.filter)],
   );
   const handlePrev = () => {
@@ -76,11 +75,11 @@ const Categories: React.FC = () => {
           dots={false}
           infinite
         >
-          {state.categories.map((category, index) => (
+          {state.productTypes.map((category, index) => (
             <div key={index} className="px-2">
-              <a href={category.path}>
+              <Link to={`/products/${category.slug}`}>
                 <CategoryCard background={category.imageUrl} name={category.name} />
-              </a>
+              </Link>
             </div>
           ))}
         </Carousel>

@@ -15,12 +15,15 @@ interface IProduct {
   variants: IVariant[];
   labels: ILabel[];
   brand: IBrand;
+  sold: number;
   productColors: IProductColor[];
   productSizes: ISize[];
   productType: IProductType;
   flag: string;
   status: EActiveStatus;
   dimensions: IDimensions;
+  averageRating: number;
+  totalReviews: number;
 }
 
 export interface IDimensions {
@@ -95,6 +98,7 @@ interface IProductType {
   id: string;
   name: string;
   slug: string;
+  imageUrl: string;
 }
 
 interface Filter {
