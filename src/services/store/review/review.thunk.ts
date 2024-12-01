@@ -5,9 +5,9 @@ import { IThunkPayload } from "@/shared/utils/shared-interfaces";
 
 const prefix = "/api/client/reviews";
 
-export const getAllReviews = createAsyncThunk("review/get-all-reviews", async (productId: string, { rejectWithValue }) => {
+export const getAllReviews = createAsyncThunk("review/get-all-reviews", async (payload: IThunkPayload, { rejectWithValue }) => {
   try {
-    const { response, data } = await client.get<IReview[]>(`/api/client/products/${productId}/reviews`);
+    const { response, data } = await client.get<IReviewHistory[]>(`/api/client/products/${payload.param}/reviews`);
     return response.status >= 400 ? rejectWithValue({ message: "Không thể lấy danh sách đánh giá" }) : data;
   } catch (error: any) {
     return rejectWithValue({ message: error.response?.data?.message ?? "Có lỗi xảy ra khi lấy danh sách đánh giá" });
@@ -16,16 +16,9 @@ export const getAllReviews = createAsyncThunk("review/get-all-reviews", async (p
 
 export const getMyReviews = createAsyncThunk("review/get-my-reviews", async (_, { rejectWithValue }) => {
   try {
-    const { response, data } = await client.get<{
-      message: string;
-      statusCode: number;
-      metaData: IReviewHistory[];
-    }>(`${prefix}/my-reviews`);
+    const { response, data } = await client.get<IReviewHistory[]>(`${prefix}/my-reviews`);
 
-    if (response.status >= 400) {
-      return rejectWithValue({ message: "Không thể lấy lịch sử đánh giá" });
-    }
-    return data.metaData;
+    return response.status >= 400 ? rejectWithValue({ message: "Không thể lấy danh sách đánh giá" }) : data;
   } catch (error: any) {
     return rejectWithValue({
       message: error.response?.data?.message ?? "Có lỗi xảy ra khi lấy lịch sử đánh giá",

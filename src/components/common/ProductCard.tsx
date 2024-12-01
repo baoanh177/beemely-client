@@ -12,7 +12,6 @@ import toast from "react-hot-toast";
 import { addProductToWishlist, IAuthInitialState } from "@/services/store/auth/auth.slice";
 import { useDispatch } from "react-redux";
 import clsx from "clsx";
-import AuthMiddleware from "@/middlewares/AuthMiddleware";
 export interface IProductCardProps {
   productId?: string;
   slug: string;

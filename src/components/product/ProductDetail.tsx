@@ -114,7 +114,7 @@ const ProductDetails = ({ product, selectedVariant, setSelectedVariant }: Produc
         <h2 className="text-gray-900 text-2xl font-medium">{product.name}</h2>
       </div>
 
-      <StarSection count={200} rating={2.6} />
+      <StarSection totalReviews={product.totalReviews} averageRating={product.averageRating} />
 
       <PriceSection regularPrice={selectedVariant.price} discountPrice={selectedVariant.discountPrice} />
 

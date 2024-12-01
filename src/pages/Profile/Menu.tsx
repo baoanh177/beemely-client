@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import { CiHeart, CiUser } from "react-icons/ci";
 import { PiCodesandboxLogoThin, PiMapPinLight } from "react-icons/pi";
-import { IoIosNotificationsOutline } from "react-icons/io";
 import { CiStar } from "react-icons/ci";
 type ProfileItem = {
   key: string;
@@ -38,12 +37,6 @@ const profileItems: ProfileItem[] = [
     icon: <PiMapPinLight size={24} />,
   },
   {
-    key: "notifications",
-    label: "Thông báo",
-    path: "profile/notification",
-    icon: <IoIosNotificationsOutline size={24} />,
-  },
-  {
     key: "review-history",
     label: "Lịch sử đánh giá",
     path: "profile/review-history",
@@ -60,25 +53,25 @@ const Menu = () => {
   const selectedKey = profileItems.find((item) => item.key === mainPath)?.key || "personal";
 
   return (
-      <ul className="flex lg:flex-col gap-2">
-        {profileItems.map((item, index) => (
-          <li
-            key={index}
-            className={clsx(
-              "flex flex-1 cursor-pointer items-center gap-2 border-t border-transparent p-4 py-2 text-[14px] sm:flex-none",
-              selectedKey === item.key && "bg-primary-500 text-white-500",
-            )}
-            onClick={() => {
-              if (item.path) {
-                navigate(item.path);
-              }
-            }}
-          >
-            {item.icon}
-            <div className="hidden lg:block">{item.label}</div>
-          </li>
-        ))}
-      </ul>
+    <ul className="flex gap-2 lg:flex-col">
+      {profileItems.map((item, index) => (
+        <li
+          key={index}
+          className={clsx(
+            "flex flex-1 cursor-pointer items-center gap-2 border-t border-transparent p-4 py-2 text-[14px] sm:flex-none",
+            selectedKey === item.key && "bg-primary-500 text-white-500",
+          )}
+          onClick={() => {
+            if (item.path) {
+              navigate(item.path);
+            }
+          }}
+        >
+          {item.icon}
+          <div className="hidden lg:block">{item.label}</div>
+        </li>
+      ))}
+    </ul>
   );
 };
 

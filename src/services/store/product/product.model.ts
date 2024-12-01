@@ -21,6 +21,8 @@ interface IProduct {
   flag: string;
   status: EActiveStatus;
   dimensions: IDimensions;
+  averageRating: number;
+  totalReviews: number;
 }
 
 export interface IDimensions {

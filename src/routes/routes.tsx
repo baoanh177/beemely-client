@@ -30,7 +30,6 @@ import PaymentPage from "@/pages/(checkout)/Payment";
 import Products from "@/pages/Products";
 import ProfilePage from "@/pages/Profile";
 import Addresses from "@/pages/Profile/Address/Address";
-import Notifications from "@/pages/Profile/Notifications/Notifications";
 import OrderDetail from "@/pages/Profile/Order/OrderDetail";
 import Orders from "@/pages/Profile/Order/Orders";
 import Personal from "@/pages/Profile/Personal/Personal";
@@ -126,10 +125,6 @@ export const routes: IRoute[] = [
               {
                 path: "/address",
                 element: Addresses,
-              },
-              {
-                path: "/notification",
-                element: Notifications,
               },
               {
                 path: "/review-history",
