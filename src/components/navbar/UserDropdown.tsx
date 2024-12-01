@@ -5,6 +5,7 @@ import { IAuthInitialState } from "@/services/store/auth/auth.slice";
 import { useArchive } from "@/hooks/useArchive";
 import clsx from "clsx";
 import { Link } from "react-router-dom";
+import { logout } from "@/services/store/auth/auth.thunk";
 
 interface UserDropdownProps {
   isMobile: boolean;
@@ -12,7 +13,7 @@ interface UserDropdownProps {
 
 const UserDropdown: React.FC<UserDropdownProps> = ({ isMobile }) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const { state } = useArchive<IAuthInitialState>("auth");
+  const { state, dispatch } = useArchive<IAuthInitialState>("auth");
   const { profile } = state;
 
   useEffect(() => {
@@ -23,8 +24,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({ isMobile }) => {
   }, []);
 
   const handleLogout = (): void => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
+    dispatch(logout());
     setIsLoggedIn(false);
   };
 
