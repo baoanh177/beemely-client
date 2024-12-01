@@ -58,7 +58,7 @@ const OrderInfomation = ({ order }: OrderInfomationProps) => {
         </WrapperSpaceBetween>
         <WrapperSpaceBetween>
           <p>Trạng thái đơn hàng</p>
-          <StatusBadge text={order.orderStatus} color={order.orderStatus} />
+          <StatusBadge status={order.orderStatus} color={order.orderStatus} />
         </WrapperSpaceBetween>
       </div>
       <div className="space-y-4 font-semibold">

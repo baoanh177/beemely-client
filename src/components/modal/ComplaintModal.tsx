@@ -5,6 +5,8 @@ import Button from "../common/Button";
 import { IComplaintInitialState } from "@/services/store/complaint/complaint.slice";
 import { useArchive } from "@/hooks/useArchive";
 import { withdrawComplaint } from "@/services/store/complaint/complaint.thunk";
+import { IOrderInitialState } from "@/services/store/order/order.slice";
+import { getAllOrderByUser } from "@/services/store/order/order.thunk";
 
 interface ComplaintModalProps {
   complaint: IComplaint | null;
@@ -17,14 +19,15 @@ const { confirm } = Modal;
 
 const ComplaintModal = ({ isOpen, onClose, className, complaint }: ComplaintModalProps) => {
   const { dispatch } = useArchive<IComplaintInitialState>("complaints");
+  const { dispatch: orderDispatch } = useArchive<IOrderInitialState>("order");
 
-  const handleClick = (id: string) => {
-    dispatch(
+  const handleClick = async (id: string) => {
+    await dispatch(
       withdrawComplaint({
         param: id,
       }),
     ).then(() => {
-      window.location.reload();
+      orderDispatch(getAllOrderByUser({}));
     });
   };
 
@@ -59,7 +62,15 @@ const ComplaintModal = ({ isOpen, onClose, className, complaint }: ComplaintModa
             Trạng thái khiếu nại:
             <ComplaintStatusBadge status={complaint.status} />
           </p>
-          {(complaint.status === EComplaintStatus.PENDING || complaint.status === EComplaintStatus.CANCELLED) && (
+          {complaint.status === EComplaintStatus.REJECTED && complaint.rejectReason && (
+            <p>
+              Lí do từ chối khiếu nại từ người bán:
+              <strong className="ml-2">{complaint.rejectReason}</strong>
+            </p>
+          )}
+          {(complaint.status === EComplaintStatus.PENDING ||
+            complaint.status === EComplaintStatus.REJECTED ||
+            complaint.status === EComplaintStatus.PROCESSING) && (
             <Button
               text="Thu hồi khiếu nại đơn hàng"
               onClick={() =>

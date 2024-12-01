@@ -28,7 +28,7 @@ const OrderActions = ({ order }: OrderActionsProps) => {
       icon: <IoCheckmarkCircleOutline />,
       onClick: () => handleSuccessOrder(order.id),
       disabled:
-        order.orderStatus !== EStatusOrder.DELIVERED ||
+        (order.orderStatus !== EStatusOrder.DELIVERED && order.orderStatus !== EStatusOrder.COMPENSATED) ||
         order.complaint?.status === EComplaintStatus.PENDING ||
         [EStatusOrder.SUCCESS, EStatusOrder.CANCELLED, EStatusOrder.REQUEST_RETURN, EStatusOrder.RETURNING, EStatusOrder.RETURNED].includes(
           order.orderStatus,
