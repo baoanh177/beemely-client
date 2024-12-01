@@ -46,6 +46,7 @@ const GlobalMiddleware = () => {
       cartDispatch(resetCartStatus());
     }
   }, [cartState.status]);
+  
   useEffect(() => {
     if (wishlistState.status !== EFetchStatus.IDLE && wishlistState.status !== EFetchStatus.PENDING) {
       cartDispatch(resetCartStatus());

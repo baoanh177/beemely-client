@@ -1,7 +1,6 @@
 import { Input, Button } from "antd";
 import { MailOutlined, PhoneOutlined, EnvironmentOutlined, InstagramOutlined, TwitterOutlined } from "@ant-design/icons";
 import logo from "@/assets/images/logo.png";
-import BankIcon from "react-br-bank-icons";
 import { FaArrowRight, FaFacebookSquare } from "react-icons/fa";
 
 const Footer = () => {
@@ -63,15 +62,6 @@ const Footer = () => {
         </div>
 
         <div className="border-gray-700 mt-8 flex flex-col items-center justify-between border-t pt-8 md:flex-row">
-          <div className="mb-4 flex items-center md:mb-0">
-            <div className="flex space-x-3">
-              <BankIcon name="agibank" size={28} />
-              <BankIcon bankName="btg" size={28} />
-              <BankIcon bankName="original" size={28} />
-              <BankIcon bankName="bs2" size={28} />
-              <BankIcon bankName="bradesco" size={28} />
-            </div>
-          </div>
           <div className="text-center">
             <p>©2024 Beemely tất cả các quyền được bảo lưu</p>
           </div>

@@ -15,6 +15,7 @@ interface IProduct {
   variants: IVariant[];
   labels: ILabel[];
   brand: IBrand;
+  sold: number;
   productColors: IProductColor[];
   productSizes: ISize[];
   productType: IProductType;

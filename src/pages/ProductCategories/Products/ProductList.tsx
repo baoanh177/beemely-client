@@ -15,6 +15,9 @@ const ProductList: React.FC<ProductListProps> = ({ products }) => {
           return (
             <div key={product.id}>
               <ProductCard
+                sold={product.sold || 0}
+                averageRating={product.averageRating || 0}
+                totalReviews={product.totalReviews || 0}
                 slug={product.slug}
                 image={product.thumbnail}
                 description={product.sortDescription}
