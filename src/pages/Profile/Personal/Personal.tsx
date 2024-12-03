@@ -49,7 +49,13 @@ const Personal = () => {
     <div>
       <div className="flex justify-between">
         <div className="relative w-fit">
-          <img className="h-[80px] w-[80px] shrink-0 rounded-full object-cover" src={state.profile?.avatarUrl} alt="Avatar" />
+          {state.profile?.avatarUrl ? (
+            <img className="h-[80px] w-[80px] shrink-0 rounded-full object-cover" src={state.profile?.avatarUrl} alt="Avatar" />
+          ) :(
+          <div className="h-[80px] w-[80px] shrink-0 rounded-full object-cover font-bold flex text-xl items-center justify-center bg-blue-500">
+              {state.profile?.fullName?.charAt(0)?.toUpperCase() || "U"}
+            </div>
+          )}
           <div
             className="absolute bottom-2 right-0 flex h-[20px] w-[20px] cursor-pointer items-center justify-center rounded-md bg-primary-500 text-white-500"
             onClick={handleOpenModal}
