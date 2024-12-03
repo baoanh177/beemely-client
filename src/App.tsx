@@ -11,8 +11,7 @@ const App = () => {
       $zoho.salesiq = $zoho.salesiq || { ready: function() {} };
     `;
     document.head.appendChild(script1);
-
-    // Thêm script thứ hai
+    
     const script2 = document.createElement("script");
     script2.id = "zsiqscript";
     script2.src =
