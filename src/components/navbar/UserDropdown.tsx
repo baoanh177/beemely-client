@@ -1,19 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Dropdown, MenuProps } from "antd";
-import {
-  UserOutlined,
-  MailOutlined,
-  CheckSquareOutlined,
-  MessageOutlined,
-  SettingOutlined,
-  DollarOutlined,
-  QuestionCircleOutlined,
-  LogoutOutlined,
-  DownOutlined,
-} from "@ant-design/icons";
+import { UserOutlined, MailOutlined, SettingOutlined, LogoutOutlined, DownOutlined } from "@ant-design/icons";
 import { IAuthInitialState } from "@/services/store/auth/auth.slice";
 import { useArchive } from "@/hooks/useArchive";
 import clsx from "clsx";
+import { Link } from "react-router-dom";
+import { logout } from "@/services/store/auth/auth.thunk";
 
 interface UserDropdownProps {
   isMobile: boolean;
@@ -21,7 +13,7 @@ interface UserDropdownProps {
 
 const UserDropdown: React.FC<UserDropdownProps> = ({ isMobile }) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const { state } = useArchive<IAuthInitialState>("auth");
+  const { state, dispatch } = useArchive<IAuthInitialState>("auth");
   const { profile } = state;
 
   useEffect(() => {
@@ -32,16 +24,13 @@ const UserDropdown: React.FC<UserDropdownProps> = ({ isMobile }) => {
   }, []);
 
   const handleLogout = (): void => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
+    dispatch(logout());
     setIsLoggedIn(false);
   };
 
   const handleMenuClick: MenuProps["onClick"] = ({ key }) => {
     if (key === "logout") {
       handleLogout();
-    } else {
-      window.location.href = menuItems.find((item) => item.key === key)?.href || "/";
     }
   };
 
@@ -50,26 +39,22 @@ const UserDropdown: React.FC<UserDropdownProps> = ({ isMobile }) => {
   }
 
   const menuItems = [
-    { key: "profile", icon: <UserOutlined />, label: "Profile", href: "/profile" },
-    { key: "inbox", icon: <MailOutlined />, label: "Inbox", href: "/inbox" },
-    { key: "tasks", icon: <CheckSquareOutlined />, label: "Tasks", href: "/tasks" },
-    { key: "chats", icon: <MessageOutlined />, label: "Chats", href: "/chats" },
-    { key: "pricing", icon: <DollarOutlined />, label: "Pricing", href: "/pricing" },
-    { key: "settings", icon: <SettingOutlined />, label: "Settings", href: "/settings" },
-    { key: "faq", icon: <QuestionCircleOutlined />, label: "FAQ", href: "/faq" },
+    { key: "profile", icon: <UserOutlined />, label: "Hồ sơ", href: "/profile" },
+    { key: "inbox", icon: <MailOutlined />, label: "Hộp thư đến", href: "/inbox" },
+    { key: "settings", icon: <SettingOutlined />, label: "Cài đặt", href: "/settings" },
   ];
 
   const items: MenuProps["items"] = [
     ...menuItems.map((item) => ({
       key: item.key,
       icon: item.icon,
-      label: item.label,
+      label: <Link to={item.href}>{item.label}</Link>,
     })),
     { type: "divider" },
     {
       key: "logout",
       icon: <LogoutOutlined />,
-      label: "Logout",
+      label: "Đăng xuất",
       danger: true,
     },
   ];

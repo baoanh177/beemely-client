@@ -2,7 +2,7 @@ import { EFetchStatus } from "@/shared/enums/fetchStatus";
 import { IInitialState, IResponse } from "@/shared/utils/shared-interfaces";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IProduct } from "../product/product.model";
-import { addWishList, deleteWishlist, getAllWishList } from "./wishlist.thunk";
+import { addWishList, deleteWishlist, getAllWishList, moveWishlist } from "./wishlist.thunk";
 import { commonStaticReducers } from "@/services/shared";
 
 export interface IWishListInitialState extends IInitialState {
@@ -45,6 +45,22 @@ const wishlistSlice = createSlice({
         }
       })
       .addCase(deleteWishlist.rejected, (state, { payload }: PayloadAction<any>) => {
+        state.status = EFetchStatus.REJECTED;
+        state.message = payload.message;
+      })
+
+      .addCase(moveWishlist.pending, (state) => {
+        state.status = EFetchStatus.PENDING;
+      })
+
+      // @ts-ignore
+
+      .addCase(moveWishlist.fulfilled, (state, { payload }: PayloadAction<IResponse<IProduct[]>>) => {
+        state.status = EFetchStatus.FULFILLED;
+        state.message = "Xóa thành công";
+        state.products = payload.metaData;
+      })
+      .addCase(moveWishlist.rejected, (state, { payload }: PayloadAction<any>) => {
         state.status = EFetchStatus.REJECTED;
         state.message = payload.message;
       })

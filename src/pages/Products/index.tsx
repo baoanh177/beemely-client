@@ -1,134 +1,196 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { useSearchParams } from "react-router-dom";
 import Recommended from "./Recommended/Recommended";
 import Sidebar from "./Sidebar/Sidebar";
+import SortControls from "./components/SortControls";
 import ProductList from "./Products/ProductList";
-import { IProduct } from "@/services/store/product/product.model";
-import { getAllProducts } from "@/services/store/product/product.thunk";
 import { useArchive } from "@/hooks/useArchive";
-import { IProductInitialState } from "@/services/store/product/product.slice";
+import { IProductInitialState, updateFilters } from "@/services/store/product/product.slice";
 import { Container } from "@/styles/common-styles";
+import { getAllProducts } from "@/services/store/product/product.thunk";
+import { useMediaQuery } from "react-responsive";
+import { X } from "lucide-react";
+import Pagination from "@/components/common/Pagination";
 
 function Products() {
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [selectedGenders, setSelectedGenders] = useState<string[]>([]);
-  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
-  const [selectedColors, setSelectedColors] = useState<string[]>([]);
-  const [selectedPriceRanges, setSelectedPriceRanges] = useState<string[]>([]);
   const { state, dispatch } = useArchive<IProductInitialState>("products");
-  const { products } = state;
+  const { products, totalRecords } = state;
+
+  const [showFilters, setShowFilters] = useState(true);
+  const [showMobileSidebar, setShowMobileSidebar] = useState(false);
+  const isMobile = useMediaQuery({ maxWidth: 767 });
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const initialFilters = {
+    _page: parseInt(searchParams.get("page") || "1", 10),
+    _limit: 6,
+    gender: searchParams.get("gender")?.split(",") || [],
+    productType: searchParams.get("productType")?.split(",") || [],
+    color: searchParams.get("color")?.split(",") || [],
+    size: searchParams.get("size")?.split(",") || [],
+    brand: searchParams.get("brand")?.split(",") || [],
+    orderBy: searchParams.get("orderBy") || "createdAt",
+    sort: searchParams.get("sort") || "desc",
+    minPrice: searchParams.get("minPrice") || "0",
+    maxPrice: searchParams.get("maxPrice") || "10000000",
+    label: searchParams.get("label") || "",
+    tag: searchParams.get("tag") || "",
+  };
+
+  const [filters, setFilters] = useState(initialFilters);
+
+  const cleanQueryParams = useCallback((query: { [key: string]: any }) => {
+    return Object.fromEntries(Object.entries(query).filter(([_, v]) => v !== undefined && v !== "" && v !== "0" && v !== "10000000"));
+  }, []);
 
   useEffect(() => {
-    dispatch(getAllProducts({}));
-  }, [dispatch]);
+    const query = cleanQueryParams({
+      _page: filters._page,
+      _limit: filters._limit,
+      gender: filters.gender.length ? filters.gender.join(",") : undefined,
+      productType: filters.productType.length ? filters.productType.join(",") : undefined,
+      color: filters.color.length ? filters.color.join(",") : undefined,
+      brand: filters.brand.length ? filters.brand.join(",") : undefined,
+      minPrice: filters.minPrice,
+      maxPrice: filters.maxPrice,
+      label: filters.label || undefined,
+      tag: filters.tag || undefined,
+      orderBy: filters.orderBy,
+      sort: filters.sort,
+    });
 
-  // ----------- Checkbox Filtering -----------
-  const handleChange = (event: any) => {
-    const value = event.target.value;
-    const name = event.target.name;
+    setSearchParams(query);
+    dispatch(getAllProducts({ query }));
+  }, [filters, dispatch, cleanQueryParams, setSearchParams]);
 
-    switch (name) {
-      case "category":
-        setSelectedCategories((prevSelectedCategories) =>
-          prevSelectedCategories.includes(value)
-            ? prevSelectedCategories.filter((category) => category !== value)
-            : [...prevSelectedCategories, value],
-        );
-        break;
-      case "gender":
-        setSelectedGenders((prevSelectedGenders) =>
-          prevSelectedGenders.includes(value) ? prevSelectedGenders.filter((gender) => gender !== value) : [...prevSelectedGenders, value],
-        );
-        break;
-      case "size":
-        setSelectedSizes((prevSelectedSizes) =>
-          prevSelectedSizes.includes(value) ? prevSelectedSizes.filter((size) => size !== value) : [...prevSelectedSizes, value],
-        );
-        break;
-      case "color":
-        setSelectedColors((prevSelectedColors) =>
-          prevSelectedColors.includes(value) ? prevSelectedColors.filter((color) => color !== value) : [...prevSelectedColors, value],
-        );
-        break;
-      case "price":
-        setSelectedPriceRanges((prevSelectedPriceRanges) =>
-          prevSelectedPriceRanges.includes(value)
-            ? prevSelectedPriceRanges.filter((price) => price !== value)
-            : [...prevSelectedPriceRanges, value],
-        );
-        break;
-      default:
-        break;
-    }
+  const handleFilterChange = useCallback(
+    (type: string, value: string | string[]) => {
+      setFilters((prev) => ({
+        ...prev,
+        [type]: value,
+      }));
+      dispatch(updateFilters({ [type]: value }));
+    },
+    [dispatch],
+  );
+
+  const handleGenderSelect = useCallback(
+    (selectedGenders: string[]) => {
+      handleFilterChange("gender", selectedGenders);
+    },
+    [handleFilterChange],
+  );
+
+  const handleSortChange = useCallback(
+    (orderBy: string, sort: string) => {
+      handleFilterChange("orderBy", orderBy);
+      handleFilterChange("sort", sort);
+    },
+    [handleFilterChange],
+  );
+
+  const handlePageChange = (page: number) => {
+    setFilters((prev) => ({
+      ...prev,
+      _page: page,
+    }));
   };
 
-  // ------------ Button Filtering -----------
-  const handleClick = (selectedGenders: string[]) => {
-    setSelectedGenders(selectedGenders);
+  const toggleFilters = useCallback(() => {
+    setShowFilters((prev) => !prev);
+  }, []);
+
+  const toggleMobileSidebar = () => {
+    setShowMobileSidebar(!showMobileSidebar);
   };
 
-  function filteredData(
-    products: IProduct[],
-    selectedCategories: string[],
-    selectedGenders: string[],
-    selectedSizes: string[],
-    selectedColors: string[],
-    selectedPriceRanges: string[],
-  ): IProduct[] {
-    let filteredProducts = products;
-
-    if (selectedCategories.length > 0) {
-      filteredProducts = filteredProducts.filter(({ productType }) => selectedCategories.includes(productType.name.toString()));
-    }
-
-    if (selectedGenders.length > 0) {
-      filteredProducts = filteredProducts.filter(({ gender }) => selectedGenders.includes(gender.name.trim()));
-    }
-
-    if (selectedSizes.length > 0) {
-      filteredProducts = filteredProducts.filter(
-        ({ productSizes, variants }) =>
-          productSizes.some((size) => selectedSizes.includes(size.name.toString())) ||
-          variants.some((variant) => selectedSizes.includes(variant.size.name.toString())),
-      );
-    }
-
-    if (selectedColors.length > 0) {
-      filteredProducts = filteredProducts.filter(
-        ({ productColors, variants }) =>
-          productColors.some((color) => selectedColors.includes(color.toString())) ||
-          variants.some((variant) => selectedColors.includes(variant.color.name.toString())),
-      );
-    }
-
-    if (selectedPriceRanges.length > 0) {
-      filteredProducts = filteredProducts.filter((product) =>
-        selectedPriceRanges.some((range) => {
-          const [min, max] = range.split("-").map(Number);
-          return (
-            product.minPrice !== undefined && product.maxPrice !== undefined && product.minPrice >= min && (max ? product.maxPrice <= max : true)
-          );
-        }),
-      );
-    }
-
-    return filteredProducts;
-  }
+  const closeMobileSidebar = () => {
+    setShowMobileSidebar(false);
+  };
 
   return (
     <div className="products-page">
       <Container>
-        <div className="mb-8 flex">
-          <div className="mr-4 w-3/12">
-            <Sidebar handleChange={handleChange} products={filteredData(products, [], [], [], [], [])} />
-          </div>
-          <div className="w-9/12">
-            <Recommended handleClick={handleClick} />
-            <ProductList
-              products={filteredData(products, selectedCategories, selectedGenders, selectedSizes, selectedColors, selectedPriceRanges)}
-            />
+        <div className="mb-8 flex flex-col md:flex-row">
+          {!isMobile && (
+            <div className={`transition-all duration-300 ease-in-out ${showFilters ? "w-3/12 opacity-100" : "w-0 overflow-hidden opacity-0"}`}>
+              <Sidebar
+                filters={filters}
+                onFilterChange={handleFilterChange}
+                showMobileSidebar={showMobileSidebar}
+                onCloseMobileSidebar={closeMobileSidebar}
+                showWidthFull={showFilters}
+              />
+            </div>
+          )}
+          <div className={`${showFilters && !isMobile ? "w-9/12" : "w-full"}`}>
+            <div className="flex items-center justify-between">
+              <Recommended onSelectGender={handleGenderSelect} />
+              <SortControls
+                onSortChange={handleSortChange}
+                currentSort={filters.sort}
+                currentOrderBy={filters.orderBy}
+                showFilters={showFilters}
+                onToggleFiltersDesktop={toggleFilters}
+                onToggleFilters={toggleMobileSidebar}
+              />
+            </div>
+
+            {products.length > 0 ? (
+              <>
+                <ProductList products={products} />
+                <div className="mt-4 flex justify-end">
+                  <Pagination
+                    current={filters._page}
+                    pageSize={filters._limit}
+                    total={totalRecords || 0}
+                    onChange={handlePageChange}
+                    className="mt-6"
+                  />
+                </div>
+              </>
+            ) : (
+              <div className="flex h-full justify-center">
+                <p className="text-gray-500">Không có sản phẩm nào được tìm thấy.</p>
+              </div>
+            )}
           </div>
         </div>
       </Container>
+      {isMobile && (
+        <>
+          <div
+            className={`fixed inset-0 z-50 bg-dark-90%/50 transition-opacity duration-300 ${showMobileSidebar ? "opacity-100" : "pointer-events-none opacity-0"}`}
+            onClick={closeMobileSidebar}
+          />
+          <div
+            className={`fixed inset-y-0 left-0 z-50 w-80 transform bg-white-500 shadow-lg transition-transform duration-500 ease-in-out ${showMobileSidebar ? "translate-x-0" : "-translate-x-full"}`}
+          >
+            <div className="flex items-center justify-between border-b p-4">
+              <h2 className="text-lg font-semibold">Filters</h2>
+              <button onClick={closeMobileSidebar} className="hover:bg-gray-100 rounded-full p-2" aria-label="Close filters">
+                <X size={24} />
+              </button>
+            </div>
+
+            <div className="h-[calc(100vh-64px)] overflow-y-auto p-4">
+              <Sidebar
+                filters={filters}
+                onFilterChange={handleFilterChange}
+                showMobileSidebar={showMobileSidebar}
+                onCloseMobileSidebar={closeMobileSidebar}
+                showWidthFull={true}
+              />
+            </div>
+
+            <div className="border-t p-4">
+              <button onClick={closeMobileSidebar} className="bg-black text-white hover:bg-gray-800 w-full rounded-md py-2">
+                Apply Filters
+              </button>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

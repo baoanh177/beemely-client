@@ -41,7 +41,7 @@ const sizesSlice = createSlice({
         state.sizes = payload.metaData;
         state.status = EFetchStatus.FULFILLED;
       })
-      .addCase(getAllSize.rejected, (state, action) => {
+      .addCase(getAllSize.rejected, (state) => {
         state.loading = false;
         state.error = "Failed to fetch sizes";
         state.status = EFetchStatus.REJECTED;

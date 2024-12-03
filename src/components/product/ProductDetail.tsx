@@ -16,7 +16,7 @@ import StockSection from "./StockSection";
 import ColorSelectSection from "./ColorSelectSection";
 import SizeSelectSection from "./SizeSelectSection";
 import QuantityInput from "../common/QuantityInput";
-import { addWishList } from "@/services/store/wishlist/wishlist.thunk";
+import { addWishList, moveWishlist } from "@/services/store/wishlist/wishlist.thunk";
 import toast from "react-hot-toast";
 import useFetchStatus from "@/hooks/useFetchStatus";
 import { addProductToWishlist, IAuthInitialState } from "@/services/store/auth/auth.slice";
@@ -47,18 +47,29 @@ const ProductDetails = ({ product, selectedVariant, setSelectedVariant }: Produc
     }
   }, [product, selectedColor, selectedSize, setSelectedVariant]);
 
-
-
-  const handleAddWishlist = () => {
+  const handleWishlistToggle = () => {
+    if (!wishListState.profile) {
+      toast.error("Bạn cần đăng nhập để thêm sản phẩm vào Wishlist!");
+      return;
+    }
     if (product.id) {
-      wishlistDispatch(addWishList({ param: product.id }))
-        .then(() => {
+      if (isInWishlist) {
+        wishlistDispatch(moveWishlist({ param: product.id })).then(() => {
+          toast.success("Bỏ Wishlist thành công!");
+          if (wishListState.profile) {
+            const updatedWishlist = wishListState.profile.wishlist.filter((id) => id !== product.id);
+            dispatch(addProductToWishlist(updatedWishlist));
+          }
+        });
+      } else {
+        wishlistDispatch(addWishList({ param: product.id })).then(() => {
           toast.success("Thêm vào Wishlist thành công!");
           if (wishListState.profile) {
             const updatedWishlist = [...wishListState.profile.wishlist, product.id];
             dispatch(addProductToWishlist(updatedWishlist));
           }
-        })
+        });
+      }
     }
   };
   const isInWishlist = wishListState.profile?.wishlist.some((id) => id === product.id);
@@ -85,14 +96,14 @@ const ProductDetails = ({ product, selectedVariant, setSelectedVariant }: Produc
     reset: resetStatus,
     actions: isAddingToCart
       ? {
-        success: {
-          message: "Thêm giỏ hàng thành công!",
-          onFinish: isOpen ? onClose : undefined,
-        },
-        error: {
-          message: cartState.message,
-        },
-      }
+          success: {
+            message: "Thêm giỏ hàng thành công!",
+            onFinish: isOpen ? onClose : undefined,
+          },
+          error: {
+            message: cartState.message,
+          },
+        }
       : undefined,
   });
 
@@ -103,15 +114,15 @@ const ProductDetails = ({ product, selectedVariant, setSelectedVariant }: Produc
         <h2 className="text-gray-900 text-2xl font-medium">{product.name}</h2>
       </div>
 
-      <StarSection count={200} rating={2.6} />
+      <StarSection totalReviews={product.totalReviews || 0} averageRating={product.averageRating || 0} />
 
       <PriceSection regularPrice={selectedVariant.price} discountPrice={selectedVariant.discountPrice} />
 
       <DescriptionSection content={product.sortDescription} />
 
-      <ColorSelectSection colors={product?.productColors} selectedColor={selectedColor} setSelectedColor={setSelectedColor} />
-
       <SizeSelectSection sizes={product?.productSizes} selectedSize={selectedSize} setSelectedSize={setSelectedSize} />
+
+      <ColorSelectSection colors={product?.productColors} selectedColor={selectedColor} setSelectedColor={setSelectedColor} />
 
       <StockSection stock={selectedVariant.stock} />
 
@@ -122,23 +133,19 @@ const ProductDetails = ({ product, selectedVariant, setSelectedVariant }: Produc
         </div>
         <div className="flex w-full gap-4">
           <Button
-            isDisabled={!selectedSize || !selectedColor || cartState.status === EFetchStatus.PENDING}
+            isDisabled={!selectedSize || !selectedColor || cartState.status === EFetchStatus.PENDING || !wishListState.isLogin}
             icon={<FaShoppingCart className="mr-2" />}
             onClick={handleAddCart}
             className="grow"
             text="Thêm sản phẩm vào giỏ hàng"
           />
+
           <Button
-            icon={<BsHeart className="h-5 w-5" />}
-            variant={isInWishlist ? "danger" : "ghost"}
             shape="rectangle"
-            onClick={() => {
-              if (!isInWishlist) {
-                handleAddWishlist();
-              } else {
-                toast.error("Sản phẩm đã có trong Wishlist");
-              }
-            }}
+            icon={<BsHeart size={24} className="h-5 w-5" />}
+            type="button"
+            variant={isInWishlist ? "danger" : "secondary"}
+            onClick={handleWishlistToggle}
           />
         </div>
       </div>

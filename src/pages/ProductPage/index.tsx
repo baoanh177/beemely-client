@@ -23,7 +23,7 @@ const ProductPage = () => {
   if (getProductByIdLoading) return <Loading />;
   if (state.activeProduct)
     return (
-      <Container className="mt-20 space-y-14">
+      <Container className="mt-10 space-y-14">
         <ProductWrapper product={state.activeProduct} />
         <ProductInformation product={state.activeProduct} />
         <Services />

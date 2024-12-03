@@ -1,11 +1,12 @@
+@use "./overwrite/index.scss";
+@use "./_select-antd.css";
+@use "./fonts";
+
 @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import "./fonts";
-@import "./overwrite/index.scss";
-@import "./_select-antd.css";
 
 *,
 html,
@@ -36,13 +37,13 @@ body {
 }
 
 .scrollbar::-webkit-scrollbar {
-  height: 4px; 
+  height: 4px;
 }
 
 .scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.5); 
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .scrollbar::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.1); 
+  background: rgba(0, 0, 0, 0.1);
 }

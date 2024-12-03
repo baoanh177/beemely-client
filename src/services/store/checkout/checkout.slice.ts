@@ -1,20 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ICheckoutState, IGhnShippingFee, IPaymentMethodLabel, IShippingAddress, TPaymentMethod } from "./checkout.model";
+import { ICheckoutState, IPaymentMethodLabel, IShippingAddress, TPaymentMethod } from "./checkout.model";
 import PayOsLogo from "@/assets/images/payos-logo.svg";
 import VnPayLogo from "@/assets/images/vnpay-logo.svg";
-import { getShipingFeeFromGhn } from "./checkout.thunk";
 import { EFetchStatus } from "@/shared/enums/fetchStatus";
-import { IGHNApiRegsponse } from "@/shared/utils/shared-interfaces";
 import { IVoucher } from "../voucher/voucher.model";
 
 export const PAYMENT_METHODS: IPaymentMethodLabel[] = [
   { label: "Thanh toán Bằng PayOs", value: "payos", image: PayOsLogo },
   { label: "Thanh toán bằng VNpay", value: "vnpay", image: VnPayLogo },
 ] as const;
-
-interface ErrorPayload {
-  message: string;
-}
 
 const initialState: ICheckoutState = {
   status: EFetchStatus.IDLE,
@@ -34,6 +28,7 @@ const initialState: ICheckoutState = {
   paymentType: "payos",
   discount_price: 0,
   voucher: undefined,
+  isUseUserAddress: true,
 };
 
 const checkoutSlice = createSlice({
@@ -54,8 +49,14 @@ const checkoutSlice = createSlice({
       state.voucher = voucher;
       state.discount_price = voucher.discount;
     },
+    setUseUserAddress: (state, action: PayloadAction<boolean>) => {
+      state.isUseUserAddress = action.payload;
+      if (!action.payload) {
+        state.shippingAddress = initialState.shippingAddress;
+      }
+    },
     resetCheckout: () => initialState,
-    resetShippingFee: (state, action: PayloadAction<number>) => {
+    setShippingFee: (state, action: PayloadAction<number>) => {
       state.shipping_fee = action.payload;
     },
     resetVoucher: (state) => {
@@ -63,23 +64,16 @@ const checkoutSlice = createSlice({
       state.discount_price = 0;
     },
   },
-  extraReducers(builder) {
-    builder
-      .addCase(getShipingFeeFromGhn.pending, (state) => {
-        state.status = EFetchStatus.PENDING;
-      })
-      .addCase(getShipingFeeFromGhn.fulfilled, (state, { payload }: PayloadAction<IGHNApiRegsponse<IGhnShippingFee>>) => {
-        state.shipping_fee = payload.data.total;
-        state.status = EFetchStatus.FULFILLED;
-      })
-      .addCase(getShipingFeeFromGhn.rejected, (state, { payload }) => {
-        state.status = EFetchStatus.REJECTED;
-        const errorPayload = payload as ErrorPayload;
-        state.message = errorPayload.message || "Something went wrong!";
-      });
-  },
 });
 
-export const { setCurrentStep, setShippingAddress, setPaymentMethod, resetCheckout, resetShippingFee, setVoucher, resetVoucher } =
-  checkoutSlice.actions;
+export const {
+  setCurrentStep,
+  setShippingAddress,
+  setPaymentMethod,
+  resetCheckout,
+  setShippingFee,
+  setVoucher,
+  resetVoucher,
+  setUseUserAddress,
+} = checkoutSlice.actions;
 export { checkoutSlice };

@@ -63,13 +63,8 @@ const Personal = () => {
         <Button icon={<MdOutlineSaveAlt />} className="h-[50px]" text="Cập nhật" onClick={handleEditProfile} />
       </div>
       <div className="flex flex-col gap-6 py-10">
-        <div className="flex justify-between gap-6">
-          <div className="flex w-full flex-col gap-1">
-            <Label text="Tên người dùng" />
-            <FormInput value={fullName} onChange={(e) => setFullName(e as string)} />
-          </div>
-          <div className="flex w-full flex-col gap-1">
-            <Label text="Giới tính" />
+          <div className="flex w-full gap-4">
+            <Label text="Giới tính: " />
             <div className="flex gap-6">
               {(Object.keys(EGender) as Array<keyof typeof EGender>).map((key, index) => (
                 <FormCheck
@@ -87,7 +82,10 @@ const Personal = () => {
               ))}
             </div>
           </div>
-        </div>
+          <div className="flex w-full flex-col gap-1">
+            <Label text="Tên người dùng" />
+            <FormInput value={fullName} onChange={(e) => setFullName(e as string)} />
+          </div>
         <div className="flex flex-col gap-1">
           <Label text="Số điện thoại" />
           <FormInput value={phone} onChange={(e) => setPhone(e as string)} />

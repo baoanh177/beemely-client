@@ -14,6 +14,12 @@ import { bannerSlice } from "./store/banner/banner.slice";
 import { categorySlice } from "./store/category/category.slice";
 import { vouchersSlice } from "./store/voucher/voucher.slice";
 import { locationSlice } from "./store/location/location.slice";
+import { reviewSlice } from "./store/review/review.slice";
+import { brandsSlice } from "./store/brand/brand.slice";
+import { complaintSlice } from "./store/complaint/complaint.slice";
+import { tagSlice } from "./store/tag/tag.slice";
+import { bestsellerSlice } from "./store/product/bestseller.slice";
+import { interestSlice } from "./store/product/product-interest.slice";
 
 export const reducers = combineReducers({
   app: appSlice.reducer,
@@ -31,6 +37,12 @@ export const reducers = combineReducers({
   category: categorySlice.reducer,
   vouchers: vouchersSlice.reducer,
   location: locationSlice.reducer,
+  review: reviewSlice.reducer,
+  brands: brandsSlice.reducer,
+  complaints: complaintSlice.reducer,
+  tags: tagSlice.reducer,
+  bestsellerProducts: bestsellerSlice.reducer,
+  interestProducts: interestSlice.reducer,
 });
 
 export type RootStateType = ReturnType<typeof reducers>;

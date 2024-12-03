@@ -4,6 +4,7 @@ import { useArchive } from "@/hooks/useArchive";
 import { IAuthInitialState } from "@/services/store/auth/auth.slice";
 import { useEffect } from "react";
 import { getProfile } from "@/services/store/auth/auth.thunk";
+import { Container } from "@/styles/common-styles";
 
 const ProfilePage = () => {
   const { state, dispatch } = useArchive<IAuthInitialState>("auth");
@@ -12,21 +13,25 @@ const ProfilePage = () => {
   }, []);
 
   return (
-    <div className="mx-auto flex max-w-[1272px] flex-col gap-8 p-4">
+    <Container>
       <h1 className="text-3xl font-normal">Hồ sơ của tôi</h1>
-      <div className="flex w-full gap-12 pb-[120px]">
-        <div className="max-h-[370px] w-full max-w-[250px] border border-gray-20%">
-          <div className="flex items-center gap-4 border-b-gray-20% p-4">
-            <img className="h-[60px] w-[60px] shrink-0 rounded-full object-cover" src={state.profile?.avatarUrl} alt={state.profile?.fullName} />
-            <div className="flex flex-col gap-2">
-              <div>
+      <div className="flex w-full flex-col gap-3 pb-[120px] lg:flex-row lg:gap-6">
+        <div className="mb-6 flex w-full flex-row flex-wrap items-center justify-between gap-1 py-3 lg:mb-0 lg:max-w-[250px] lg:flex-col lg:justify-normal">
+          <div className="flex flex-row items-center gap-4 border-gray-20% p-2 lg:w-full lg:border-b lg:p-4">
+            <img
+              className="h-[35px] w-[35px] shrink-0 rounded-full object-cover lg:h-[60px] lg:w-[60px]"
+              src={state.profile?.avatarUrl}
+              alt={state.profile?.fullName}
+            />
+            <div className="flex flex-row gap-2 lg:flex-col">
+              <div className="inline-block font-semibold lg:hidden">{state.profile?.fullName}</div>
+              <div className="hidden lg:inline-block">
                 Chao xìn <span>👋</span>
               </div>
               <div className="font-semibold">{state.profile?.fullName}</div>
             </div>
           </div>
-          <div className="border-1 border-b border-gray-20%"></div>
-          <div className="py-6">
+          <div className="flex p-2 lg:block lg:w-full lg:justify-center lg:p-0 lg:py-6">
             <Menu />
           </div>
         </div>
@@ -34,7 +39,7 @@ const ProfilePage = () => {
           <Outlet />
         </div>
       </div>
-    </div>
+    </Container>
   );
 };
 

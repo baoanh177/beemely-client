@@ -6,9 +6,5 @@ export interface IDefaultSearchProps {
 }
 
 export const DefaultSearch: React.FC<IDefaultSearchProps> = ({ filterOptions }) => {
-  return (
-    <div className="flex w-full">
-      {filterOptions && <FilterTableStatus {...filterOptions} />}
-    </div>
-  );
+  return <div className="flex w-full">{filterOptions && <FilterTableStatus {...filterOptions} />}</div>;
 };

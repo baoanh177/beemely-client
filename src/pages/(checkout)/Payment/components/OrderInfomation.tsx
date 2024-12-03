@@ -1,5 +1,5 @@
-import OrderStatusTag from "@/components/common/OrderStatusTag";
-import PaymentStatusTag from "@/components/common/PaymentStatusTag";
+import PaymentStatusBadge from "@/components/common/PaymentStatusBadge";
+import StatusBadge from "@/components/common/StatusBadge";
 import { IOrder } from "@/services/store/order/order.model";
 import { formatPrice } from "@/utils/curency";
 import tw from "twin.macro";
@@ -54,11 +54,11 @@ const OrderInfomation = ({ order }: OrderInfomationProps) => {
         </WrapperSpaceBetween>
         <WrapperSpaceBetween>
           <p>Trạng thái thanh toán</p>
-          <PaymentStatusTag status={order.paymentStatus} />
+          <PaymentStatusBadge text={order.paymentStatus} status={order.paymentStatus} />
         </WrapperSpaceBetween>
         <WrapperSpaceBetween>
           <p>Trạng thái đơn hàng</p>
-          <OrderStatusTag status={order.orderStatus} />
+          <StatusBadge status={order.orderStatus} color={order.orderStatus} />
         </WrapperSpaceBetween>
       </div>
       <div className="space-y-4 font-semibold">

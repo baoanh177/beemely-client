@@ -1,112 +1,60 @@
-import { useState } from "react";
-import { Star } from "lucide-react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import Button from "../common/Button";
+import { useArchive } from "@/hooks/useArchive";
+import useAsyncEffect from "@/hooks/useAsyncEffect";
+import { IReviewInitialState } from "@/services/store/review/review.slice";
+import { getAllReviews } from "@/services/store/review/review.thunk";
+import { EFetchStatus } from "@/shared/enums/fetchStatus";
+import { Card, Spin, Typography } from "antd";
+import "dayjs/locale/vi";
+import ReviewItem from "./ReviewItem";
 
-interface Review {
-  id: number;
-  name: string;
-  rating: number;
-  email: string;
-  content: string;
-  date: string;
-  image: string;
-}
-
-interface User {
-  name: string;
-  email: string;
-  image: string;
-}
+const { Text, Title } = Typography;
 
 interface ReviewProductProps {
-  reviews: Review[];
-  currentUser: User;
+  productId: string;
 }
 
-const ReviewProduct: React.FC<ReviewProductProps> = ({ reviews: initialReviews, currentUser }) => {
-  const [reviews, setReviews] = useState<Review[]>(initialReviews);
+const ReviewProduct: React.FC<ReviewProductProps> = ({ productId }) => {
+  const { state, dispatch } = useArchive<IReviewInitialState>("review");
+  const { getreviewProductLoading } = useAsyncEffect(
+    (async) => {
+      productId && async(dispatch(getAllReviews({ param: productId })), "getreviewProductLoading");
+    },
+    [productId],
+  );
 
-  const validationSchema = Yup.object().shape({
-    rating: Yup.number().required("Vui lòng chọn đánh giá").min(1, "Vui lòng chọn đánh giá"),
-    content: Yup.string().required("Vui lòng nhập nhận xét của bạn").trim(),
-  });
-
-  const handleSubmit = (values: { rating: number; content: string }, { resetForm }: { resetForm: () => void }) => {
-    const review: Review = {
-      id: reviews.length + 1,
-      name: currentUser.name,
-      email: currentUser.email,
-      rating: values.rating,
-      content: values.content,
-      date: new Date().toLocaleDateString("vi-VN", { year: "numeric", month: "long", day: "numeric" }),
-      image: currentUser.image,
-    };
-    setReviews((prev) => [...prev, review]);
-    resetForm();
-  };
+  if (state.status === EFetchStatus.REJECTED) {
+    return (
+      <div className="flex items-center justify-center rounded-lg bg-red-50 p-6">
+        <Text type="danger" className="text-base font-semibold">
+          ⚠️ Có lỗi xảy ra khi tải đánh giá.
+        </Text>
+      </div>
+    );
+  }
 
   return (
-    <div className="w-full">
-      {reviews.length > 0 && <h2 className="mb-4 text-2xl font-bold">Đánh giá của khách hàng</h2>}
-      {reviews.map((review) => (
-        <div key={review.id} className="mb-4 border-b border-gray-500 pb-4">
-          <div className="mb-2 flex items-center">
-            <div className="bg-gray-300 mr-4 h-12 w-12 overflow-hidden rounded-full">
-              <img src={review.image} alt={review.name} className="h-full w-full object-cover" />
-            </div>
-            <div>
-              <p className="font-bold">{review.name}</p>
-              <div className="flex">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Star key={star} className={`h-5 w-5 ${star <= review.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`} />
-                ))}
-              </div>
-            </div>
-          </div>
-          <p className="mb-2">{review.content}</p>
-          <p className="text-sm text-gray-500">
-            Đánh giá bởi <span className="text-primary-600">{review.name}</span> vào <span className="text-primary-600">{review.date}</span>
-          </p>
-        </div>
-      ))}
+    <div className="mx-auto w-full px-4 py-4">
+      <Title level={3} className="mb-4">
+        Đánh giá sản phẩm
+        <Text className="ml-2 text-base font-normal text-gray-500">({state.reviews?.length || 0} đánh giá)</Text>
+      </Title>
 
-      <h2 className="mb-4 text-2xl font-bold">Thêm đánh giá của bạn</h2>
-      <Formik initialValues={{ rating: 0, content: "" }} validationSchema={validationSchema} onSubmit={handleSubmit}>
-        {({ setFieldValue, values }) => (
-          <Form>
-            <div className="mb-4">
-              <p className="mb-2">Đánh giá của bạn</p>
-              <div className="flex">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Star
-                    key={star}
-                    className={`cursor-pointer ${star <= values.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`}
-                    onClick={() => setFieldValue("rating", star)}
-                  />
-                ))}
-              </div>
-              <ErrorMessage name="rating" component="p" className="text-red-500" />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="content" className="mb-2 block">
-                Nhận xét của bạn
-              </label>
-              <Field
-                as="textarea"
-                id="content"
-                name="content"
-                className="w-full rounded border bg-gray-10% p-2"
-                placeholder="Nhập Nhận xét của bạn"
-                rows={4}
-              />
-              <ErrorMessage name="content" component="p" className="text-red-500" />
-            </div>
-            <Button type="submit" text="Gửi đi" />
-          </Form>
-        )}
-      </Formik>
+      {getreviewProductLoading ? (
+        <div className="flex items-center justify-center py-8">
+          <Spin size="large" tip="Đang tải đánh giá..." />
+        </div>
+      ) : state.reviews?.length === 0 ? (
+        <Card className="text-center">
+          <div className="py-8">
+            <Title level={4} className="text-gray-500">
+              Chưa có đánh giá nào cho sản phẩm này
+            </Title>
+            <Text className="text-gray-400">Hãy là người đầu tiên đánh giá sản phẩm</Text>
+          </div>
+        </Card>
+      ) : (
+        <div>{state.reviews?.map((item) => <ReviewItem key={item.id} review={item} />)}</div>
+      )}
     </div>
   );
 };

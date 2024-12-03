@@ -13,8 +13,8 @@ const CartProduct = ({ item, className, showPrice = true }: CartProductProps) =>
 
   return (
     <div className={clsx("flex items-center justify-between gap-4", className)}>
-      <img src={product.thumbnail} alt={product.name} className="h-16 w-16 rounded-md object-cover" />
-      <div className="flex-grow space-y-1">
+      <img src={product.thumbnail} alt={product.name} className="aspect-square h-16 w-16 shrink-0 rounded-md object-cover" />
+      <div className="hidden flex-grow space-y-1 md:block">
         <h3 className="line-clamp-1 text-sm font-semibold">{product.name}</h3>
         {showPrice && (
           <p className="block text-sm font-bold">

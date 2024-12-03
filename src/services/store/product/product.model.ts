@@ -10,17 +10,20 @@ interface IProduct {
   minPrice?: number;
   maxPrice?: number;
   images: string[];
-  tags: Tag[];
+  tags: ITag[];
   gender: IGender;
   variants: IVariant[];
   labels: ILabel[];
   brand: IBrand;
+  sold: number;
   productColors: IProductColor[];
   productSizes: ISize[];
   productType: IProductType;
   flag: string;
   status: EActiveStatus;
   dimensions: IDimensions;
+  averageRating: number;
+  totalReviews: number;
 }
 
 export interface IDimensions {
@@ -81,7 +84,7 @@ interface IGender {
   path: string;
 }
 
-interface Tag {
+interface ITag {
   id: string;
   name: string;
   slug: string;
@@ -90,10 +93,31 @@ interface Tag {
   status: number;
   parentId: null | string;
 }
+
 interface IProductType {
   id: string;
   name: string;
   slug: string;
+  imageUrl: string;
 }
 
-export type { IBrand, IColor, IGender, ILabel, IProduct, IProductColor, IProductType, ISize, IVariant };
+interface Filter {
+  gender: string[];
+  productType: string[];
+  color: string[];
+  size: string[];
+  brand: string[];
+  orderBy: string;
+  sort: string;
+  minPrice: string;
+  maxPrice: string;
+  label: string;
+  tag: string;
+}
+
+interface FilterChangeHandler {
+  type: string;
+  value: string | string[];
+}
+
+export type { IBrand, IColor, IGender, ILabel, IProduct, IProductColor, IProductType, ISize, ITag, IVariant, Filter, FilterChangeHandler };

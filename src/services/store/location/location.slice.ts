@@ -34,7 +34,9 @@ const locationSlice = createSlice({
   name: "location",
   initialState,
   reducers: {
-    resetLocationState: () => initialState,
+    resetLocationState: (state) => {
+      state.location = initialState.location;
+    },
     setProvince: (state, action: PayloadAction<IProvince>) => {
       state.location.province = action.payload;
       state.location.district = null;

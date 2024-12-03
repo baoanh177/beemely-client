@@ -29,6 +29,7 @@ export interface ICheckoutState {
   discount_price: number;
   voucher?: IVoucher;
   shipping_fee: number;
+  isUseUserAddress: boolean;
 }
 
 export interface IGhnShippingFee {
@@ -45,23 +46,4 @@ export interface IGhnShippingFee {
   pick_remote_areas_fee: number;
   deliver_remote_areas_fee: number;
   cod_failed_fee: number;
-}
-
-export interface IGhnPayloadToGetShippingFee {
-  service_type_id: number;
-  from_district_id: number;
-  from_ward_code: string;
-  to_district_id: number;
-  to_ward_code: string;
-  weight: number;
-  items: IGhnShippngItem[];
-}
-
-interface IGhnShippngItem {
-  name: string;
-  quantity: number;
-  height: number;
-  weight: number;
-  length: number;
-  width: number;
 }

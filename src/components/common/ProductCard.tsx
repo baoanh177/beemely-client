@@ -7,11 +7,12 @@ import { formatPrice } from "@/utils/curency";
 import { Link } from "react-router-dom";
 import { BsCartCheck } from "react-icons/bs";
 import { useArchive } from "@/hooks/useArchive";
-import { addWishList } from "@/services/store/wishlist/wishlist.thunk";
+import { addWishList, moveWishlist } from "@/services/store/wishlist/wishlist.thunk";
 import toast from "react-hot-toast";
 import { addProductToWishlist, IAuthInitialState } from "@/services/store/auth/auth.slice";
 import { useDispatch } from "react-redux";
 import clsx from "clsx";
+import StarSection from "../product/StarSection";
 export interface IProductCardProps {
   productId?: string;
   slug: string;
@@ -19,6 +20,9 @@ export interface IProductCardProps {
   name: string;
   description: string;
   regularPrice: number;
+  averageRating: number;
+  totalReviews: number;
+  sold: number;
   discountPrice?: number;
   type: "wishlist" | "remove";
   onRemove?: (productId: string) => void;
@@ -28,29 +32,43 @@ const ProductCard = ({
   name,
   slug,
   productId,
-  description,
   regularPrice,
   discountPrice,
+  totalReviews,
+  sold,
+  averageRating,
   type = "wishlist",
   onRemove,
 }: IProductCardProps & { onRemove?: (id: string) => void }) => {
   const [imageSrc, setImageSrc] = useState<string>(image || "src/assets/images/errorbgcategory.jpg");
   const { dispatch: wishlistDispatch, state: wishListState } = useArchive<IAuthInitialState>("auth");
   const dispatch = useDispatch();
-  const handleAddWishlist = () => {
+  const handleWishlistToggle = () => {
+    if (!wishListState.profile) {
+      toast.error("Bạn cần đăng nhập để thêm sản phẩm vào Wishlist!");
+      return;
+    }
+
     if (productId) {
-      wishlistDispatch(addWishList({ param: productId }))
-        .then(() => {
+      if (isInWishlist) {
+        wishlistDispatch(moveWishlist({ param: productId })).then(() => {
+          toast.success("Bỏ Wishlist thành công!");
+          if (wishListState.profile) {
+            const updatedWishlist = wishListState.profile.wishlist.filter((id) => id !== productId);
+            dispatch(addProductToWishlist(updatedWishlist));
+          }
+        });
+      } else {
+        wishlistDispatch(addWishList({ param: productId })).then(() => {
           toast.success("Thêm vào Wishlist thành công!");
           if (wishListState.profile) {
             const updatedWishlist = [...wishListState.profile.wishlist, productId];
             dispatch(addProductToWishlist(updatedWishlist));
           }
-        })
+        });
+      }
     }
   };
-
-
 
   const isInWishlist = wishListState.profile?.wishlist.some((id) => id === productId);
 
@@ -79,13 +97,7 @@ const ProductCard = ({
               icon={<CiHeart size={24} />}
               type="button"
               variant={isInWishlist ? "danger" : "default"}
-              onClick={() => {
-                if (!isInWishlist) {
-                  handleAddWishlist();
-                } else {
-                  toast.error("Sản phẩm đã có trong Wishlist");
-                }
-              }}
+              onClick={handleWishlistToggle}
               className={clsx("transition-transform duration-300 ease-in-out hover:scale-110")}
             />
           ) : (
@@ -110,16 +122,17 @@ const ProductCard = ({
         </div>
       </div>
       <div className="space-y-2">
+        <p className="text-nowrap text-xs">{sold} lượt bán</p>
         <Link to={`/product/${slug}`} className="line-clamp-1 font-bold">
           {name}
         </Link>
-        <p className="line-clamp-1 text-sm capitalize">{description}</p>
+        <StarSection averageRating={averageRating} totalReviews={totalReviews} />
         <div className="flex items-center space-x-2 font-semibold">
           {discountPrice ? (
-            <>
+            <div className="flex flex-wrap gap-2">
               <span className="text-nowrap text-sm text-primary-500 md:text-base">{formatPrice(discountPrice)}</span>
-              <span className="text-nowrap text-sm text-gray-500 line-through md:text-base">{formatPrice(regularPrice)}</span>
-            </>
+              <span className="text-nowrap text-sm text-primary-400 line-through md:text-base">{formatPrice(regularPrice)}</span>
+            </div>
           ) : (
             <span className="text-primary-500">{formatPrice(regularPrice)}</span>
           )}

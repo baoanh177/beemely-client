@@ -2,22 +2,23 @@ import ProductCard from "./ProductCard";
 import { Container } from "@/styles/common-styles";
 import Title from "./Title";
 import { useArchive } from "@/hooks/useArchive";
-import { IProductInitialState } from "@/services/store/product/product.slice";
 import useAsyncEffect from "@/hooks/useAsyncEffect";
-import { getAllProducts } from "@/services/store/product/product.thunk";
+import { getBestsellerProducts } from "@/services/store/product/product.thunk";
+import { IBestsellerInitialState } from "@/services/store/product/bestseller.slice";
 
 const BestsellerSection = () => {
-  const { state, dispatch } = useArchive<IProductInitialState>("products");
-  useAsyncEffect(
-    (async) => async(dispatch(getAllProducts({ query: { ...state.filter, orderBy: "sold", _limit: 8 } })), "getAllProductsLoading"),
-    [],
-  );
+  const { state, dispatch } = useArchive<IBestsellerInitialState>("bestsellerProducts");
+
+  useAsyncEffect((async) => async(dispatch(getBestsellerProducts({ query: { orderBy: "sold", _limit: 8 } })), "getAllProductsLoading"), []);
 
   const content = state.products.map((product, index) => {
     const sortVariants = [...product.variants].sort((a, b) => a.price - b.price);
 
     return (
       <ProductCard
+        sold={product.sold || 0}
+        averageRating={product.averageRating || 0}
+        totalReviews={product.totalReviews || 0}
         productId={product.id}
         key={index}
         slug={product.slug}

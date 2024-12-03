@@ -36,10 +36,10 @@ const OrderDetail = () => {
           <h1 className="text-gray-900 text-2xl font-bold">Đơn hàng #{activeOrder.uniqueId}</h1>
           <p className="text-sm text-gray-500"></p>
         </div>
-        <StatusBadge color={activeOrder.orderStatus} text={activeOrder.orderStatus} />
+        <StatusBadge color={activeOrder.orderStatus} status={activeOrder.orderStatus} />
       </div>
 
-      <div className="grid grid-cols-1 gap-8 ">
+      <div className="grid grid-cols-1 gap-8">
         {/* Customer Information */}
         <div className="bg-white rounded-lg p-6 shadow">
           <h2 className="mb-4 text-lg font-semibold">Thông tin người nhận</h2>
@@ -61,7 +61,7 @@ const OrderDetail = () => {
               <span className="ml-4 flex-1 text-right font-medium">{activeOrder.shippingAddress}</span>
             </div>
           </div>
-        </div>      
+        </div>
       </div>
 
       {/* Order Items */}
