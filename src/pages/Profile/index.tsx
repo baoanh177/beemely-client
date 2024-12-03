@@ -18,11 +18,19 @@ const ProfilePage = () => {
       <div className="flex w-full flex-col gap-3 pb-[120px] lg:flex-row lg:gap-6">
         <div className="mb-6 flex w-full flex-row flex-wrap items-center justify-between gap-1 py-3 lg:mb-0 lg:max-w-[250px] lg:flex-col lg:justify-normal">
           <div className="flex flex-row items-center gap-4 border-gray-20% p-2 lg:w-full lg:border-b lg:p-4">
-            <img
-              className="h-[35px] w-[35px] shrink-0 rounded-full object-cover lg:h-[60px] lg:w-[60px]"
-              src={state.profile?.avatarUrl}
-              alt={state.profile?.fullName}
-            />
+            {state.profile?.avatarUrl ? (
+              <img
+                className="h-[35px] w-[35px] shrink-0 rounded-full object-cover lg:h-[60px] lg:w-[60px]"
+                src={state.profile?.avatarUrl}
+                alt={state.profile?.fullName}
+              />
+
+            ) : (
+              <div className="h-[35px] w-[35px] shrink-0 rounded-full object-cover lg:h-[60px] lg:w-[60px] flex text-xl items-center justify-center bg-blue-500">
+              {state.profile?.fullName?.charAt(0)?.toUpperCase() || "U"}
+            </div>
+            )}
+
             <div className="flex flex-row gap-2 lg:flex-col">
               <div className="inline-block font-semibold lg:hidden">{state.profile?.fullName}</div>
               <div className="hidden lg:inline-block">
