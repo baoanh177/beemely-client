@@ -77,7 +77,7 @@ const Categories: React.FC = () => {
         >
           {state.productTypes.map((category, index) => (
             <div key={index} className="px-2">
-              <Link to={`/products/${category.slug}`}>
+              <Link to={`/category/${category.slug}`}>
                 <CategoryCard background={category.imageUrl} name={category.name} />
               </Link>
             </div>

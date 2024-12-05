@@ -80,7 +80,7 @@ export const routes: IRoute[] = [
             element: () => <Products />,
           },
           {
-            path: "products/:slug",
+            path: "category/:slug",
             element: () => <ProductCategories />,
           },
           {

@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { RiSearchLine } from "react-icons/ri";
 import { FaRegHeart } from "react-icons/fa";
-import Logo from "@/assets/images/logo.png";
+import logo from "@/assets/images/logo.png";
 import CartPopover from "../cart/CartPopover";
 import ButtonLogin from "./ButtonLogin";
 import UserDropdown from "./UserDropdown";
@@ -14,6 +14,9 @@ const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const isLoggedIn = !!localStorage.getItem("accessToken");
 
@@ -39,6 +42,20 @@ const Navbar = () => {
     };
   }, [open]);
 
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const query = params.get("q");
+    if (query) {
+      setSearchQuery(query);
+    }
+  }, []);
+
+  const handleSearchKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      navigate(`/products?q=${encodeURIComponent(searchQuery)}`);
+    }
+  };
+
   return (
     <nav
       className={clsx(
@@ -47,12 +64,23 @@ const Navbar = () => {
       )}
     >
       <Container className="flex h-full w-full justify-between font-medium">
-        <div className="z-50 flex w-full justify-between p-5 lg:w-auto">
-          <Link to="/">
-            <img src={Logo} alt="logo" className="h-9 cursor-pointer" />
-          </Link>
+        <div className="z-50 flex w-full items-center justify-between p-5 lg:w-auto">
+          <div className="flex cursor-pointer items-center gap-3 px-5" onClick={() => navigate("/")}>
+            <img src={logo} alt="" className="h-[34px] w-[34px]" />
+            <div className="display-m-semibold">Beemely</div>
+          </div>
           <div className="flex items-center space-x-4 lg:hidden">
-            <RiSearchLine className="text-lg" />
+            <div className="group relative">
+              <RiSearchLine className="cursor-pointer text-lg" />
+              <input
+                type="text"
+                placeholder="Tìm kiếm..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={handleSearchKeyDown}
+                className="border-gray-300 absolute right-0 top-full mt-2 w-48 rounded-md border p-2 opacity-0 shadow-lg transition-opacity duration-300 focus:outline-none focus:ring-2 group-hover:opacity-100"
+              />
+            </div>
             <FaRegHeart className="text-lg" />
             <CartPopover />
             <button className="text-3xl" onClick={() => setOpen(!open)} aria-label={open ? "Close menu" : "Open menu"}>
@@ -68,7 +96,17 @@ const Navbar = () => {
         </ul>
 
         <div className="hidden items-center space-x-4 lg:flex">
-          <RiSearchLine className="text-lg" />
+          <div className="group relative">
+            <RiSearchLine className="cursor-pointer text-lg" />
+            <input
+              type="text"
+              placeholder="Tìm kiếm..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={handleSearchKeyDown}
+              className="border-gray-300 absolute right-0 top-full mt-2 w-48 rounded-md border p-2 opacity-0 shadow-lg transition-opacity duration-300 focus:outline-none focus:ring-2 group-hover:opacity-100"
+            />
+          </div>
           <Link to="/profile/wishlists">
             <FaRegHeart className="cursor-pointer text-lg" />
           </Link>
