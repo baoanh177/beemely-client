@@ -3,6 +3,7 @@ export interface IVoucher {
   name: string;
   code: string;
   maxUsage: number;
+  maxReduce: number;
   discount: number;
   status: number;
   discountTypes: IDiscountType;

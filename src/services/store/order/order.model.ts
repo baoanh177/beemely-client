@@ -2,6 +2,7 @@ import { EStatusOrder } from "@/shared/enums/order";
 import { IUserProfile } from "../auth/auth.model";
 import { IProduct, IVariant } from "../product/product.model";
 import { IComplaint } from "../complaint/complaint.model";
+import { IVoucher } from "../voucher/voucher.model";
 
 export interface IOrder {
   id: string;
@@ -21,6 +22,9 @@ export interface IOrder {
   uniqueId: string;
   note?: string;
   complaint?: IComplaint;
+  voucher?: IVoucher;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface IOrderItem {

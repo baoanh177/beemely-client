@@ -4,7 +4,7 @@ import { BsHeart } from "react-icons/bs";
 
 import { useArchive } from "@/hooks/useArchive";
 import { addToCart } from "@/services/store/cart/cart.thunk";
-import { IProduct, IVariant } from "@/services/store/product/product.model";
+import { IProduct, IProductColor, IVariant } from "@/services/store/product/product.model";
 import { ICartInitialState, resetStatus } from "@/services/store/cart/cart.slice";
 import Button from "@/components/common/Button";
 import { EFetchStatus } from "@/shared/enums/fetchStatus";
@@ -24,13 +24,17 @@ import { useDispatch } from "react-redux";
 
 interface ProductDetailsProps {
   product: IProduct;
-  selectedVariant: IVariant;
+  selectedVariant: IVariant | null;
+  sortVariant: IVariant;
   setSelectedVariant: React.Dispatch<React.SetStateAction<IVariant | null>>;
 }
 
-const ProductDetails = ({ product, selectedVariant, setSelectedVariant }: ProductDetailsProps) => {
+const ProductDetails = ({ product, selectedVariant, setSelectedVariant, sortVariant }: ProductDetailsProps) => {
   const [selectedColor, setSelectedColor] = useState<string>("");
   const [selectedSize, setSelectedSize] = useState<string>("");
+
+  const [productColors, setProductColors] = useState<IProductColor[]>(product.productColors);
+
   const [quantity, setQuantity] = useState<number>(1);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const { dispatch: cartDispatch, state: cartState } = useArchive<ICartInitialState>("cart");
@@ -46,6 +50,27 @@ const ProductDetails = ({ product, selectedVariant, setSelectedVariant }: Produc
       setSelectedVariant(null);
     }
   }, [product, selectedColor, selectedSize, setSelectedVariant]);
+
+  const productSizes = product.variants.map((v) => v.size).filter((value, index, self) => index === self.findIndex((t) => t.id === value.id));
+
+  const sizeColorMap = product.variants.reduce((acc: Record<string, { colors: string[] }>, variant: IVariant) => {
+    const { color, size } = variant;
+    if (!acc[size.id]) {
+      acc[size.id] = { colors: [] };
+    }
+    if (!acc[size.id].colors.some((c) => c === color.id)) {
+      acc[size.id].colors.push(color.id);
+    }
+    return acc;
+  }, {});
+
+  useEffect(() => {
+    if (selectedSize) {
+      const { colors } = sizeColorMap[selectedSize];
+      const tempColors = product.productColors.filter((item) => colors.includes(item.colorId.id));
+      setProductColors(tempColors);
+    }
+  }, [selectedSize]);
 
   const handleWishlistToggle = () => {
     if (!wishListState.profile) {
@@ -116,24 +141,33 @@ const ProductDetails = ({ product, selectedVariant, setSelectedVariant }: Produc
 
       <StarSection totalReviews={product.totalReviews || 0} averageRating={product.averageRating || 0} />
 
-      <PriceSection regularPrice={selectedVariant.price} discountPrice={selectedVariant.discountPrice} />
+      <PriceSection
+        regularPrice={selectedVariant?.price || sortVariant.price}
+        discountPrice={selectedVariant?.discountPrice || sortVariant.discountPrice}
+      />
 
       <DescriptionSection content={product.sortDescription} />
 
-      <SizeSelectSection sizes={product?.productSizes} selectedSize={selectedSize} setSelectedSize={setSelectedSize} />
+      <SizeSelectSection sizes={productSizes} selectedSize={selectedSize} setSelectedSize={setSelectedSize} />
 
-      <ColorSelectSection colors={product?.productColors} selectedColor={selectedColor} setSelectedColor={setSelectedColor} />
+      <ColorSelectSection isDisable={!selectedSize} colors={productColors} selectedColor={selectedColor} setSelectedColor={setSelectedColor} />
 
-      <StockSection stock={selectedVariant.stock} />
+      {selectedVariant && <StockSection stock={selectedVariant.stock} />}
 
       <div className="flex flex-wrap gap-4">
         <div className="flex items-center gap-4">
           <p>Số lượng:</p>
-          <QuantityInput value={quantity} onChange={setQuantity} max={selectedVariant.stock} />
+          <QuantityInput value={quantity} onChange={setQuantity} max={selectedVariant?.stock || sortVariant.stock} />
         </div>
         <div className="flex w-full gap-4">
           <Button
-            isDisabled={!selectedSize || !selectedColor || cartState.status === EFetchStatus.PENDING || !wishListState.isLogin}
+            isDisabled={
+              !selectedSize ||
+              !selectedColor ||
+              cartState.status === EFetchStatus.PENDING ||
+              !wishListState.isLogin ||
+              selectedVariant?.stock === 0
+            }
             icon={<FaShoppingCart className="mr-2" />}
             onClick={handleAddCart}
             className="grow"

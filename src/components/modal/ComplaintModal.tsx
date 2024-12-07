@@ -1,5 +1,5 @@
 import { COMPLAINT_REASONS_CONVERT, EComplaintStatus, IComplaint } from "@/services/store/complaint/complaint.model";
-import { Carousel, Image, Modal } from "antd";
+import { Carousel, Image, message, Modal } from "antd";
 import ComplaintStatusBadge from "../common/ComplaintStatusBadge";
 import Button from "../common/Button";
 import { IComplaintInitialState } from "@/services/store/complaint/complaint.slice";
@@ -22,13 +22,20 @@ const ComplaintModal = ({ isOpen, onClose, className, complaint }: ComplaintModa
   const { dispatch: orderDispatch } = useArchive<IOrderInitialState>("order");
 
   const handleClick = async (id: string) => {
-    await dispatch(
-      withdrawComplaint({
-        param: id,
-      }),
-    ).then(() => {
-      orderDispatch(getAllOrderByUser({}));
-    });
+    try {
+      await dispatch(
+        withdrawComplaint({
+          param: id,
+        }),
+      ).unwrap();
+      message.success("Thu hồi khiếu nại thành công!");
+      await orderDispatch(getAllOrderByUser({}));
+      if (onClose) onClose();
+    } catch (error: any) {
+      const errorMessage = error.errors.message || "Không thu hồi được khiếu nại, thử lại sau!";
+      message.error(errorMessage);
+      if (onClose) onClose();
+    }
   };
 
   return (
@@ -80,7 +87,6 @@ const ComplaintModal = ({ isOpen, onClose, className, complaint }: ComplaintModa
                   okButtonProps: { style: { backgroundColor: "#2B292F", borderColor: "#2B292F" } },
                   onOk: () => {
                     handleClick(complaint.id!);
-                    if (onClose) onClose();
                   },
                   okText: "Xác nhận",
                   cancelText: "Hủy",

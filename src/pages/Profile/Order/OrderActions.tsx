@@ -1,7 +1,7 @@
 import { useArchive } from "@/hooks/useArchive";
 import { EPaymentStatus, IOrder } from "@/services/store/order/order.model";
 import { IOrderInitialState } from "@/services/store/order/order.slice";
-import { reOrder, rePaymentOrder, updateOrder } from "@/services/store/order/order.thunk";
+import { getAllOrderByUser, reOrder, rePaymentOrder, updateOrder } from "@/services/store/order/order.thunk";
 import { EStatusOrder } from "@/shared/enums/order";
 import { Dropdown, MenuProps, Modal } from "antd";
 import toast from "react-hot-toast";
@@ -21,6 +21,7 @@ const { confirm } = Modal;
 const OrderActions = ({ order }: OrderActionsProps) => {
   const { dispatch } = useArchive<IOrderInitialState>("order");
   const navigate = useNavigate();
+
   const items: MenuProps["items"] = [
     {
       label: "Xác nhận đã nhận hàng",
@@ -109,14 +110,24 @@ const OrderActions = ({ order }: OrderActionsProps) => {
   ];
 
   const handleCancelOrder = async (orderId: string) => {
-    dispatch(updateOrder({ param: orderId, body: { order_status: EStatusOrder.CANCELLED } })).then(() => {
-      toast.success("Hủy đơn hàng thành công");
-    });
+    try {
+      await dispatch(updateOrder({ param: orderId, body: { order_status: EStatusOrder.CANCELLED } })).unwrap();
+      toast.success("Đã hủy đơn hàng thành công");
+    } catch (error: any) {
+      const message = error.errors.message || "Có lỗi xảy ra khi hủy đơn hàng. Vui lòng thử lại!";
+      toast.error(message);
+      await dispatch(getAllOrderByUser({}));
+    }
   };
 
   const handleSuccessOrder = async (orderId: string) => {
-    dispatch(updateOrder({ param: orderId, body: { order_status: EStatusOrder.SUCCESS } }));
-    toast.success("Đã nhận hàng thành công");
+    try {
+      await dispatch(updateOrder({ param: orderId, body: { order_status: EStatusOrder.SUCCESS } })).unwrap();
+      toast.success("Đã nhận hàng thành công");
+    } catch (error: any) {
+      const message = error.errors.message || "Có lỗi xảy ra xác nhận hoàn thành đơn hàng. Vui lòng thử lại!";
+      toast.error(message);
+    }
   };
 
   const handleRePaymentOrder = async (orderId: string) => {
@@ -146,6 +157,7 @@ const OrderActions = ({ order }: OrderActionsProps) => {
   const menuProps = {
     items,
   };
+
   return (
     <div>
       <Dropdown menu={menuProps}>

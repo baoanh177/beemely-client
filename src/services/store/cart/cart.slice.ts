@@ -2,7 +2,7 @@ import { EFetchStatus } from "@/shared/enums/fetchStatus";
 import { IInitialState, IResponse } from "@/shared/utils/shared-interfaces";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ICart } from "./cart.model";
-import { addToCart, deleteCartItem, getCartByUser, updateCartItem } from "./cart.thunk";
+import { addToCart, deleteAllCartItem, deleteCartItem, getCartByUser, updateCartItem } from "./cart.thunk";
 import { calculateCartTotal } from "@/utils/calculateCartTotal";
 
 export interface ICartInitialState extends IInitialState {
@@ -77,6 +77,21 @@ const cartSlice = createSlice({
         }
       })
       .addCase(deleteCartItem.rejected, (state, { payload }: PayloadAction<any>) => {
+        state.status = EFetchStatus.REJECTED;
+        state.message = payload.message;
+      })
+      .addCase(deleteAllCartItem.pending, (state) => {
+        state.status = EFetchStatus.PENDING;
+      })
+      .addCase(deleteAllCartItem.fulfilled, (state) => {
+        state.status = EFetchStatus.FULFILLED;
+        state.message = "Xóa thành công";
+        if (state.cart) {
+          state.cart.cartItems = [];
+          state.subTotal = 0;
+        }
+      })
+      .addCase(deleteAllCartItem.rejected, (state, { payload }: PayloadAction<any>) => {
         state.status = EFetchStatus.REJECTED;
         state.message = payload.message;
       });

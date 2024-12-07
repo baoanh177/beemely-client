@@ -89,7 +89,7 @@ const Orders = () => {
       message.success("Đánh giá của bạn đã được gửi thành công!");
       await dispatch(getAllOrderByUser({ query: { ...state.filter } }));
       if (selectedOrderItem) {
-        await dispatch(getAllReviews(selectedOrderItem.product.id));
+        await dispatch(getAllReviews({ param: selectedOrderItem.product.id }));
       }
       setReviewModalOpen(false);
       setSelectedOrderItem(null);

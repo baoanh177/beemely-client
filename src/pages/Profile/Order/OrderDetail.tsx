@@ -10,6 +10,7 @@ import imgPayos from "@/assets/images/payos-logo.svg";
 import imgVnPay from "@/assets/images/vnpay.png";
 import { Image } from "antd";
 import { formatPrice } from "@/utils/curency";
+import { format } from "date-fns";
 
 const OrderDetail = () => {
   const { state, dispatch } = useArchive<IOrderInitialState>("order");
@@ -32,9 +33,9 @@ const OrderDetail = () => {
     <div className="mx-auto max-w-4xl space-y-8 pb-6">
       {/* Order Header */}
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-gray-900 text-2xl font-bold">Đơn hàng #{activeOrder.uniqueId}</h1>
-          <p className="text-sm text-gray-500"></p>
+        <div className="space-y-3">
+          <h1 className="text-xl font-bold text-primary-600">Đơn hàng #{activeOrder.uniqueId}</h1>
+          <p className="text-base">Ngày đặt hàng: {format(new Date(activeOrder.createdAt), " hh:mm a, dd/MM/yyyy")}</p>
         </div>
         <StatusBadge color={activeOrder.orderStatus} status={activeOrder.orderStatus} />
       </div>
@@ -66,7 +67,7 @@ const OrderDetail = () => {
 
       {/* Order Items */}
       <div className="bg-white rounded-lg p-6 shadow">
-        <h2 className="mb-4 text-lg font-semibold">Mặt hàng</h2>
+        <h2 className="mb-4 text-lg font-semibold">Sản phẩm</h2>
         <div className="space-y-4">
           {activeOrder.items.map((item) => (
             <div key={item.id} className="flex items-center border-b pb-4">
@@ -78,7 +79,7 @@ const OrderDetail = () => {
                 </p>
                 <div className="mt-2 flex justify-between">
                   <span className="text-sm">Số lượng: {item.quantity}</span>
-                  <span className="font-medium">₫{item.price.toLocaleString()}</span>
+                  <span className="font-medium">{formatPrice(item.price)}</span>
                 </div>
               </div>
             </div>
@@ -91,17 +92,30 @@ const OrderDetail = () => {
         <h2 className="mb-4 text-lg font-semibold">Chi tiết thanh toán</h2>
         <div className="space-y-3">
           <div className="flex justify-between">
-            <span className="text-gray-600">Giá gốc:</span>
+            <span className="text-gray-600">Tổng giá sản phẩm:</span>
             <span>{formatPrice(activeOrder.regularTotalPrice)}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-gray-600">Phí vẫn chuyển:</span>
             <span>{formatPrice(activeOrder.shippingFee)}</span>
           </div>
-          <div className="flex justify-between">
-            <span className="text-gray-600">Giảm giá:</span>
-            <span>-{formatPrice(activeOrder.regularTotalPrice + activeOrder.shippingFee - activeOrder.totalPrice)}</span>
-          </div>
+          {activeOrder.voucher && (
+            <>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Áp dụng mã giảm giá:</span>
+                <p className="flex items-end space-x-2 group-hover:underline">
+                  {activeOrder.voucher.name}
+                  {activeOrder.voucher.discountTypes === "percentage" && activeOrder.voucher.maxReduce && (
+                    <span className="ml-1 text-sm">(Tối đa {formatPrice(activeOrder.voucher.maxReduce)})</span>
+                  )}
+                </p>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Giảm giá:</span>
+                <span>-{formatPrice(activeOrder.regularTotalPrice + activeOrder.shippingFee - activeOrder.totalPrice)}</span>
+              </div>
+            </>
+          )}
           <div className="flex justify-between text-lg font-semibold">
             <span>Tổng:</span>
             <span>{formatPrice(activeOrder.totalPrice)}</span>
