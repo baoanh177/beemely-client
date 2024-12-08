@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { RiSearchLine } from "react-icons/ri";
 import { FaRegHeart } from "react-icons/fa";
-import Logo from "@/assets/images/logo.png";
+import logo from "@/assets/images/logo.png";
 import CartPopover from "../cart/CartPopover";
 import ButtonLogin from "./ButtonLogin";
 import UserDropdown from "./UserDropdown";
@@ -16,6 +16,7 @@ const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const navigate = useNavigate();
 
   const { state } = useArchive<IAuthInitialState>("auth");
 
@@ -50,9 +51,10 @@ const Navbar = () => {
     >
       <Container className="flex h-full w-full justify-between font-medium">
         <div className="z-50 flex w-full justify-between p-5 lg:w-auto">
-          <Link to="/">
-            <img src={Logo} alt="logo" className="h-9 cursor-pointer" />
-          </Link>
+          <div className="flex cursor-pointer items-center gap-3 px-5" onClick={() => navigate("/")}>
+            <img src={logo} alt="" className="h-[34px] w-[34px]" />
+            <div className="display-m-semibold">Beemely</div>
+          </div>
           <div className="flex items-center space-x-4 lg:hidden">
             <RiSearchLine className="text-lg" />
             <FaRegHeart className="text-lg" />
