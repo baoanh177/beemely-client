@@ -8,6 +8,7 @@ import { formatPrice } from "@/utils/curency";
 import QuantityInput from "../common/QuantityInput";
 import Button from "../common/Button";
 import CartProduct from "./CartProduct";
+import { IVariant } from "@/services/store/product/product.model";
 
 const CartTable = () => {
   const { state, dispatch } = useArchive<ICartInitialState>("cart");
@@ -35,18 +36,38 @@ const CartTable = () => {
       key: "product",
     },
     {
+      title: "Đơn giá",
+      dataIndex: "variant",
+      key: "variant",
+      render: (record: IVariant) => {
+        return (
+          <div className="flex items-center space-x-2 font-semibold">
+            {record.discountPrice ? (
+              <div className="flex flex-wrap gap-2">
+                <span className="text-nowrap text-xs text-primary-500">{formatPrice(record.discountPrice)}</span>
+                <span className="text-nowrap text-xs text-primary-400 line-through">{formatPrice(record.price)}</span>
+              </div>
+            ) : (
+              <span className="text-xs text-primary-500">{formatPrice(record.price)}</span>
+            )}
+          </div>
+        );
+      },
+    },
+    {
       title: "Số lượng",
       dataIndex: "quantity",
       key: "quantity",
-      render: (text: number, record: any) => (
-        <QuantityInput max={record.maxQuantity} value={text} onChange={(newQuantity) => handleQuantityChange(record.key, newQuantity)} />
-      ),
+      render: (text: number, record: any) =>
+        record.variant.stock !== 0 ? (
+          <QuantityInput max={record.maxQuantity} value={text} onChange={(newQuantity) => handleQuantityChange(record.key, newQuantity)} />
+        ) : null,
     },
     {
       title: "Tổng tiền",
       dataIndex: "totalPrice",
       key: "totalPrice",
-      render: (text: number) => formatPrice(text),
+      render: (text: number) => <p className="text-nowrap text-xs font-semibold text-primary-600">{formatPrice(text)}</p>,
     },
     {
       title: "Hành động",
@@ -54,22 +75,42 @@ const CartTable = () => {
       key: "action",
       render: (record: any) => <Button icon={<HiOutlineTrash size={20} />} onClick={() => handleRemoveItem(record)} variant="danger" />,
     },
+    {
+      title: "Trạng thái",
+      dataIndex: "status",
+      key: "status",
+      render: (text: string, record: any) =>
+        record.variant.stock === 0 ? (
+          <p className="text-nowrap rounded-3xl bg-red-100 px-3 py-1 text-xs text-red-500">{text}</p>
+        ) : (
+          <p className="text-nowrap rounded-3xl bg-green-100 px-3 py-1 text-xs text-green-600">{text}</p>
+        ),
+    },
   ];
 
   const data = cartItems.map((item) => ({
     key: item.id,
+    variant: item.variant,
     image: item.product.thumbnail,
     product: <CartProduct item={item} showPrice={false} />,
-    unitPrice: item.variant.discountPrice ? item.variant.discountPrice : item.variant.price,
+    unitPrice: item.variant.price,
+    discountPrice: item.variant.discountPrice,
     quantity: item.quantity,
     totalPrice: item?.variant?.discountPrice ? item?.variant?.discountPrice * item.quantity : item?.variant?.price * item.quantity,
     action: item.id,
     maxQuantity: item.variant.stock,
+    status: item.variant.stock === 0 ? "Hết hàng" : "Còn hàng",
   }));
 
   const content =
     cartItems.length > 0 ? (
-      <Table rowHoverable={false} columns={columns} dataSource={data} pagination={false} />
+      <Table
+        rowClassName={(record) => (record.variant.stock === 0 ? "bg-red-50" : "")}
+        rowHoverable={false}
+        columns={columns}
+        dataSource={data}
+        pagination={false}
+      />
     ) : (
       <CartEmpty className="w-full" />
     );

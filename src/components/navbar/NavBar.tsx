@@ -9,13 +9,15 @@ import ButtonLogin from "./ButtonLogin";
 import UserDropdown from "./UserDropdown";
 import clsx from "clsx";
 import { Container } from "@/styles/common-styles";
+import { useArchive } from "@/hooks/useArchive";
+import { IAuthInitialState } from "@/services/store/auth/auth.slice";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 
-  const isLoggedIn = !!localStorage.getItem("accessToken");
+  const { state } = useArchive<IAuthInitialState>("auth");
 
   const handleScroll = useCallback(() => {
     const currentScrollY = window.scrollY;
@@ -73,7 +75,7 @@ const Navbar = () => {
             <FaRegHeart className="cursor-pointer text-lg" />
           </Link>
           <CartPopover />
-          {isLoggedIn ? (
+          {state.isLogin ? (
             <UserDropdown isMobile={false} />
           ) : (
             <Link to="/auth/login">
@@ -82,7 +84,7 @@ const Navbar = () => {
           )}
         </div>
 
-        <MobileMenu open={open} setOpen={setOpen} isLoggedIn={isLoggedIn} />
+        <MobileMenu open={open} setOpen={setOpen} isLoggedIn={state.isLogin} />
       </Container>
     </nav>
   );

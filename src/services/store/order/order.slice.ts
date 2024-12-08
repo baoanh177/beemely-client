@@ -57,8 +57,9 @@ const orderSlice = createSlice({
         state.orders = state.orders.map((order) => (order.id === payload.metaData.id ? payload.metaData : order));
         state.status = EFetchStatus.FULFILLED;
       })
-      .addCase(updateOrder.rejected, (state) => {
+      .addCase(updateOrder.rejected, (state, { payload }: any) => {
         state.status = EFetchStatus.REJECTED;
+        state.message = payload.errors.message || "Không thể cập nhật trạng thái đơn hàng";
       });
     // Re payment
     builder

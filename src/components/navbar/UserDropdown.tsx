@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { Dropdown, MenuProps } from "antd";
+import { Dropdown, MenuProps, message } from "antd";
 import { UserOutlined, MailOutlined, SettingOutlined, LogoutOutlined, DownOutlined } from "@ant-design/icons";
 import { IAuthInitialState } from "@/services/store/auth/auth.slice";
 import { useArchive } from "@/hooks/useArchive";
@@ -12,20 +11,11 @@ interface UserDropdownProps {
 }
 
 const UserDropdown: React.FC<UserDropdownProps> = ({ isMobile }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const { state, dispatch } = useArchive<IAuthInitialState>("auth");
   const { profile } = state;
 
-  useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
-    if (accessToken) {
-      setIsLoggedIn(true);
-    }
-  }, []);
-
-  const handleLogout = (): void => {
-    dispatch(logout());
-    setIsLoggedIn(false);
+  const handleLogout = () => {
+    dispatch(logout()).then(() => message.success("Bạn đã đăng xuất!"));
   };
 
   const handleMenuClick: MenuProps["onClick"] = ({ key }) => {
@@ -33,10 +23,6 @@ const UserDropdown: React.FC<UserDropdownProps> = ({ isMobile }) => {
       handleLogout();
     }
   };
-
-  if (!isLoggedIn) {
-    return null;
-  }
 
   const menuItems = [
     { key: "profile", icon: <UserOutlined />, label: "Hồ sơ", href: "/profile" },

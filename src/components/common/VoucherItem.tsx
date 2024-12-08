@@ -9,6 +9,8 @@ import { ICheckoutState } from "@/services/store/checkout/checkout.model";
 import { setVoucher } from "@/services/store/checkout/checkout.slice";
 import { useMemo } from "react";
 import { IoIosCheckmarkCircle } from "react-icons/io";
+import { message } from "antd";
+import { useVoucherModal } from "@/hooks/useVoucherModal";
 
 interface VoucherItemProps {
   voucher: IVoucher;
@@ -19,8 +21,15 @@ const calculateDiscount = (voucher: IVoucher, cartSubTotal: number, shippingFee:
     return Math.min(voucher.discount, shippingFee);
   }
 
+  let discountAmount: number;
   if (voucher.discountTypes === "percentage") {
-    return (cartSubTotal * voucher.discount) / 100;
+    discountAmount = (cartSubTotal * voucher.discount) / 100;
+
+    if (voucher.maxReduce) {
+      discountAmount = Math.min(discountAmount, voucher.maxReduce);
+    }
+
+    return discountAmount;
   } else {
     return Math.min(voucher.discount, cartSubTotal);
   }
@@ -29,7 +38,7 @@ const calculateDiscount = (voucher: IVoucher, cartSubTotal: number, shippingFee:
 const VoucherItem = ({ voucher }: VoucherItemProps) => {
   const { state: cartState } = useArchive<ICartInitialState>("cart");
   const { state: checkoutState, dispatch: checkoutDispatch } = useArchive<ICheckoutState>("checkout");
-
+  const { onClose } = useVoucherModal();
   const Icon = voucher.voucherType === "FREE_SHIPPING" ? HiOutlineTruck : HiOutlineTicket;
   const discountText = voucher.discountTypes === "percentage" ? `${voucher.discount}%` : `${formatPrice(voucher.discount)}`;
   const titleText = voucher.voucherType === "FREE_SHIPPING" ? "Miễn phí vận chuyển" : "Giảm giá";
@@ -44,12 +53,11 @@ const VoucherItem = ({ voucher }: VoucherItemProps) => {
         discount: discountAmount,
       }),
     );
+    message.success("Chọn voucher thành công!");
+    setTimeout(() => {
+      onClose();
+    }, 1000);
   };
-
-  const discountAmount = useMemo(
-    () => calculateDiscount(voucher, cartState.subTotal, checkoutState.shipping_fee || 0),
-    [voucher, cartState.subTotal, checkoutState.shipping_fee],
-  );
 
   const isSelected = useMemo(() => checkoutState.voucher?.id === voucher.id, [checkoutState.voucher]);
 
@@ -75,12 +83,14 @@ const VoucherItem = ({ voucher }: VoucherItemProps) => {
               {titleText} <strong className="text-orange-400">{discountText}</strong> với đơn hàng có giá trị tối thiểu{" "}
               <strong className="text-orange-400">{formatPrice(voucher.minimumOrderPrice)}</strong>
             </p>
-            {!isNotEligible && (
+
+            {/* New section for maxReduce display */}
+            {voucher.discountTypes === "percentage" && voucher.maxReduce && (
               <p className="text-xs">
-                Số tiền có thể giảm: <strong className="text-orange-400">{formatPrice(discountAmount)}</strong>
-                {voucher.voucherType === "FREE_SHIPPING" && " (áp dụng cho phí vận chuyển)"}
+                Giảm tối đa: <strong className="text-orange-400">{formatPrice(voucher.maxReduce)}</strong>
               </p>
             )}
+
             <p className="text-xs">
               Hạn sử dụng đến: <strong className="text-orange-400">{format(voucher.endDate, "dd/MM/yyyy")}</strong>
             </p>

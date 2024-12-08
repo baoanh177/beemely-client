@@ -15,9 +15,10 @@ import { ILocationInitialState } from "@/services/store/location/location.slice"
 import { setShippingFee, resetVoucher } from "@/services/store/checkout/checkout.slice";
 import { useVoucherModal } from "@/hooks/useVoucherModal";
 import { useShippingFee } from "@/hooks/useShipping";
+import { getCartByUser } from "@/services/store/cart/cart.thunk";
 
 const OrderSummary = () => {
-  const { state: cartState } = useArchive<ICartInitialState>("cart");
+  const { state: cartState, dispatch: cartDispatch } = useArchive<ICartInitialState>("cart");
   const { state: checkoutState, dispatch: checkoutDispatch } = useArchive<ICheckoutState>("checkout");
   const { dispatch, state: orderState } = useArchive<IOrderInitialState>("order");
   const { state: locationState } = useArchive<ILocationInitialState>("location");
@@ -51,9 +52,18 @@ const OrderSummary = () => {
     return baseConditions && dataLocation.province && dataLocation.district && dataLocation.ward;
   }, [checkoutState.shippingAddress, locationState.location]);
 
+  const hasOutStockProduct = useMemo(() => {
+    return !!cartState.cart?.cartItems.find((item) => item.variant.stock === 0);
+  }, [cartState.cart?.cartItems]);
+
   const handleCheckout = async () => {
     if (!isValidAddress) {
       message.error("Vui lòng điền đầy đủ thông tin giao hàng!");
+      return;
+    }
+    if (hasOutStockProduct) {
+      message.error("Vui lòng xóa sản phẩm đã hết hàng khỏi giỏ hàng");
+      await cartDispatch(getCartByUser()).unwrap();
       return;
     }
 
@@ -104,16 +114,12 @@ const OrderSummary = () => {
       if (metaData.checkoutUrl) {
         window.location.href = metaData.checkoutUrl;
       }
-    } catch (err) {
-      message.error("Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại!");
+    } catch (error: any) {
+      const errorMessage = error.errors.message || "Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại!";
+      console.log(error);
+      message.error(errorMessage);
     }
   };
-
-  useEffect(() => {
-    if (!locationState.location.province || !locationState.location.district || !locationState.location.ward) {
-      checkoutDispatch(setShippingFee(0));
-    }
-  }, [locationState.location, checkoutDispatch]);
 
   useEffect(() => {
     checkoutDispatch(resetVoucher());
@@ -144,9 +150,18 @@ const OrderSummary = () => {
             <p className="flex items-center space-x-2">
               <HiOutlineTicket className="mr-2 h-4 w-4" /> Voucher
             </p>
-            <p className="flex items-end space-x-2 group-hover:underline">
-              Chọn mã giảm giá <MdNavigateNext className="h-4 w-4" />
-            </p>
+            {checkoutState.voucher ? (
+              <p className="flex items-end space-x-2 group-hover:underline">
+                {checkoutState.voucher.name}
+                {checkoutState.voucher.discountTypes === "percentage" && checkoutState.voucher.maxReduce && (
+                  <span className="ml-1 text-xs text-gray-500">(Tối đa {formatPrice(checkoutState.voucher.maxReduce)})</span>
+                )}
+              </p>
+            ) : (
+              <p className="flex items-end space-x-2 group-hover:underline">
+                Chọn mã giảm giá <MdNavigateNext className="h-4 w-4" />
+              </p>
+            )}
           </div>
 
           <div className="flex justify-between text-sm text-primary-200">
@@ -154,7 +169,7 @@ const OrderSummary = () => {
             {isLoading ? <p>Đang tính...</p> : <p>{formatPrice(shippingFee || 0)}</p>}
           </div>
           <div className="flex justify-between text-sm text-primary-200">
-            <p>Giảm giá</p>
+            <p>Mã khuyến mãi</p>
             <p>
               {discountPrice ? "-" : ""}
               {discountPrice ? formatPrice(discountPrice) : "0 VND"}
@@ -185,6 +200,7 @@ const OrderSummary = () => {
             isDisabled={
               checkoutState.status === EFetchStatus.PENDING ||
               !isValidAddress ||
+              hasOutStockProduct ||
               !checkoutState.paymentType ||
               orderState.status === EFetchStatus.PENDING
             }
