@@ -6,6 +6,7 @@ import { Empty } from "antd";
 import "dayjs/locale/vi";
 import ReviewItem from "./ReviewItem";
 import Button from "../common/Button";
+import { Link } from "react-router-dom";
 
 const ReviewHistory = () => {
   const { state, dispatch } = useArchive<IReviewInitialState>("review");
@@ -33,7 +34,9 @@ const ReviewHistory = () => {
         ) : (
           <div className="bg-gray-50 flex flex-col items-center gap-6 rounded-lg py-16 text-center">
             <Empty description={<span className="text-lg text-gray-500">Bạn chưa có đánh giá nào</span>} />
-            <Button text=" Khám phá sản phẩm" />
+            <Link to={"/products"}>
+              <Button text=" Khám phá sản phẩm" />
+            </Link>
           </div>
         )}
       </div>

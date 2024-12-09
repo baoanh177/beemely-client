@@ -21,7 +21,7 @@ const ProductReviewList = () => {
     const fetchReviews = async () => {
       setIsLoading(true);
       if (typeof productId === "string") {
-        await dispatch(getAllReviews(productId));
+        await dispatch(getAllReviews({ param: productId }));
       } else {
         console.error("productId is undefined");
       }

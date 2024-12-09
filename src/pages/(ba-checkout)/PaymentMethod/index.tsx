@@ -11,7 +11,7 @@ const PaymentMethod = () => {
   return (
     <>
       <Container>
-        <Title>Phương Thức Thanh Toán</Title>
+        <Title text="Phương Thức Thanh Toán" />
         <Row gutter={50} className="mb-20 mt-5">
           <Col span={16}>
             <Steps

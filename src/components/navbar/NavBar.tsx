@@ -77,13 +77,7 @@ const Navbar = () => {
             <FaRegHeart className="cursor-pointer text-lg" />
           </Link>
           <CartPopover />
-          {state.isLogin ? (
-            <UserDropdown isMobile={false} />
-          ) : (
-            <Link to="/auth/login">
-              <ButtonLogin />
-            </Link>
-          )}
+          {state.isLogin ? <UserDropdown isMobile={false} /> : <ButtonLogin />}
         </div>
 
         <MobileMenu open={open} setOpen={setOpen} isLoggedIn={state.isLogin} />

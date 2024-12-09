@@ -15,7 +15,7 @@ const ShippingAddress = () => {
   return (
     <>
       <Container>
-        <Title children="Địa Chỉ Giao Hàng" className="mt-14" />
+        <Title text="Địa Chỉ Giao Hàng" className="mt-14" />
         <Row gutter={50} className="mb-20 mt-5">
           <Col span={16}>
             <Steps

@@ -16,7 +16,7 @@ const GetStarted = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(getAllTag());
+    dispatch(getAllTag({}));
   }, [dispatch]);
 
   useEffect(() => {
