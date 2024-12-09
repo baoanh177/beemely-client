@@ -149,8 +149,9 @@ const OrderActions = ({ order }: OrderActionsProps) => {
       if (metaData.checkoutUrl) {
         window.location.href = metaData.checkoutUrl;
       }
-    } catch (err) {
-      toast.error("Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại!");
+    } catch (err: any) {
+      const errMessage = err.errors.message || "Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại!"
+      toast.error(errMessage);
     }
   };
 

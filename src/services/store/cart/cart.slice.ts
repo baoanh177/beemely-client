@@ -51,8 +51,9 @@ const cartSlice = createSlice({
         state.subTotal = calculateCartTotal(payload.metaData);
         state.status = EFetchStatus.FULFILLED;
       })
-      .addCase(addToCart.rejected, (state) => {
+      .addCase(addToCart.rejected, (state, { payload }: any) => {
         state.status = EFetchStatus.REJECTED;
+        state.message = payload.errors.message || "Lỗi, không thể thêm sp vào giỏ hàng!";
       })
       .addCase(updateCartItem.pending, (state) => {
         state.status = EFetchStatus.PENDING;

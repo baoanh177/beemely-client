@@ -14,8 +14,14 @@ const UserDropdown: React.FC<UserDropdownProps> = ({ isMobile }) => {
   const { state, dispatch } = useArchive<IAuthInitialState>("auth");
   const { profile } = state;
 
-  const handleLogout = () => {
-    dispatch(logout()).then(() => message.success("Bạn đã đăng xuất!"));
+  const handleLogout = async () => {
+    try {
+      await dispatch(logout()).unwrap();
+      message.success("Bạn đã đăng xuất!");
+      window.location.reload();
+    } catch (error) {
+      message.error("Có lỗi trong quá trình đăng xuất");
+    }
   };
 
   const handleMenuClick: MenuProps["onClick"] = ({ key }) => {
