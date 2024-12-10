@@ -22,6 +22,7 @@ function Products() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const initialFilters = {
+    q: searchParams.get("q") || "",
     _page: parseInt(searchParams.get("page") || "1", 10),
     _limit: 6,
     gender: searchParams.get("gender")?.split(",") || [],
@@ -45,6 +46,7 @@ function Products() {
 
   useEffect(() => {
     const query = cleanQueryParams({
+      q: filters.q,
       _page: filters._page,
       _limit: filters._limit,
       gender: filters.gender.length ? filters.gender.join(",") : undefined,
@@ -61,7 +63,17 @@ function Products() {
 
     setSearchParams(query);
     dispatch(getAllProducts({ query }));
-  }, [filters, dispatch, cleanQueryParams, setSearchParams]);
+  }, [filters, dispatch, cleanQueryParams]);
+
+  useEffect(() => {
+    const query = searchParams.get("q");
+    if (query) {
+      setFilters((prev) => ({
+        ...prev,
+        q: query,
+      }));
+    }
+  }, [searchParams]);
 
   const handleFilterChange = useCallback(
     (type: string, value: string | string[]) => {

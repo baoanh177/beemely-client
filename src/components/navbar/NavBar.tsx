@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
-import { RiSearchLine } from "react-icons/ri";
+import Search from "./Search";
 import { FaRegHeart } from "react-icons/fa";
 import logo from "@/assets/images/logo.png";
 import CartPopover from "../cart/CartPopover";
@@ -56,7 +56,7 @@ const Navbar = () => {
             <div className="display-m-semibold">Beemely</div>
           </div>
           <div className="flex items-center space-x-4 lg:hidden">
-            <RiSearchLine className="text-lg" />
+            <Search />
             <FaRegHeart className="text-lg" />
             <CartPopover />
             <button className="text-3xl" onClick={() => setOpen(!open)} aria-label={open ? "Close menu" : "Open menu"}>
@@ -72,7 +72,7 @@ const Navbar = () => {
         </ul>
 
         <div className="hidden items-center space-x-4 lg:flex">
-          <RiSearchLine className="text-lg" />
+          <Search />
           <Link to="/profile/wishlists">
             <FaRegHeart className="cursor-pointer text-lg" />
           </Link>
