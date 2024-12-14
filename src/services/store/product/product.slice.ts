@@ -8,6 +8,7 @@ export interface IProductInitialState extends IInitialState {
   products: IProduct[];
   activeProduct: IProduct | undefined;
   filter: {
+    q: string;
     _page: number;
     _limit: number;
     orderBy: number;
@@ -28,6 +29,7 @@ const initialState: IProductInitialState = {
   products: [],
   activeProduct: undefined,
   filter: {
+    q: "",
     _page: 1,
     _limit: 10,
     orderBy: 0,
