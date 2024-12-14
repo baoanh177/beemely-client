@@ -23,6 +23,7 @@ const ProductInterest = () => {
 
     return (
       <ProductCard
+        label={product.labels[0]}
         sold={product.sold || 0}
         averageRating={product.averageRating || 0}
         totalReviews={product.totalReviews || 0}

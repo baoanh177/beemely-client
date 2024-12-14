@@ -36,7 +36,7 @@ const FormCheck = ({
         },
       }}
     >
-      <div className={clsx("flex items-center gap-2", isDisable && "opacity-65")}>
+      <div className={clsx("flex items-center gap-1", isDisable && "opacity-65")}>
         {type === "checkbox" ? (
           <Checkbox
             id={id}

@@ -24,6 +24,7 @@ const Wishlist = () => {
         products.map((p) => (
           <div className="w-[calc((100%-16px)/2)] lg:w-[calc((100%-64px)/3)]" key={p.id}>
             <ProductCard
+              label={p.labels[0]}
               sold={p.sold || 0}
               averageRating={p.averageRating || 0}
               totalReviews={p.totalReviews || 0}

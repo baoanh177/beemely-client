@@ -17,14 +17,14 @@ const ShippingForm = ({ initialValues, onSubmit, next }: IShippingFormProps) => 
   const { state: authState } = useArchive<IAuthInitialState>("auth");
 
   useEffect(() => {
-    if (!authState.profile?.addresses.length) {
+    if (!authState.profile?.addresses?.length) {
       checkoutDispatch(setUseUserAddress(false));
     }
-  }, [authState.profile?.addresses]);
+  }, [authState.profile?.addresses.length]);
 
   return (
     <div>
-      {checkoutState.isUseUserAddress ? (
+      {checkoutState.isUseUserAddress && authState.profile?.addresses.length !== 0 ? (
         <UserAddressShippingForm next={next} />
       ) : (
         <CustomerShippingForm initialValues={initialValues} onSubmit={onSubmit} next={next} />
