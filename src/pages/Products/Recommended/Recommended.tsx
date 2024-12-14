@@ -20,14 +20,15 @@ const Recommended: React.FC<RecommendedProps> = ({ onSelectGender }) => {
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    dispatch(getAllGender({}));
-  }, [dispatch]);
+    if (genders.length === 0) {
+      dispatch(getAllGender({}));
+    }
+  }, [dispatch, genders.length]);
 
   useEffect(() => {
     const genderParams = searchParams.get("gender")?.split(",") || [];
     setSelectedGenders(genderParams);
-    onSelectGender(genderParams);
-  }, [searchParams, onSelectGender]);
+  }, [onSelectGender]);
 
   const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     const value = event.currentTarget.value;
