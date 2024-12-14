@@ -13,8 +13,10 @@ const ProductWrapper = ({ product }: ProductWrapperProps) => {
 
   const variantImage = useMemo(
     () => [...product.productColors].find((color) => selectedVariant?.color.id === color.colorId.id)?.imageUrl,
-    [product],
+    [product, selectedVariant],
   );
+
+  console.log(variantImage);
 
   const sortVariants = useMemo(() => [...product.variants].sort((a, b) => a.price - b.price), [product]);
 

@@ -21,6 +21,7 @@ import toast from "react-hot-toast";
 import useFetchStatus from "@/hooks/useFetchStatus";
 import { addProductToWishlist, IAuthInitialState } from "@/services/store/auth/auth.slice";
 import { useDispatch } from "react-redux";
+import { message } from "antd";
 
 interface ProductDetailsProps {
   product: IProduct;
@@ -72,34 +73,45 @@ const ProductDetails = ({ product, selectedVariant, setSelectedVariant, sortVari
     }
   }, [selectedSize]);
 
-  const handleWishlistToggle = () => {
+  const handleWishlistToggle = async () => {
     if (!wishListState.profile) {
       toast.error("Bạn cần đăng nhập để thêm sản phẩm vào Wishlist!");
       return;
     }
+
     if (product.id) {
-      if (isInWishlist) {
-        wishlistDispatch(moveWishlist({ param: product.id })).then(() => {
+      try {
+        if (isInWishlist) {
+          await wishlistDispatch(moveWishlist({ param: product.id })).unwrap();
           toast.success("Bỏ Wishlist thành công!");
+
           if (wishListState.profile) {
             const updatedWishlist = wishListState.profile.wishlist.filter((id) => id !== product.id);
             dispatch(addProductToWishlist(updatedWishlist));
           }
-        });
-      } else {
-        wishlistDispatch(addWishList({ param: product.id })).then(() => {
+        } else {
+          await wishlistDispatch(addWishList({ param: product.id })).unwrap();
           toast.success("Thêm vào Wishlist thành công!");
+
           if (wishListState.profile) {
             const updatedWishlist = [...wishListState.profile.wishlist, product.id];
             dispatch(addProductToWishlist(updatedWishlist));
           }
-        });
+        }
+      } catch (error: any) {
+        const errorMessage = error.errors?.message || error.message || "Không thể thực hiện thao tác với Wishlist lúc này";
+
+        toast.error(errorMessage);
       }
     }
   };
   const isInWishlist = wishListState.profile?.wishlist.some((id) => id === product.id);
 
   const handleAddCart = () => {
+    if (!wishListState.isLogin) {
+      message.error("Bạn phải đăng nhập mới có thể thêm sản phẩm vào giỏ hàng!");
+      return;
+    }
     if (product?.id && selectedVariant) {
       setIsAddingToCart(true);
       cartDispatch(
@@ -161,13 +173,7 @@ const ProductDetails = ({ product, selectedVariant, setSelectedVariant, sortVari
         </div>
         <div className="flex w-full gap-4">
           <Button
-            isDisabled={
-              !selectedSize ||
-              !selectedColor ||
-              cartState.status === EFetchStatus.PENDING ||
-              !wishListState.isLogin ||
-              selectedVariant?.stock === 0
-            }
+            isDisabled={!selectedSize || !selectedColor || cartState.status === EFetchStatus.PENDING || selectedVariant?.stock === 0}
             icon={<FaShoppingCart className="mr-2" />}
             onClick={handleAddCart}
             className="grow"

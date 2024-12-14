@@ -67,14 +67,21 @@ const UserAddressShippingForm = ({ next }: IUserAddressShippingFormProps) => {
 
   return (
     <>
-      {authState.profile?.addresses && authState.profile.addresses.length && (
-        <div className="my-6 grid grid-cols-1 gap-4 md:gap-6 lg:grid-cols-2">
-          {authState.profile.addresses.map((address) => (
-            <AddressItem item={address} key={address.id} isSelected={currentAddress?.id === address.id} setAddress={setCurrentAddress} />
-          ))}
-        </div>
+      {authState.profile?.addresses?.length && (
+        <>
+          <div className="my-6 grid grid-cols-1 gap-4 md:gap-6 lg:grid-cols-2">
+            {authState.profile.addresses.map((address) => (
+              <AddressItem item={address} key={address.id} isSelected={currentAddress?.id === address.id} setAddress={setCurrentAddress} />
+            ))}
+          </div>
+          <Button
+            text="Nhập địa chỉ khác"
+            variant="secondary"
+            className="my-8 h-10"
+            onClick={() => checkoutDispatch(setUseUserAddress(false))}
+          />
+        </>
       )}
-      <Button text="Nhập địa chỉ khác" variant="secondary" className="my-8 h-10" onClick={() => checkoutDispatch(setUseUserAddress(false))} />
       <Formik
         validationSchema={validateSchema}
         initialValues={formatedInitialValues}

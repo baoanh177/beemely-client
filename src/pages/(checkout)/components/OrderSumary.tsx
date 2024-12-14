@@ -7,7 +7,7 @@ import { IOrderInitialState } from "@/services/store/order/order.slice";
 import { Card, message } from "antd";
 import { createNewOrder } from "@/services/store/order/order.thunk";
 import CartList from "./CartList";
-import { EFetchStatus } from "@/shared/enums/fetchStatus";
+import { EActiveStatus, EFetchStatus } from "@/shared/enums/fetchStatus";
 import Button from "@/components/common/Button";
 import { HiOutlineTicket } from "react-icons/hi2";
 import { MdNavigateNext } from "react-icons/md";
@@ -16,11 +16,13 @@ import { setShippingFee, resetVoucher } from "@/services/store/checkout/checkout
 import { useVoucherModal } from "@/hooks/useVoucherModal";
 import { useShippingFee } from "@/hooks/useShipping";
 import { getCartByUser } from "@/services/store/cart/cart.thunk";
+import { IAuthInitialState } from "@/services/store/auth/auth.slice";
 
 const OrderSummary = () => {
   const { state: cartState, dispatch: cartDispatch } = useArchive<ICartInitialState>("cart");
   const { state: checkoutState, dispatch: checkoutDispatch } = useArchive<ICheckoutState>("checkout");
   const { dispatch, state: orderState } = useArchive<IOrderInitialState>("order");
+  const { state: authState } = useArchive<IAuthInitialState>("auth");
   const { state: locationState } = useArchive<ILocationInitialState>("location");
 
   const { shippingFee, isLoading, refetch } = useShippingFee();
@@ -53,10 +55,15 @@ const OrderSummary = () => {
   }, [checkoutState.shippingAddress, locationState.location]);
 
   const hasOutStockProduct = useMemo(() => {
-    return !!cartState.cart?.cartItems.find((item) => item.variant.stock === 0);
+    return !!cartState.cart?.cartItems.find((item) => item.variant.stock === 0 || item.product.status === EActiveStatus.INACTIVE);
   }, [cartState.cart?.cartItems]);
 
   const handleCheckout = async () => {
+    if (!authState.isLogin) {
+      message.error("Bạn phải đăng nhập mới có thể mua hàng!");
+      return;
+    }
+
     if (!isValidAddress) {
       message.error("Vui lòng điền đầy đủ thông tin giao hàng!");
       return;
@@ -151,10 +158,10 @@ const OrderSummary = () => {
               <HiOutlineTicket className="mr-2 h-4 w-4" /> Voucher
             </p>
             {checkoutState.voucher ? (
-              <p className="flex items-end space-x-2 group-hover:underline">
+              <p className="flex items-end space-x-2 text-sm group-hover:underline">
                 {checkoutState.voucher.name}
                 {checkoutState.voucher.discountTypes === "percentage" && checkoutState.voucher.maxReduce && (
-                  <span className="ml-1 text-xs text-gray-500">(Tối đa {formatPrice(checkoutState.voucher.maxReduce)})</span>
+                  <span className="ml-1 text-gray-500">(Tối đa {formatPrice(checkoutState.voucher.maxReduce)})</span>
                 )}
               </p>
             ) : (
@@ -169,7 +176,7 @@ const OrderSummary = () => {
             {isLoading ? <p>Đang tính...</p> : <p>{formatPrice(shippingFee || 0)}</p>}
           </div>
           <div className="flex justify-between text-sm text-primary-200">
-            <p>Mã khuyến mãi</p>
+            <p>{checkoutState.voucher ? "Mã khuyến mãi" : "Chưa áp dụng mã giảm giá"}</p>
             <p>
               {discountPrice ? "-" : ""}
               {discountPrice ? formatPrice(discountPrice) : "0 VND"}

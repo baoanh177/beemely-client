@@ -2,7 +2,7 @@ import { Form, Formik } from "formik";
 import { object, string } from "yup";
 
 import FormInput from "@/components/form/FormInput";
-import { IShippingAddress } from "@/services/store/checkout/checkout.model";
+import { ICheckoutState, IShippingAddress } from "@/services/store/checkout/checkout.model";
 import { useEffect } from "react";
 import FormSelect from "@/components/form/FormSelect";
 import FormInputArea from "@/components/form/FormInputArea";
@@ -11,6 +11,7 @@ import { useArchive } from "@/hooks/useArchive";
 import { IAuthInitialState } from "@/services/store/auth/auth.slice";
 import { getAllProvinces, getDistrictsByProvinceId, getWardsByDistrictId } from "@/services/store/location/location.thunk";
 import { ILocationInitialState, setDistrict, setProvince, setWard } from "@/services/store/location/location.slice";
+import { setUseUserAddress } from "@/services/store/checkout/checkout.slice";
 
 interface ICustomerShippingFormProps {
   initialValues: IShippingAddress;
@@ -30,6 +31,7 @@ const validateSchema = object().shape({
 
 const CustomerShippingForm = ({ initialValues, onSubmit, next }: ICustomerShippingFormProps) => {
   const { state: authState } = useArchive<IAuthInitialState>("auth");
+  const { dispatch: checkoutDispatch } = useArchive<ICheckoutState>("checkout");
   const formatedInitialValues: IShippingAddress = {
     ...initialValues,
     user_email: authState.profile?.email || "",
@@ -80,6 +82,14 @@ const CustomerShippingForm = ({ initialValues, onSubmit, next }: ICustomerShippi
 
   return (
     <>
+      {authState.isLogin && authState.profile?.addresses.length !== 0 && (
+        <Button
+          text="Sử dụng địa chỉ của tôi"
+          variant="secondary"
+          className="my-8 h-10"
+          onClick={() => checkoutDispatch(setUseUserAddress(true))}
+        />
+      )}
       <Formik
         validationSchema={validateSchema}
         initialValues={formatedInitialValues}

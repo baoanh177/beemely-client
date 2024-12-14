@@ -1,4 +1,4 @@
-import { Table } from "antd";
+import { message, Table } from "antd";
 import CartEmpty from "./CartEmpty";
 import { useArchive } from "@/hooks/useArchive";
 import { ICartInitialState } from "@/services/store/cart/cart.slice";
@@ -9,6 +9,7 @@ import QuantityInput from "../common/QuantityInput";
 import Button from "../common/Button";
 import CartProduct from "./CartProduct";
 import { IVariant } from "@/services/store/product/product.model";
+import { EActiveStatus } from "@/shared/enums/fetchStatus";
 
 const CartTable = () => {
   const { state, dispatch } = useArchive<ICartInitialState>("cart");
@@ -16,15 +17,21 @@ const CartTable = () => {
     dispatch(deleteCartItem({ param: itemId }));
   };
 
-  const handleQuantityChange = (itemId: string, newQuantity: number) => {
-    dispatch(
-      updateCartItem({
-        body: {
-          quantity: newQuantity,
-        },
-        param: itemId,
-      }),
-    );
+  const handleQuantityChange = async (itemId: string, newQuantity: number) => {
+    try {
+      await dispatch(
+        updateCartItem({
+          body: {
+            quantity: newQuantity,
+          },
+          param: itemId,
+        }),
+      ).unwrap();
+    } catch (error: any) {
+      console.log(error);
+      const errorMessage = error.errors.message || "Không thể cập nhật số lượng sản phẩm lúc này";
+      message.error(errorMessage);
+    }
   };
 
   const cartItems = state.cart?.cartItems ?? [];
@@ -58,10 +65,18 @@ const CartTable = () => {
       title: "Số lượng",
       dataIndex: "quantity",
       key: "quantity",
-      render: (text: number, record: any) =>
-        record.variant.stock !== 0 ? (
-          <QuantityInput max={record.maxQuantity} value={text} onChange={(newQuantity) => handleQuantityChange(record.key, newQuantity)} />
-        ) : null,
+      render: (text: number, record: any) => {
+        const isOutStock = record.variant.stock === 0;
+        const isInactivedProduct = record.productData.status === EActiveStatus.INACTIVE;
+
+        if (isInactivedProduct || isOutStock) {
+          return null;
+        } else {
+          return (
+            <QuantityInput max={record.maxQuantity} value={text} onChange={(newQuantity) => handleQuantityChange(record.key, newQuantity)} />
+          );
+        }
+      },
     },
     {
       title: "Tổng tiền",
@@ -79,12 +94,17 @@ const CartTable = () => {
       title: "Trạng thái",
       dataIndex: "status",
       key: "status",
-      render: (text: string, record: any) =>
-        record.variant.stock === 0 ? (
-          <p className="text-nowrap rounded-3xl bg-red-100 px-3 py-1 text-xs text-red-500">{text}</p>
-        ) : (
-          <p className="text-nowrap rounded-3xl bg-green-100 px-3 py-1 text-xs text-green-600">{text}</p>
-        ),
+      render: (_: string, record: any) => {
+        const isOutStock = record.variant.stock === 0;
+        const isInactivedProduct = record.productData.status === EActiveStatus.INACTIVE;
+        console.log(record);
+
+        if (isInactivedProduct || isOutStock) {
+          return <p className="text-nowrap rounded-3xl bg-red-100 px-3 py-1 text-xs text-red-500">Hết hàng</p>;
+        } else {
+          return <p className="text-nowrap rounded-3xl bg-green-100 px-3 py-1 text-xs text-green-600">Còn hàng</p>;
+        }
+      },
     },
   ];
 
@@ -92,6 +112,7 @@ const CartTable = () => {
     key: item.id,
     variant: item.variant,
     image: item.product.thumbnail,
+    productData: item.product,
     product: <CartProduct item={item} showPrice={false} />,
     unitPrice: item.variant.price,
     discountPrice: item.variant.discountPrice,
