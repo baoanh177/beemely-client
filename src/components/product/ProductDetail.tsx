@@ -149,6 +149,7 @@ const ProductDetails = ({ product, selectedVariant, setSelectedVariant, sortVari
       <div className="space-y-2">
         <p className="mt-1 text-3xl font-bold">{product.brand.name}</p>
         <h2 className="text-gray-900 text-2xl font-medium">{product.name}</h2>
+        <h2 className="text-sm font-medium capitalize text-primary-80%">{product?.gender?.name}</h2>
       </div>
 
       <StarSection totalReviews={product.totalReviews || 0} averageRating={product.averageRating || 0} />
