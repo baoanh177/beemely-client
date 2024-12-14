@@ -24,7 +24,7 @@ const Search: React.FC = () => {
           style={{ borderColor: "#1f2937" }}
         />
         <Button type="primary" onClick={handleSearch} className="w-full" style={{ backgroundColor: "#1f2937", borderColor: "#1f2937" }}>
-          Search
+          Tìm kiếm
         </Button>
       </div>
     </div>
