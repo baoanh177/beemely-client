@@ -17,6 +17,11 @@ const ProductModal: React.FC = () => {
     },
     [slug],
   );
+
+  if (!state.activeProduct) {
+    return null;
+  }
+
   return (
     <Modal width={"1000px"} open={isOpen} centered loading={getProductByIdLoading || !state.activeProduct} onCancel={onClose} footer={null}>
       {state.activeProduct && <ProductWrapper product={state.activeProduct} />}

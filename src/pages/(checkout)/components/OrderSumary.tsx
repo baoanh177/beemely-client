@@ -123,7 +123,7 @@ const OrderSummary = () => {
       }
     } catch (error: any) {
       const errorMessage = error.errors.message || "Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại!";
-      console.log(error);
+      await cartDispatch(getCartByUser()).unwrap();
       message.error(errorMessage);
     }
   };
