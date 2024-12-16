@@ -23,7 +23,7 @@ const ReviewModal = ({ isOpen, onClose, onSubmit, selectedOrderItem }: ReviewMod
         initialValues={{
           rates: 0,
           content: "",
-          images: ["https://res.cloudinary.com/dbju2ugir/image/upload/v1729283262/Beemely/a9tgzybpmepvi8nav0l5.png"],
+          images: [],
           orderItemId: selectedOrderItem?.id || "",
         }}
         validationSchema={Yup.object({

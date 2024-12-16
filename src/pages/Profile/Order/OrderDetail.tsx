@@ -1,33 +1,33 @@
-import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useArchive } from "@/hooks/useArchive";
 import { IOrderInitialState } from "@/services/store/order/order.slice";
 import { getOrderDetail } from "@/services/store/order/order.thunk";
 import StatusBadge from "@/components/common/StatusBadge";
 import PaymentStatusBadge from "@/components/common/PaymentStatusBadge";
-
-import imgPayos from "@/assets/images/payos-logo.svg";
-import imgVnPay from "@/assets/images/vnpay.png";
-import { Image } from "antd";
 import { formatPrice } from "@/utils/curency";
 import { format } from "date-fns";
+import { PAYMENT_METHODS } from "@/services/store/checkout/checkout.slice";
+import useAsyncEffect from "@/hooks/useAsyncEffect";
 
 const OrderDetail = () => {
   const { state, dispatch } = useArchive<IOrderInitialState>("order");
   const { id } = useParams();
-  const activeOrder = state.acctiveOrder;
+  const activeOrder = state.activeOrder;
 
-  useEffect(() => {
-    dispatch(getOrderDetail({ param: id }));
-  }, [dispatch, id]);
-
-  if (!activeOrder) {
+  const { getOrderDetailLoading } = useAsyncEffect(
+    (async) => {
+      id && async(dispatch(getOrderDetail({ param: id })), "getOrderDetailLoading");
+    },
+    [id],
+  );
+  if (getOrderDetailLoading || !activeOrder)
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-t-2 border-blue-500"></div>
+      <div className="flex items-center justify-center p-20">
+        <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-t-2"></div>
       </div>
     );
-  }
+
+  const paymentType = PAYMENT_METHODS.find((item) => item.value === state?.activeOrder?.paymentType);
 
   return (
     <div className="mx-auto max-w-4xl space-y-8 pb-6">
@@ -123,11 +123,9 @@ const OrderDetail = () => {
           <div className="border-t pt-4">
             <div className="flex justify-between">
               <span className="text-gray-600">Phương thức thanh toán:</span>
-              {activeOrder.paymentType === "payos" ? (
-                <Image width={100} height={40} preview={false} src={imgPayos} />
-              ) : (
-                <Image width={90} height={20} preview={false} src={imgVnPay} />
-              )}
+              <div className="flex items-center gap-2">
+                <img src={paymentType?.image} width={100} />
+              </div>
             </div>
             <div className="mt-2 flex justify-between">
               <span className="text-gray-600">Trạng thái:</span>

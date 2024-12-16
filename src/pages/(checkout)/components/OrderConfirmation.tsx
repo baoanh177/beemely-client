@@ -40,7 +40,10 @@ export const OrderConfirmation = () => {
       <div className="space-y-4 border-b border-primary-10% py-2">
         <Title text="Phương thức thanh toán" />
         <div className="flex items-start justify-between">
-          <img src={curentPaymentMethod?.image} className="h-16 w-28" />
+          <div className="flex items-center space-x-3">
+            <img src={curentPaymentMethod?.image} className="h-16 w-28" />
+            <p>{curentPaymentMethod?.label}</p>
+          </div>
           <Button onClick={() => checkoutDispatch(setCurrentStep(1))} icon={<FiEdit className="h-4 w-4" />} variant="secondary" />
         </div>
       </div>

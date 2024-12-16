@@ -12,7 +12,7 @@ export interface IShippingAddress {
   note?: string;
 }
 
-export type TPaymentMethod = "vnpay" | "payos" | "zalopay";
+export type TPaymentMethod = "vnpay" | "payos" | "cod";
 
 export interface IPaymentMethodLabel {
   label: string;

@@ -61,7 +61,7 @@ const ComplaintOrderPage = () => {
         initialValues={{
           reason: "" as EComplaintReason,
           description: "",
-          images: ["https://res.cloudinary.com/dbju2ugir/image/upload/v1732032541/Beemely/oynfl4wqwrzl8agogmt4.jpg"],
+          images: [],
         }}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}

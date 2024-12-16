@@ -34,7 +34,7 @@ const PaymentPage = () => {
   );
   if (getOrderDetailLoading) return <Loading />;
 
-  return <div>{state.acctiveOrder ? <PaymentSuccess order={state.acctiveOrder} /> : cancel && <FailedNotification />}</div>;
+  return <div>{state.activeOrder ? <PaymentSuccess order={state.activeOrder} /> : cancel && <FailedNotification />}</div>;
 };
 
 export default PaymentPage;

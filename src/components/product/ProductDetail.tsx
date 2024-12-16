@@ -176,6 +176,7 @@ const ProductDetails = ({ product, selectedVariant, setSelectedVariant, sortVari
           <Button
             isDisabled={!selectedSize || !selectedColor || cartState.status === EFetchStatus.PENDING || selectedVariant?.stock === 0}
             icon={<FaShoppingCart className="mr-2" />}
+            isLoading={cartState.status === EFetchStatus.PENDING}
             onClick={handleAddCart}
             className="grow"
             text="Thêm sản phẩm vào giỏ hàng"

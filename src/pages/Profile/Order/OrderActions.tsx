@@ -87,7 +87,7 @@ const OrderActions = ({ order }: OrderActionsProps) => {
           cancelText: "Hủy",
         });
       },
-      disabled: ![EPaymentStatus.FAILED, EPaymentStatus.PENDING].includes(order.paymentStatus),
+      disabled: ![EPaymentStatus.FAILED, EPaymentStatus.PENDING].includes(order.paymentStatus) || order.paymentType === "cod",
     },
     {
       label: "Hủy đơn hàng",
@@ -150,7 +150,7 @@ const OrderActions = ({ order }: OrderActionsProps) => {
         window.location.href = metaData.checkoutUrl;
       }
     } catch (err: any) {
-      const errMessage = err.errors.message || "Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại!"
+      const errMessage = err.errors.message || "Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại!";
       toast.error(errMessage);
     }
   };

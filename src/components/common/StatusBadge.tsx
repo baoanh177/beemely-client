@@ -32,8 +32,8 @@ const CONVERT_STATUS = {
   returning: "Đang được đổi trả",
   returned: "Trả hàng hoàn tiền thành công",
   denied_return: "Người bán từ chối khiếu nại",
-  compensated: "Đã gửi bù hàng",
-  compensating: "Đang gửi bù hàng",
+  compensating: "Đang được đổi hàng",
+  compensated: "Đã được đổi hàng",
 };
 
 const StatusBadge: React.FC<StatusBadgeProps> = ({ status, color, disabled = false }) => {
@@ -66,7 +66,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status, color, disabled = fal
   const className = colorMapping[color] || "bg-gray-50 text-gray-500";
 
   return (
-    <div className={clsx(className, "inline-block text-nowrap rounded-lg border-none px-[10px] py-1 text-center text-sm")}>
+    <div className={clsx(className, "inline-block text-nowrap rounded-lg border-none px-[10px] py-1 text-center text-xs font-normal")}>
       {CONVERT_STATUS[status]}
     </div>
   );

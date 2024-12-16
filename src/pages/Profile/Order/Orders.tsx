@@ -53,8 +53,8 @@ const Orders = () => {
     [EStatusOrder.RETURNING]: "Đang được đổi trả",
     [EStatusOrder.RETURNED]: "Đổi trả thành công",
     [EStatusOrder.DENIED_RETURN]: "Từ chối đổi trả",
-    [EStatusOrder.COMPENSATING]: "Người bán đang gửi bù hàng",
-    [EStatusOrder.COMPENSATED]: "Người bán đã gửi bù hàng",
+    [EStatusOrder.COMPENSATING]: "Đang được đổi sản phẩm mới",
+    [EStatusOrder.COMPENSATED]: "Đã được đổi sản phẩm mới",
   };
 
   const defaultSearch: IDefaultSearchProps = {
@@ -129,7 +129,9 @@ const Orders = () => {
                             <div className="flex gap-4">
                               <img className="aspect-square h-16 w-16 rounded-md" src={order.product.thumbnail} alt={order.product.name} />
                               <div className="flex flex-col gap-[2px] text-sm">
-                                <div className="font-semibold">{order.product.name}</div>
+                                <Link to={`/product/${order.product.slug}`} className="font-semibold">
+                                  {order.product.name}
+                                </Link>
                                 <p>
                                   Kích cỡ: <span>{order.variant?.size.name}</span>
                                 </p>

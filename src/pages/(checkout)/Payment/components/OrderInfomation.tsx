@@ -1,7 +1,9 @@
 import PaymentStatusBadge from "@/components/common/PaymentStatusBadge";
 import StatusBadge from "@/components/common/StatusBadge";
+import { PAYMENT_METHODS } from "@/services/store/checkout/checkout.slice";
 import { IOrder } from "@/services/store/order/order.model";
 import { formatPrice } from "@/utils/curency";
+import { Image } from "antd";
 import { format } from "date-fns";
 import tw from "twin.macro";
 
@@ -12,6 +14,8 @@ interface OrderInfomationProps {
 }
 
 const OrderInfomation = ({ order }: OrderInfomationProps) => {
+  const paymentType = PAYMENT_METHODS.find((item) => item.value === order.paymentType);
+
   return (
     <div className="mt-6 space-y-6">
       <div className="space-y-3">
@@ -33,6 +37,13 @@ const OrderInfomation = ({ order }: OrderInfomationProps) => {
       </div>
       <div className="space-y-4 font-semibold">
         <h2 className="text-lg">Thông tin thanh toán</h2>
+        <WrapperSpaceBetween>
+          <p>Phương thức thanh toán</p>
+          <div className="flex items-center gap-2">
+            <Image src={paymentType?.image} width={30} height={30} />
+            <p>{paymentType?.label}</p>
+          </div>
+        </WrapperSpaceBetween>
         <WrapperSpaceBetween>
           <p>Tổng tiền sản phẩm</p>
           <p>{formatPrice(order.regularTotalPrice)}</p>
