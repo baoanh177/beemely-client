@@ -24,7 +24,7 @@ const PaymentStatusBadge: React.FC<PaymentStatusBadgeProps> = ({ text, status, d
   const className = colorMapping[status] || "bg-gray-50 text-gray-500";
 
   return (
-    <div className={clsx(className, "inline-block text-nowrap rounded-lg border-none px-[10px] py-1 text-center text-sm font-normal")}>
+    <div className={clsx(className, "inline-block text-nowrap rounded-lg border-none px-[10px] py-1 text-center text-xs font-normal")}>
       {CONVERT_STATUS[text]}
     </div>
   );

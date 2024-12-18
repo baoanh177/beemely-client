@@ -20,7 +20,7 @@ const validationSchema = object().shape({
 
 const PaymentMethodSelector = ({ value, onChange, next, prev }: IPaymentMethodSelectorProps) => {
   const initialValues = {
-    paymentType: value || "payos",
+    paymentType: value || "cod",
   };
 
   const handlePaymentChange = (newValue: TPaymentMethod) => {
@@ -42,7 +42,7 @@ const PaymentMethodSelector = ({ value, onChange, next, prev }: IPaymentMethodSe
           <Form className="mx-auto flex flex-col gap-6" onSubmit={handleSubmit}>
             <div className="flex flex-col gap-4">
               <h2 className="text-xl font-semibold">Chọn phương thức thanh toán</h2>
-              <div className="grid w-full grid-cols-1 gap-4 lg:grid-cols-2">
+              <div className="grid w-full grid-cols-1 gap-4">
                 {PAYMENT_METHODS.map((method) => (
                   <div
                     key={method.value}

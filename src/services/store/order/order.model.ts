@@ -3,6 +3,7 @@ import { IUserProfile } from "../auth/auth.model";
 import { IProduct, IVariant } from "../product/product.model";
 import { IComplaint } from "../complaint/complaint.model";
 import { IVoucher } from "../voucher/voucher.model";
+import { TPaymentMethod } from "../checkout/checkout.model";
 
 export interface IOrder {
   id: string;
@@ -15,7 +16,7 @@ export interface IOrder {
   phoneNumber: string;
   orderStatus: EStatusOrder;
   paymentStatus: EPaymentStatus;
-  paymentType: string;
+  paymentType: TPaymentMethod;
   userName: string;
   shippingFee: number;
   userEmail: string;

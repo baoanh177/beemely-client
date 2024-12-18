@@ -7,14 +7,14 @@ import { commonStaticReducers } from "@/services/shared";
 
 export interface IOrderInitialState extends IInitialState {
   orders: IOrder[] | [];
-  acctiveOrder: IOrder | null;
+  activeOrder: IOrder | null;
 }
 
 const initialState: IOrderInitialState = {
   status: EFetchStatus.IDLE,
   message: "",
   orders: [],
-  acctiveOrder: null,
+  activeOrder: null,
   filter: { order_status: "" },
 };
 
@@ -42,7 +42,7 @@ const orderSlice = createSlice({
         state.status = EFetchStatus.PENDING;
       })
       .addCase(getOrderDetail.fulfilled, (state, { payload }: PayloadAction<IResponse<IOrder>>) => {
-        state.acctiveOrder = payload.metaData;
+        state.activeOrder = payload.metaData;
         state.status = EFetchStatus.FULFILLED;
       })
       .addCase(getOrderDetail.rejected, (state) => {

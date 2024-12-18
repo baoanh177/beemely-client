@@ -21,7 +21,7 @@ const PaymentSuccess = ({ order }: PaymentSuccessProps) => {
   return (
     <Container className="py-14">
       <div className="mx-auto max-w-xl">
-        <SuccessNotification />
+        <SuccessNotification order={order} />
         <OrderInfomation order={order} />
         <div className="mt-6 flex items-center justify-center rounded-full">
           <Link to={`/profile/orders/detail/${order.id}`}>
