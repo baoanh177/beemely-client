@@ -34,7 +34,11 @@ const CartItem: React.FC<CartItemProps> = ({ item, onRemove, isCheckoutPage = fa
       {(isOutStock || isInactivedProduct) && (
         <div className="flex justify-between">
           <p className="text-xs text-red-500">
-            {isOutStock ? "Hết hàng, vui lòng xóa khỏi giỏ hàng" : isInactivedProduct ? "Sản phẩm bị vô hiệu hóa, xóa ngay!" : ""}
+            {isOutStock
+              ? "Hết hàng, vui lòng xóa khỏi giỏ hàng"
+              : isInactivedProduct
+                ? "Sản phẩm bị vô hiệu hóa, không thể mua sản phẩm lúc này, vui lòng xóa!"
+                : ""}
           </p>
           {isCheckoutPage && (
             <RemoveButton onClick={handleRemove}>
