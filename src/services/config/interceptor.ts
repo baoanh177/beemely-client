@@ -41,7 +41,8 @@ export const interceptor = async <MetaDataType>({
     }
     case 403: {
       // Access Denied
-      data.message = "Access Denied!";
+      localStorage.clear();
+      window.location.pathname = "/auth/login";
       return { response, data };
     }
     case 409: {
