@@ -49,12 +49,12 @@ const OrderInfomation = ({ order }: OrderInfomationProps) => {
           <p>{formatPrice(order.regularTotalPrice)}</p>
         </WrapperSpaceBetween>
         <WrapperSpaceBetween>
-          <p>Giảm giá</p>
-          <p>{formatPrice(order.discountPrice || 0)}</p>
-        </WrapperSpaceBetween>
-        <WrapperSpaceBetween>
           <p>Vận chuyển</p>
           <p>{formatPrice(order.shippingFee)}</p>
+        </WrapperSpaceBetween>
+        <WrapperSpaceBetween>
+          <p>Giảm giá</p>
+          <p>-{formatPrice(order.discountPrice || 0)}</p>
         </WrapperSpaceBetween>
         <WrapperSpaceBetween>
           <p>Tổng tiền đơn hàng</p>

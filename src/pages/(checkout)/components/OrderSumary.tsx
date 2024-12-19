@@ -116,6 +116,8 @@ const OrderSummary = () => {
       voucher: checkoutState.voucher?.id || null,
     };
 
+    console.log(orderData);
+
     try {
       const { metaData } = await dispatch(createNewOrder({ body: orderData })).unwrap();
       if (metaData.checkoutUrl) {
